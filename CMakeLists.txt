@@ -9,6 +9,9 @@ set(SOURCES
 
             "src/GUI/MailApp.h"
             "src/GUI/MailApp.cpp"
+
+            "src/Command.hpp"
+            "src/Command.cpp"
             
             "src/main.cpp")
 
@@ -21,6 +24,10 @@ set(OPENSSL_ROOT_DIR "/usr/local/Cellar/openssl@1.1/1.1.1h/")
 find_package(OpenSSL REQUIRED)
 include_directories(${OPENSSL_INCLUDE_DIR})
 
+set(JSON_ROOT_DIR "/usr/local/Cellar/nlohmann-json/3.9.1_1")
+include_directories("${JSON_ROOT_DIR}/include")
+
 add_app("${SOURCES}")
 # bug in cmake which cause to use apple version of open ssl instead of detected one
 target_link_libraries(${PROJECT_NAME} "/usr/local/Cellar/openssl@1.1/1.1.1h/lib/libcrypto.dylib")
+target_link_libraries(${PROJECT_NAME} "/usr/local/Cellar/nlohmann-json/3.9.1_1/lib/cmake/nlohmann_json/nlohmann_jsonConfig.cmake")

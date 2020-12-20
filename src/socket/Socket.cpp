@@ -1,36 +1,50 @@
 #include "Socket.hpp"
 
-using namespace std;
 
+using namespace std;
+using json = nlohmann::json;
 using tcp = boost::asio::ip::tcp;               // from <boost/asio/ip/tcp.hpp>
 namespace websocket = boost::beast::websocket;  // from <boost/beast/websocket.hpp>
 
 Socket::Socket() {
   this->_address = boost::asio::ip::make_address("0.0.0.0");
   this->_port = 8080;
+  this->_bindings = new std::map<std::string, FunctionPtr>;
+}
+
+Socket::~Socket() {
+    delete this->_bindings;
+}
+
+void Socket::bind(std::string key, FunctionPtr fun) {
+    (*this->_bindings)[key] = fun;
+    std::cout << "Binding " << key << " with " << &fun << "(" << &((*this->_bindings)[key]) << ")" << std::endl;
 }
 
 void Socket::manage(tcp::socket& socket) {
     try
     {
-        // Construct the stream by moving in the socket
         websocket::stream<tcp::socket> ws{std::move(socket)};
-
-        // Accept the websocket handshake
         ws.accept();
-
         for(;;)
         {
-            // This buffer will hold the incoming message
             boost::beast::multi_buffer buffer;
-            // Read a message
             ws.read(buffer);
-            // Echo the message back
             ws.text(ws.got_text());
-
-            std::cout << boost::beast::buffers_to_string(buffer.data()) << std::endl;
-
-            ws.write(buffer.data());
+            std::string raw =(boost::beast::buffers_to_string(buffer.data()));
+            std::stringstream data;
+            data << raw;
+            std::cout << raw << std::endl;
+            json received;
+            data >> received;
+            std::map<std::string, FunctionPtr>::iterator it = this->_bindings->find(received["type"]);
+            if(it != this->_bindings->end()) {
+                std::string result = it->second(received);
+                std::cout << "Process " << result << " request" << std::endl;
+            } else {
+                std::cout << "No handler for " << raw << " request" << std::endl;
+            }
+            // ws.write(buffer.data());
         }
     }
     catch(boost::system::system_error const& se)
@@ -46,20 +60,17 @@ void Socket::manage(tcp::socket& socket) {
 }
 
 thread Socket::start() {
-  thread server_thread([this]() {
+    Socket* self = this;
+    thread server_thread([&self]() {
         boost::asio::io_context ioc{1};
-        // The acceptor receives incoming connections
-        tcp::acceptor acceptor{ioc, {this->_address, this->_port}};
+        tcp::acceptor acceptor{ioc, {self->_address, self->_port}};
         for(;;)
         {
-            // This will receive the new connection
             tcp::socket socket{ioc};
-
-            // Block until we get a connection
             acceptor.accept(socket);
-
-            this->manage(socket);
+            std::cout << self << std::endl;
+            self->manage(socket);
         }
-  });
-  return server_thread;
+    });
+    return server_thread;
 }

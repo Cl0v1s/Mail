@@ -15,7 +15,7 @@
           ws=new WebSocket("ws://localhost:8080/echo");
           ws.onmessage=function(evt){console.log(evt.data);};
           ws.onopen=function(evt){
-            ws.send("Hello");
+            ws.send('{"type": "getMails", "content": "hello"}');
           }
         }, 2000);
       }
