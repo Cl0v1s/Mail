@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <title>Mail</title>
+    <style>
+    body {
+      font-family: -apple-system, 'Segoe UI Light', Ubuntu, Arial, sans-serif;
+    }
+    </style>
+  </head>
+  <body>
+    <h1>Hello Word!</h1>
+    <script>
+      window.onload=function(){
+        setTimeout(() => {
+          ws=new WebSocket("ws://localhost:8080/echo");
+          ws.onmessage=function(evt){console.log(evt.data);};
+          ws.onopen=function(evt){
+            ws.send("Hello");
+          }
+        }, 2000);
+      }
+      window.onclose=function(){
+        ws.close();
+      }
+    </script>
+  </body>
+</html>
