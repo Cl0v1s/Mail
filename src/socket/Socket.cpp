@@ -34,17 +34,19 @@ void Socket::manage(tcp::socket& socket) {
             std::string raw =(boost::beast::buffers_to_string(buffer.data()));
             std::stringstream data;
             data << raw;
-            std::cout << raw << std::endl;
             json received;
             data >> received;
             std::map<std::string, FunctionPtr>::iterator it = this->_bindings->find(received["type"]);
+            std::string result;
             if(it != this->_bindings->end()) {
-                std::string result = it->second(received);
-                std::cout << "Process " << result << " request" << std::endl;
+                std::cout << "Processing " << received["type"] << std::endl;
+                result = it->second(received);
+                std::cout << "Result: " << result << std::endl;
             } else {
                 std::cout << "No handler for " << raw << " request" << std::endl;
+                result = "{ \"type\": \"NotFoundResponse\" }";
             }
-            // ws.write(buffer.data());
+            ws.write(boost::asio::buffer(result));
         }
     }
     catch(boost::system::system_error const& se)
