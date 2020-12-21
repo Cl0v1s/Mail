@@ -3,6 +3,8 @@
 #define WINDOW_WIDTH  600
 #define WINDOW_HEIGHT 400
 
+using namespace ultralight;
+
 MailApp::MailApp() {
   app_ = App::Create();
   window_ = Window::Create(app_->main_monitor(), WINDOW_WIDTH, WINDOW_HEIGHT,
@@ -40,6 +42,17 @@ void MailApp::OnChangeTitle(ultralight::View* caller,
                           const String& title) {
   window_->SetTitle(title.utf8().data());
 }
+
+void MailApp::OnAddConsoleMessage(View* caller,
+                                MessageSource source,
+                                MessageLevel level,
+                                const String& message,
+                                uint32_t line_number,
+                                uint32_t column_number,
+                                const String& source_id) {
+  std::cout << "[Javascript:" << level << "] " << message.utf8().data() <<  " (" << source_id.utf8().data() << ":" << line_number << ")" << std::endl;
+}
+                      
 
 void MailApp::OnFinishLoading(ultralight::View* caller,
                             uint64_t frame_id,

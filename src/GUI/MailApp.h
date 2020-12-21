@@ -1,5 +1,6 @@
 #pragma once
 #include <AppCore/AppCore.h>
+#include <iostream>
 
 using namespace ultralight;
 
@@ -14,6 +15,7 @@ public:
 
   // Start the run loop.
   virtual void Run();
+
 
   // This is called continuously from the app's main loop.
   virtual void OnUpdate() override;
@@ -42,6 +44,15 @@ public:
 
   virtual void OnChangeTitle(ultralight::View* caller,
     const String& title) override;
+
+  virtual void OnAddConsoleMessage(View* caller,
+                                MessageSource source,
+                                MessageLevel level,
+                                const String& message,
+                                uint32_t line_number,
+                                uint32_t column_number,
+                                const String& source_id) override;
+
 
 protected:
   RefPtr<App> app_;
