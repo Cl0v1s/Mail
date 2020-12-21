@@ -9,16 +9,14 @@ namespace websocket = boost::beast::websocket;  // from <boost/beast/websocket.h
 Socket::Socket() {
   this->_address = boost::asio::ip::make_address("0.0.0.0");
   this->_port = 8080;
-  this->_bindings = new std::map<std::string, FunctionPtr>;
 }
 
 Socket::~Socket() {
-    delete this->_bindings;
 }
 
-void Socket::bind(std::string key, FunctionPtr fun) {
-    (*this->_bindings)[key] = fun;
-    std::cout << "Binding " << key << " with " << &fun << "(" << &((*this->_bindings)[key]) << ")" << std::endl;
+void Socket::bind(std::string key, std::function<std::string(nlohmann::json)> fun) {
+    this->_bindings[key] = fun;
+    std::cout << "Binding " << key << " with " << &fun << "(" << &(this->_bindings[key]) << ")" << std::endl;
 }
 
 void Socket::manage(tcp::socket& socket) {
@@ -36,9 +34,9 @@ void Socket::manage(tcp::socket& socket) {
             data << raw;
             json received;
             data >> received;
-            std::map<std::string, FunctionPtr>::iterator it = this->_bindings->find(received["type"]);
+            std::map<std::string, std::function<std::string(nlohmann::json)>>::iterator it = this->_bindings.find(received["type"]);
             std::string result;
-            if(it != this->_bindings->end()) {
+            if(it != this->_bindings.end()) {
                 std::cout << "Processing " << received["type"] << std::endl;
                 result = it->second(received);
                 std::cout << "Result: " << result << std::endl;

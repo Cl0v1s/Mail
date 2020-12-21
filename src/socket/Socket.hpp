@@ -12,15 +12,14 @@
 
 class Socket {
     public:
-        typedef std::string(*FunctionPtr)(nlohmann::json);
         Socket();
         ~Socket();
         std::thread start();
-        void bind(std::string key, FunctionPtr callback);
+        void bind(std::string key, std::function<std::string(nlohmann::json)> callback);
     private:
         void manage(boost::asio::ip::tcp::socket& socket);
 
-        std::map<std::string, FunctionPtr>* _bindings;
+        std::map<std::string, std::function<std::string(nlohmann::json)>> _bindings;
         boost::asio::ip::address _address;
         unsigned short _port;
 };

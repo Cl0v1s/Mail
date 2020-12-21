@@ -1,10 +1,11 @@
 #include "Command.hpp"
 
 Command::Command(Socket& socket) {
-    Socket::FunctionPtr callback = &getMails;
-    socket.bind("getMails", callback);
+    socket.bind("getMails", [this](nlohmann::json payload){
+        return this->getMails(payload);
+    });
 }
 
-std::string getMails(nlohmann::json payload) {
+std::string Command::getMails(nlohmann::json payload) {
     return "ok";
 }

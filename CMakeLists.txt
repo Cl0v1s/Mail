@@ -13,6 +13,9 @@ set(SOURCES
             "src/mail/lib/SMTPClient.h"
             "src/mail/lib/SMTPClient.cpp"
 
+            "src/mail/Mailer.hpp"
+            "src/mail/Mailer.cpp"
+
             "src/socket/Socket.hpp"
             "src/socket/Socket.cpp"
 
