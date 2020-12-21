@@ -5,6 +5,7 @@
 #include <boost/asio/ip/tcp.hpp>
 
 #include "socket/Socket.hpp"
+#include "mail/Mailer.hpp"
 
 class Command {
     public:
@@ -24,4 +25,7 @@ class Command {
 
         // OutBox
         std::string sendMail(nlohmann::json payload);
+
+        Mailer _mailer;
+
 };

@@ -2,6 +2,7 @@
 * @file IMAPClient.cpp
 * @brief implementation of the IMAP client class
 * @author Mohamed Amine Mzoughi <mohamed-amine.mzoughi@laposte.net>
+* Ressources: https://busylog.net/test-imap-with-curl-imap-example/
 */
 
 #include "IMAPClient.h"
@@ -10,8 +11,7 @@ CIMAPClient::CIMAPClient(LogFnCallback oLogger) :
    CMailClient(oLogger),
    m_pstrText(nullptr),
    m_eOperationType(IMAP_NOOP),
-   m_eMailProperty(MailProperty::Flagged),
-   m_eSearchOption(SearchOption::FLAGGED)
+   m_eMailProperty(MailProperty::Flagged)
 {
 
 }
@@ -55,11 +55,12 @@ const bool CIMAPClient::SendFile(const std::string& strPath)
    return Perform();
 }
 
-const bool CIMAPClient::GetString(const std::string& strMsgNumber, std::string& strOutput)
+const bool CIMAPClient::GetString(const std::string& strMsgNumber, std::string& strOutput, const std::string& strFolder)
 {
    m_strMsgNumber = strMsgNumber;
    m_pstrText = &strOutput;
    m_eOperationType = IMAP_RETR_STRING;
+   m_strFolderName = strFolder;
 
    return Perform();
 }
@@ -114,10 +115,11 @@ const bool CIMAPClient::SetMailProperty(const std::string& strMsgNumber, MailPro
    return Perform();
 }
 
-const bool CIMAPClient::Search(std::string& strRes, SearchOption eSearchOption)
+const bool CIMAPClient::Search(std::string& strRes, const std::string& strSearch, const std::string& strFolder)
 {
    m_pstrText = &strRes;
-   m_eSearchOption = eSearchOption;
+   m_eSearchOption = strSearch;
+   m_strFolderName = strFolder;
    m_eOperationType = IMAP_SEARCH;
 
    return Perform();
@@ -128,6 +130,15 @@ const bool CIMAPClient::InfoFolder(std::string& strFolderName, std::string& strI
    m_strFolderName = strFolderName;
    m_pstrText = &strInfo;
    m_eOperationType = IMAP_INFO_FOLDER;
+
+   return Perform();
+}
+
+const bool CIMAPClient::GetHeader(const std::string& strMsgNumber, std::string& strOutput, const std::string& strFolder) {
+   m_strMsgNumber = strMsgNumber;
+   m_pstrText = &strOutput;
+   m_eOperationType = IMAP_RETR_HEADER;
+   m_strFolderName = strFolder;
 
    return Perform();
 }
@@ -277,7 +288,8 @@ const bool CIMAPClient::PrePerform()
 
       case IMAP_RETR_STRING:
          if (!m_strMsgNumber.empty())
-            strRequestURL += "INBOX/;UID=" + m_strMsgNumber;
+            // MAILINDEX INSTEAD OF UID https://github.com/curl/curl/issues/4479
+            strRequestURL += m_strFolderName + ";MAILINDEX=" + m_strMsgNumber;
          else
             return false;
 
@@ -379,26 +391,9 @@ const bool CIMAPClient::PrePerform()
          else
             return false;
 
-         strRequestURL += "INBOX";
+         strRequestURL += m_strFolderName;
 
-         if (m_eSearchOption == SearchOption::ANSWERED)
-            strCmd = "ANSWERED";
-         else if (m_eSearchOption == SearchOption::DELETED)
-            strCmd = "DELETED";
-         else if (m_eSearchOption == SearchOption::DRAFT)
-            strCmd = "DRAFT";
-         else if (m_eSearchOption == SearchOption::FLAGGED)
-            strCmd = "FLAGGED";
-         else if (m_eSearchOption == SearchOption::NEW)
-            strCmd = "NEW";
-         else if (m_eSearchOption == SearchOption::RECENT)
-            strCmd = "RECENT";
-         else if (m_eSearchOption == SearchOption::SEEN)
-            strCmd = "SEEN";
-         else
-         {
-            return false;
-         }
+         strCmd = m_eSearchOption;
 
          /* Set the SEARCH command specifing what we want to search for. Note that
          * this can contain a message sequence set and a number of search criteria
@@ -440,13 +435,29 @@ const bool CIMAPClient::PrePerform()
 
          break;
 
+      case IMAP_RETR_HEADER:
+         if (!m_strMsgNumber.empty())
+            // MAILINDEX INSTEAD OF UID https://github.com/curl/curl/issues/4479
+            strRequestURL += m_strFolderName + ";MAILINDEX=" + m_strMsgNumber + "/;SECTION=HEADER";
+         else
+            return false;
+
+         /* This will retrieve message 'm_strMsgNumber' from the user's mailbox */
+         if (m_pstrText != nullptr)
+         {
+            curl_easy_setopt(m_pCurlSession, CURLOPT_WRITEFUNCTION, &CMailClient::WriteInStringCallback);
+            curl_easy_setopt(m_pCurlSession, CURLOPT_WRITEDATA, m_pstrText);
+         }
+         else
+            return false;
+         break;
+
       default:
          if (m_eSettingsFlags & ENABLE_LOG)
             m_oLog("[IMAPClient][Error] Unknown operation.");
 
          break;
    }
-
    curl_easy_setopt(m_pCurlSession, CURLOPT_URL, strRequestURL.c_str());
 
    return true;

@@ -56,8 +56,8 @@ public:
    const bool SendFile(const std::string& strPath);
 
    /* retrieve e-mail and save its content in strOutput */
-   const bool GetString(const std::string& strMsgNumber, std::string& strOutput);
-
+   const bool GetString(const std::string& strMsgNumber, std::string& strOutput, const std::string& strFolder = "INBOX");
+   
    /* retrieve e-mail and save its content in a file */
    const bool GetFile(const std::string& strMsgNumber, const std::string& strFilePath);
 
@@ -77,10 +77,14 @@ public:
    const bool SetMailProperty(const std::string& strMsgNumber, MailProperty eNewProperty);
    
    /* search for e-mails according to SearchOption */
-   const bool Search(std::string& strRes, SearchOption eSearchOption = SearchOption::NEW);
+   const bool Search(std::string& strRes, const std::string& strSearch, const std::string& strFolder = "INBOX");
       
    /* obtain information about a folder */
    const bool InfoFolder(std::string& strFolderName, std::string& strInfo);
+
+   /* obtain headers of an email */
+   const bool GetHeader(const std::string& strMsgNumber, std::string& strOutput, const std::string& strFolder = "INBOX");
+
 
 protected:
    enum MailOperation
@@ -97,7 +101,9 @@ protected:
       IMAP_COPY,
       IMAP_CREATE,
       IMAP_SEARCH,
-      IMAP_STORE
+      IMAP_STORE,
+
+      IMAP_RETR_HEADER,
    };
 
    const bool PrePerform() override;
@@ -106,7 +112,7 @@ protected:
 
    MailOperation        m_eOperationType;
    MailProperty         m_eMailProperty;
-   SearchOption         m_eSearchOption;
+   std::string          m_eSearchOption;
 
    std::string          m_strFrom;
    std::string          m_strTo;
