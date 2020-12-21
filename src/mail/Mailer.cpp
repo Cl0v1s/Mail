@@ -14,7 +14,20 @@ Mailer::Mailer(std::string smtpAddress, std::string imapAddress, std::string use
 }
 
 std::vector<std::string> Mailer::getFolders() {
+	std::vector<std::string> results;
+	std::string list;
+	this->_imapClient.List(list);
+	// std::cout << list << std::endl;
 
+	std::smatch m;
+  std::regex e ("\\* LIST \\(.*\\) \".\" \"?([^\"\n\r]+)\"?");   // * LIST (\HasChildren) "." INBOX
+
+	while(std::regex_search (list,m,e)) {
+		results.push_back(m[1]);
+    list = m.suffix().str();
+	}
+
+	return results;
 }
 
 
@@ -40,7 +53,7 @@ std::vector<std::string> Mailer::getMails(std::string folder) {
 		std::string id = std::to_string(i+1); // array starts at 1
 		std::string mail;
 		this->_imapClient.GetHeader(id, mail, folder);
-		std::cout << mail << std::endl;
+		// std::cout << mail << std::endl;
 		results.push_back(mail);
 	}
 
