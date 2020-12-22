@@ -18,7 +18,12 @@ std::string Command::getMails(nlohmann::json payload) {
     for(std::size_t i = 0; i < folders.size(); i += 1) {
         if(folders[i] == "Deleted Items" || folders[i] == "Sent Items") continue;
         std::vector<std::string> mails = this->_mailer.getMails(folders[i]);
-        boxes[folders[i]] = mails;
+        std::vector<json> parsed;
+        for(size_t i = 0; i < mails.size(); i += 1) {
+            json mail = this->_mailer.parseMail(mails[i]);
+            parsed.push_back(mail);
+        }
+        boxes[folders[i]] = parsed;
     }
 
     std::cout << boxes << std::endl;
