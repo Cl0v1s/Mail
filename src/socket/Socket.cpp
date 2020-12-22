@@ -8,7 +8,7 @@ namespace websocket = boost::beast::websocket;  // from <boost/beast/websocket.h
 
 Socket::Socket() {
   this->_address = boost::asio::ip::make_address("0.0.0.0");
-  this->_port = 8080;
+  this->_port = 8081;
 }
 
 Socket::~Socket() {
@@ -39,7 +39,7 @@ void Socket::manage(tcp::socket& socket) {
             if(it != this->_bindings.end()) {
                 std::cout << "Processing " << received["type"] << std::endl;
                 result = it->second(received);
-                std::cout << "Result: " << result << std::endl;
+                // std::cout << "Result: " << result << std::endl;
             } else {
                 std::cout << "No handler for " << raw << " request" << std::endl;
                 result = "{ \"type\": \"NotFoundResponse\" }";

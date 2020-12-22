@@ -4,6 +4,11 @@ cmake_minimum_required(VERSION 3.3.2)
 include(cmake/App.cmake)
 
 set(SOURCES 
+            "src/utils/cpp-base64/base64.h"
+            "src/utils/cpp-base64/base64.cpp"
+
+            "src/utils/QuotedPrintable/QuotedPrintable.hpp"
+
             "src/mail/lib/IMAPClient.h"
             "src/mail/lib/IMAPClient.cpp"
             "src/mail/lib/MAILClient.h"
@@ -44,6 +49,7 @@ include_directories("${CURL_ROOT_DIR}/include")
 
 add_app("${SOURCES}")
 # bug in cmake which cause to use apple version of open ssl instead of detected one
+target_link_libraries(${PROJECT_NAME} "${BOOST_ROOT_DIR}/lib/libboost_regex.dylib")
 target_link_libraries(${PROJECT_NAME} "/usr/local/Cellar/openssl@1.1/1.1.1h/lib/libcrypto.dylib")
 target_link_libraries(${PROJECT_NAME} "/usr/local/Cellar/nlohmann-json/3.9.1_1/lib/cmake/nlohmann_json/nlohmann_jsonConfig.cmake")
 target_link_libraries(${PROJECT_NAME} "${CURL_ROOT_DIR}/lib/libcurl.dylib")

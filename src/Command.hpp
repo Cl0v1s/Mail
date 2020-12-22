@@ -19,9 +19,9 @@ class Command {
         std::string getAccounts(nlohmann::json payload);
 
         // Inbox
+        std::string getFolders(nlohmann::json payload);
         std::string getMails(nlohmann::json payload);
-        std::string decryptMail(nlohmann::json payload);
-        std::string deleteMail(nlohmann::json payload);
+        std::string getMail(nlohmann::json payload);
 
         // OutBox
         std::string sendMail(nlohmann::json payload);

@@ -12,10 +12,10 @@
     <script>
       window.onload=function(){
         setTimeout(() => {
-          ws=new WebSocket("ws://localhost:8080/echo");
+          ws=new WebSocket("ws://localhost:8081/echo");
           ws.onmessage=function(evt){console.log(evt.data);};
           ws.onopen=function(evt){
-            ws.send('{"type": "getMails", "content": { "folder": "INBOX" }}');
+            ws.send('{"type": "getMailsRequest", "content": { "folder": "INBOX" }}');
           }
         }, 2000);
       }
