@@ -21,6 +21,9 @@ set(SOURCES
             "src/mail/Mailer.hpp"
             "src/mail/Mailer.cpp"
 
+            "src/PGP/PGP.hpp"
+            "src/PGP/PGP.cpp"
+
             "src/socket/Socket.hpp"
             "src/socket/Socket.cpp"
 
@@ -47,12 +50,15 @@ include_directories("${JSON_ROOT_DIR}/include")
 set(CURL_ROOT_DIR "/usr/local/opt/curl")
 include_directories("${CURL_ROOT_DIR}/include")
 
+include_directories("/usr/local/include/rnp-0")
+
 add_app("${SOURCES}")
 # bug in cmake which cause to use apple version of open ssl instead of detected one
 target_link_libraries(${PROJECT_NAME} "${BOOST_ROOT_DIR}/lib/libboost_regex.dylib")
 target_link_libraries(${PROJECT_NAME} "/usr/local/Cellar/openssl@1.1/1.1.1h/lib/libcrypto.dylib")
 target_link_libraries(${PROJECT_NAME} "/usr/local/Cellar/nlohmann-json/3.9.1_1/lib/cmake/nlohmann_json/nlohmann_jsonConfig.cmake")
 target_link_libraries(${PROJECT_NAME} "${CURL_ROOT_DIR}/lib/libcurl.dylib")
+target_link_libraries(${PROJECT_NAME} "/usr/local/lib/librnp-0.dylib")
 
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_14)

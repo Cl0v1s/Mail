@@ -13,12 +13,14 @@
 #include "./../utils/cpp-base64/base64.h"
 #include "./../utils/QuotedPrintable/QuotedPrintable.hpp"
 
+#include "./../PGP/PGP.hpp"
+
 using namespace nlohmann;
 
 // https://tools.ietf.org/html/rfc2822
 class Mailer {
 	public:
-		Mailer(std::string smtpAddress, std::string imapAddress, std::string username, std::string password);
+		Mailer(PGP& pgp, std::string smtpAddress, std::string imapAddress, std::string username, std::string password);
 
 		std::string decode(std::string encoded);
 
@@ -32,6 +34,7 @@ class Mailer {
 		std::string getBody(std::string folder, std::string id);
 
 	private: 
+		PGP* _pgp;
 		std::string _smtpAddress;
 		std::string _imapAddress;
 		std::string _username;

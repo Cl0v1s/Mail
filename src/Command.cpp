@@ -2,8 +2,8 @@
 
 using namespace nlohmann;
 
-Command::Command(Socket& socket)
-    : _mailer("", std::getenv("SERVER"), std::getenv("ACCOUNT"), std::getenv("PASSWORD"))
+Command::Command(Socket& socket, PGP& pgp)
+    : _mailer(pgp, "", std::getenv("SERVER"), std::getenv("ACCOUNT"), std::getenv("PASSWORD"))
 {
     socket.bind("getMailsRequest", [this](nlohmann::json payload){
         return this->getMails(payload);

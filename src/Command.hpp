@@ -6,10 +6,11 @@
 
 #include "socket/Socket.hpp"
 #include "mail/Mailer.hpp"
+#include "PGP/PGP.hpp"
 
 class Command {
     public:
-        Command(Socket& socket);
+        Command(Socket& socket, PGP& pgp);
 
     private:
         // Parameters
