@@ -77,23 +77,27 @@ json Mailer::parseContentType(std::string raw) {
 	json result;
 
 	std::smatch m;
-	std::regex e = std::regex("([^;\n\r]+)(?:; boundary=\"([^\"]+)\")?");   // * LIST (\HasChildren) "." INBOX
+	std::regex e = std::regex("([^;]+)(?:; ?boundary=\"?([^\"]+)\"?)?");   // * LIST (\HasChildren) "." INBOX
 	if(std::regex_search(raw, m, e)) {
-		result["raw"] = m[1];
-		result["type"] = m[2];
-		result["boundary"] = m[3];
+		result["raw"] = m[0];
+		result["type"] = m[1];
+		result["boundary"] = m[2];
 	}
 
 	return result;
 }
 
-json Mailer::parseMail(std::string raw) {
+json Mailer::parseMail(std::string _raw) {
 	json mail; 
 	std::smatch m;
 
+	// unfolding headers https://tools.ietf.org/html/rfc2822#section-2.2.3
+  std::regex e = std::regex("\r\n ");
+	std::string raw = std::regex_replace(_raw, e, "");
+
 	// MANDATORY FIELDS
 	// FROM
-  std::regex e = std::regex("From: ([^\r\n]+)");   // * LIST (\HasChildren) "." INBOX
+  e = std::regex("From: ([^\r\n]+)");   // * LIST (\HasChildren) "." INBOX
 	if(std::regex_search(raw, m, e) == false) {
 		// TODO: error mandatory field 
 	} else {
@@ -129,6 +133,16 @@ json Mailer::parseMail(std::string raw) {
 	if(std::regex_search(raw, m, e)) {
 		mail["Content-Type"] = this->parseContentType(m[1]);
 	}
+
+	// Others 
+	mail["others"] = json();
+	e = std::regex("([^\r\n:]+): ([^\r\n]+)");   // * LIST (\HasChildren) "." INBOX
+	while(std::regex_search(raw, m, e)) {
+		mail["others"][m[1]] = m[2];
+    raw = m.suffix().str();
+	}
+
+
 
 	return mail;
 }
@@ -180,46 +194,44 @@ std::vector<std::string> Mailer::getMails(std::string folder) {
 	return results;
 }
 
-json Mailer::parseBody(std::string body, json contentType) {
-	json result;
+json Mailer::parseBody(std::string body, json headers) { 
+	json bodypart;
+	bodypart["headers"] = headers;
 
-	result["Content-Type"] = contentType;
-
-	if(contentType["boundary"].size() > 0) {
-		std::vector<json> prts;
-
+	bool isThereBoundary = std::string(headers["Content-Type"]["boundary"]).length() > 0;
+	if(isThereBoundary == false) {
+		bodypart["content"] = body;
+	}	else {
+		bodypart["parts"] = std::vector<json>();
+		// https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
 		// escaping boundary to use in split
 		const boost::regex esc("[.^$|()\\[\\]{}*+?\\\\]");
 		const std::string rep("\\\\&");
-		std::string boundary = boost::regex_replace(std::string(contentType["boundary"]), esc, rep, boost::match_default | boost::format_sed);
-
+		std::string boundary = "--" + boost::regex_replace(std::string(headers["Content-Type"]["boundary"]), esc, rep, boost::match_default | boost::format_sed);
+		// splitting body parts
 		std::vector<std::string> parts;
 		boost::algorithm::split_regex(parts, body, boost::regex(boundary));
-
-		std::smatch m;
+		parts.erase(parts.begin()); // removing empty first part (eventually header)
+		parts.erase(parts.end() - 1); // removing last part "--\r\n"
 		for(size_t i = 0; i < parts.size(); i += 1) {
-			std::regex e = std::regex("Content-Type: ([^\r\n]+)"); 
-			json cont;
-			std::string bod = parts[i];
-			if(std::regex_search(parts[i], m, e)) {
-				cont = this->parseContentType(m[1]);
-				bod = m.suffix().str();
-			}
-			prts.push_back(
-				this->parseBody(bod, cont)
-			);
+			std::vector<std::string> sections;
+			// splitting body header and body content
+			boost::algorithm::split_regex(sections, parts[i], boost::regex("\r\n\r\n"));
+			json part_header = this->parseMail(sections[0]);
+			sections.erase(sections.begin()); // only keep body content
+			std::string part_body = boost::algorithm::join(sections, "\r\n\r\n");
+			bodypart["parts"].push_back(this->parseBody(part_body, part_header));
 		}
-
-		result["parts"] = prts;
-	} else {
-		result["content"] = body;
 	}
-
-	return result;
+	return bodypart;
 }
 
 std::string Mailer::getBody(std::string folder, std::string id) {
 	std::string result;
-	this->_imapClient.GetString(id, result, folder);
+	this->_imapClient.GetString(id, result, folder); // retrieve mail
+	std::vector<std::string> parts;
+	boost::algorithm::split_regex(parts, result, boost::regex("\r\n\r\n")); // split mail headers and body
+	parts.erase(parts.begin()); // only keep mail body
+	result = boost::algorithm::join(parts, "\r\n\r\n"); // convert to string
 	return result;
 }

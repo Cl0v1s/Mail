@@ -9,6 +9,10 @@ Command::Command(Socket& socket)
         return this->getMails(payload);
     });
 
+    socket.bind("getBodyRequest", [this](nlohmann::json payload){
+        return this->getBody(payload);
+    });
+
     socket.bind("getFoldersRequest", [this](nlohmann::json payload){
         return this->getFolders(payload);
     });
@@ -48,9 +52,14 @@ std::string Command::getMails(nlohmann::json payload) {
 
 // payload: { "folder": folder, "id": id, "Content-Type": ct}
 // ct: { "type": type, "boundary": boundary}
-std::string Command::getMail(nlohmann::json payload) {
+std::string Command::getBody(nlohmann::json payload) {
     json result;
 
+    result["type"] = "getBodyResponse";
+    std::string raw = this->_mailer.getBody(payload["content"]["folder"], payload["content"]["id"]);
+    json headers;
+    headers["Content-Type"] = payload["content"]["Content-Type"];
+    result["content"] = this->_mailer.parseBody(raw, headers);
 
     std::stringstream ss;
     ss << result;

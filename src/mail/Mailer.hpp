@@ -7,6 +7,7 @@
 #include <nlohmann/json.hpp>
 #include <boost/regex.hpp>
 #include <boost/algorithm/string/regex.hpp>
+#include <boost/algorithm/string/join.hpp>
 #include "lib/SMTPClient.h"
 #include "lib/IMAPClient.h"
 #include "./../utils/cpp-base64/base64.h"

@@ -21,7 +21,7 @@ class Command {
         // Inbox
         std::string getFolders(nlohmann::json payload);
         std::string getMails(nlohmann::json payload);
-        std::string getMail(nlohmann::json payload);
+        std::string getBody(nlohmann::json payload);
 
         // OutBox
         std::string sendMail(nlohmann::json payload);
