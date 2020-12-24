@@ -63,3 +63,43 @@ bool AccountManager::useAccount(std::string name) {
 
 	return true;
 }
+
+bool AccountManager::addAccount(json account) {
+	this->_accounts.push_back(account);
+	this->save();
+	return true;
+}
+
+bool AccountManager::editAccount(std::string name, json account) {
+	int index = -1;
+	int i = 0;
+	while(index == -1 && i < this->_accounts.size()) {
+		if(this->_accounts[i]["name"] == name) index = i;
+		i += 1;
+	}
+	if(index == -1) {
+		// TODO: error no account with this name
+		std::cout << "Error: no account with this name"; 
+		return false;
+	}
+	this->_accounts[index] = account;
+	this->save();
+	return true;
+}
+
+bool AccountManager::removeAccount(std::string name) {
+	int index = -1;
+	int i = 0;
+	while(index == -1 && i < this->_accounts.size()) {
+		if(this->_accounts[i]["name"] == name) index = i;
+		i += 1;
+	}
+	if(index == -1) {
+		// TODO: error no account with this name
+		std::cout << "Error: no account with this name"; 
+		return false;
+	}
+	this->_accounts.erase(this->_accounts.begin() + index);
+	this->save();
+	return true;
+}

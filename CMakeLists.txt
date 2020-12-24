@@ -4,39 +4,39 @@ cmake_minimum_required(VERSION 3.3.2)
 include(cmake/App.cmake)
 
 set(SOURCES 
-            "src/utils/cpp-base64/base64.h"
-            "src/utils/cpp-base64/base64.cpp"
+            "backend/utils/cpp-base64/base64.h"
+            "backend/utils/cpp-base64/base64.cpp"
 
-            "src/utils/QuotedPrintable/QuotedPrintable.hpp"
+            "backend/utils/QuotedPrintable/QuotedPrintable.hpp"
 
-            "src/mail/lib/IMAPClient.h"
-            "src/mail/lib/IMAPClient.cpp"
-            "src/mail/lib/MAILClient.h"
-            "src/mail/lib/MAILClient.cpp"
-            "src/mail/lib/POPClient.h"
-            "src/mail/lib/POPClient.cpp"
-            "src/mail/lib/SMTPClient.h"
-            "src/mail/lib/SMTPClient.cpp"
+            "backend/mail/lib/IMAPClient.h"
+            "backend/mail/lib/IMAPClient.cpp"
+            "backend/mail/lib/MAILClient.h"
+            "backend/mail/lib/MAILClient.cpp"
+            "backend/mail/lib/POPClient.h"
+            "backend/mail/lib/POPClient.cpp"
+            "backend/mail/lib/SMTPClient.h"
+            "backend/mail/lib/SMTPClient.cpp"
 
-            "src/mail/Mailer.hpp"
-            "src/mail/Mailer.cpp"
+            "backend/mail/Mailer.hpp"
+            "backend/mail/Mailer.cpp"
 
-            "src/PGP/PGP.hpp"
-            "src/PGP/PGP.cpp"
+            "backend/PGP/PGP.hpp"
+            "backend/PGP/PGP.cpp"
 
-            "src/socket/Socket.hpp"
-            "src/socket/Socket.cpp"
+            "backend/socket/Socket.hpp"
+            "backend/socket/Socket.cpp"
 
-            "src/GUI/MailApp.h"
-            "src/GUI/MailApp.cpp"
+            "backend/GUI/MailApp.h"
+            "backend/GUI/MailApp.cpp"
 
-            "src/account/AccountManager.hpp"
-            "src/account/AccountManager.cpp"
+            "backend/account/AccountManager.hpp"
+            "backend/account/AccountManager.cpp"
 
-            "src/Command.hpp"
-            "src/Command.cpp"
+            "backend/Command.hpp"
+            "backend/Command.cpp"
             
-            "src/main.cpp")
+            "backend/main.cpp")
 
 
 set(BOOST_ROOT_DIR "/usr/local/Cellar/boost/1.75.0/")
