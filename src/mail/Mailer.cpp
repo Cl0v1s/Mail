@@ -52,6 +52,21 @@ std::string Mailer::decode(std::string _encoded) {
 	return _encoded;
 }
 
+std::string Mailer::decrypt(std::string encrypted) {
+	// check if string is indeed encrypted
+	if(encrypted.rfind("-----BEGIN PGP MESSAGE-----", 0) != 0) {
+		return encrypted;
+	}
+
+	std::string decrypted;
+	if(this->_pgp->decrypt(encrypted, decrypted) == false) {
+		//TODO: error UNABLE TO DECRYPT
+		return encrypted;
+	}
+
+	return decrypted;
+}
+
 std::vector<json> Mailer::parseAddressList(std::string list) {
 	std::vector<json> results;
 	std::smatch m;
@@ -201,7 +216,7 @@ json Mailer::parseBody(std::string body, json headers) {
 
 	bool isThereBoundary = std::string(headers["Content-Type"]["boundary"]).length() > 0;
 	if(isThereBoundary == false) {
-		bodypart["content"] = body;
+		bodypart["content"] = this->decrypt(body);
 	}	else {
 		bodypart["parts"] = std::vector<json>();
 		// https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html

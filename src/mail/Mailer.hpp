@@ -23,6 +23,7 @@ class Mailer {
 		Mailer(PGP& pgp, std::string smtpAddress, std::string imapAddress, std::string username, std::string password);
 
 		std::string decode(std::string encoded);
+		std::string decrypt(std::string encrypted);
 
 		json parseContentType(std::string raw);
 		std::vector<json> parseAddressList(std::string list);
