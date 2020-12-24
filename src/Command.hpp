@@ -7,10 +7,11 @@
 #include "socket/Socket.hpp"
 #include "mail/Mailer.hpp"
 #include "PGP/PGP.hpp"
+#include "account/AccountManager.hpp"
 
 class Command {
     public:
-        Command(Socket& socket, PGP& pgp);
+        Command(Socket& socket, AccountManager& manager);
 
     private:
         // Parameters
@@ -27,6 +28,6 @@ class Command {
         // OutBox
         std::string sendMail(nlohmann::json payload);
 
-        Mailer _mailer;
+        AccountManager* _manager;
 
 };

@@ -30,6 +30,9 @@ set(SOURCES
             "src/GUI/MailApp.h"
             "src/GUI/MailApp.cpp"
 
+            "src/account/AccountManager.hpp"
+            "src/account/AccountManager.cpp"
+
             "src/Command.hpp"
             "src/Command.cpp"
             

@@ -20,7 +20,9 @@ using namespace nlohmann;
 // https://tools.ietf.org/html/rfc2822
 class Mailer {
 	public:
-		Mailer(PGP& pgp, std::string smtpAddress, std::string imapAddress, std::string username, std::string password);
+		Mailer(PGP& pgp);
+
+		void init(std::string smtpAddress, std::string imapAddress, std::string username, std::string password);
 
 		std::string decode(std::string encoded);
 		std::string decrypt(std::string encrypted);

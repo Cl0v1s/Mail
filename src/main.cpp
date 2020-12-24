@@ -2,17 +2,15 @@
 #include "socket/Socket.hpp"
 #include "PGP/PGP.hpp"
 #include "Command.hpp"
+#include "account/AccountManager.hpp"
 #include <iostream>
 
 using namespace std;
 
 int main() {
-  PGP pgp;
-  pgp.loadKey(getenv("RSA"));
-
+  AccountManager manager;
   Socket socket;
-
-  Command cmd(socket, pgp);
+  Command cmd(socket, manager);
 
   thread data_thread = socket.start();
 

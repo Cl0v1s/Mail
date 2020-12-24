@@ -2,9 +2,10 @@
 
 using namespace nlohmann;
 
-Command::Command(Socket& socket, PGP& pgp)
-    : _mailer(pgp, "", std::getenv("SERVER"), std::getenv("ACCOUNT"), std::getenv("PASSWORD"))
+Command::Command(Socket& socket, AccountManager& manager)
 {
+    this->_manager = &manager;
+
     socket.bind("getMailsRequest", [this](nlohmann::json payload){
         return this->getMails(payload);
     });
@@ -23,7 +24,7 @@ std::string Command::getFolders(nlohmann::json payload) {
     json result;
 
     result["type"] = "getFoldersResponse";
-    std::vector<std::string> folders = this->_mailer.getFolders();
+    std::vector<std::string> folders = this->_manager->_mailer.getFolders();
     result["content"] = folders;
 
     std::stringstream ss;
@@ -38,9 +39,9 @@ std::string Command::getMails(nlohmann::json payload) {
 
     result["type"] = "getMailsResponse";
     result["content"] = json();
-    std::vector<std::string> mails = this->_mailer.getMails(payload["content"]["folder"]);
+    std::vector<std::string> mails = this->_manager->_mailer.getMails(payload["content"]["folder"]);
     for(size_t i = 0; i < mails.size(); i += 1) {
-        json mail = this->_mailer.parseMail(mails[i]);
+        json mail = this->_manager->_mailer.parseMail(mails[i]);
         parsed.push_back(mail);
     }
     result["content"] = parsed;
@@ -56,10 +57,10 @@ std::string Command::getBody(nlohmann::json payload) {
     json result;
 
     result["type"] = "getBodyResponse";
-    std::string raw = this->_mailer.getBody(payload["content"]["folder"], payload["content"]["id"]);
+    std::string raw = this->_manager->_mailer.getBody(payload["content"]["folder"], payload["content"]["id"]);
     json headers;
     headers["Content-Type"] = payload["content"]["Content-Type"];
-    result["content"] = this->_mailer.parseBody(raw, headers);
+    result["content"] = this->_manager->_mailer.parseBody(raw, headers);
 
     std::stringstream ss;
     ss << result;

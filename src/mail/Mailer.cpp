@@ -2,11 +2,15 @@
 
 using namespace nlohmann;
 
-Mailer::Mailer(PGP& pgp, std::string smtpAddress, std::string imapAddress, std::string username, std::string password)
+Mailer::Mailer(PGP& pgp) 
 	: _imapClient([](const std::string& strLogMsg) { std::cout << strLogMsg << std::endl;  }),
 	_smtpClient([](const std::string& strLogMsg) { std::cout << strLogMsg << std::endl;  })
 {
 	this->_pgp = &pgp;
+}
+
+void Mailer::init(std::string smtpAddress, std::string imapAddress, std::string username, std::string password)
+{
 	this->_username = username;
 	this->_password = password;
 	this->_smtpAddress = smtpAddress;
