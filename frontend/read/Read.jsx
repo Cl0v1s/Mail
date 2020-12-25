@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Backend from './../Backend';
 
 import MailHeader from './MailHeader.jsx';
+import Folder from './Folder.jsx';
 
 export default class Read extends Component {
 
@@ -45,14 +46,25 @@ export default class Read extends Component {
 		}
 	};
 
-	static testFolder = "INBOX";
+	static testFolder = {
+		name: "INBOX",
+		unread: 0,
+		mails: [],
+		parent: null,
+	};
 
 
 	constructor(props) {
 		super(props);
 	}
 
+	async componentDidMount() {
+		const folders = await Backend.getFolders();
+		const inbox = folders.filter(f => f.name == "INBOX")[0];
+		console.log(await Backend.getMails(inbox));
+	}
+
 	render = () => (
-		<MailHeader mail={ Read.testMail } />
+		<Folder folder={Read.testFolder} />
 	);
 }

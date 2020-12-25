@@ -12,7 +12,7 @@ export default ({mail, onClick}) => {
 		</span>
 	);
 	return (
-		<div className="mail border border-gray-200 rounded p-3" onClick={() => onClick(mail)}>
+		<div className="component-mail border border-gray-200 rounded p-3" onClick={() => onClick(mail)}>
 			<div className="meta flex-none sm:flex justify-between mb-2">
 				<div className="froms">
 					{ froms }
