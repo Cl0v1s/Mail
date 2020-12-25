@@ -1,55 +1,12 @@
 <html>
   <head>
     <title>Mail</title>
-    <style>
-    body {
-      font-family: -apple-system, 'Segoe UI Light', Ubuntu, Arial, sans-serif;
-    }
-    </style>
   </head>
   <body>
-    <h1>Hello Word!</h1>
-    <script>
-      window.onload=function(){
-        setTimeout(() => {
-          ws=new WebSocket("ws://localhost:8081/echo");
-          ws.onmessage=function(evt){
-            const payload = JSON.parse(evt.data);
+    <div id="mount">
 
-            console.log(payload.type);
-            switch(payload.type) {
-              case "getMailsResponse": {
-                const mail = payload.content[payload.content.length - 1];
-                console.log(JSON.stringify(mail, null, 4));
-                ws.send(JSON.stringify({
-                  "type": "getBodyRequest",
-                  "content": {
-                    "folder": "INBOX",
-                    "id": (payload.content.length).toString(),
-                    "Content-Type": mail["Content-Type"],
-                  }
-                }))
-                break;
-              }
-              case "getBodyResponse": {
-                console.log(JSON.stringify(payload.content, null, 4));
-                break;
-              }
-              default: {
-                break;
-              }
-            }
-
-            //console.log(payload);
-          };
-          ws.onopen=function(evt){
-            ws.send('{"type": "getMailsRequest", "content": { "folder": "INBOX" }}');
-          }
-        }, 2000);
-      }
-      window.onclose=function(){
-        ws.close();
-      }
+    </div>
+    <script src="bundle.js">
     </script>
   </body>
 </html>
