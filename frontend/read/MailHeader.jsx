@@ -6,13 +6,13 @@ export default ({mail, onClick}) => {
 	date = date.toLocaleDateString('fr-FR', { 
 		year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: "2-digit"
 	});
-	const froms = mail.From.map((from) => 
-		<span class="from rounded p-1 text-white bg-purple-500" title={ from.address }>
+	const froms = mail.From.map((from, i) => 
+		<span key={i} className="from rounded p-1 text-white bg-purple-500" title={ from.address }>
 			{ from.name ? from.name : from.address }
 		</span>
 	);
 	return (
-		<div className="component-mail border border-gray-200 rounded p-3" onClick={() => onClick(mail)}>
+		<div className="component-mail border border-gray-200 p-3 cursor-pointer" onClick={() => onClick(mail)}>
 			<div className="meta flex-none sm:flex justify-between mb-2">
 				<div className="froms">
 					{ froms }
