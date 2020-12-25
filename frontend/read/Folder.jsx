@@ -10,7 +10,7 @@ export default ({folder, onClick}) => {
 				{ folder.name }
 			</div>
 			<div className="status rounded bg-gray-300 text-gray-800 p-1">
-				{ folder.unread }/{ folder.mails.length}
+				{ folder.unread }/{ folder.length ? folder.length : "?"}
 			</div>
 		</div>
 	);

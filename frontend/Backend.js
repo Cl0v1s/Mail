@@ -43,13 +43,15 @@ class Backend {
 		}
 
 		return response.content.map((folder) => {
-			const parent = folder.indexOf('.') !== -1 
-			? folder.split('.')[0]
+			const parent = folder.name.indexOf('.') !== -1 
+			? folder.name.split('.')[0]
 			: null;
 
 			return {
-				name: folder,
-				unread: 0,
+				// highestmodseq: folder.highestmodseq,
+				name: folder.name,
+				unread: 0, // TODO: get new email number
+				length: folder.length,
 				mails: [],
 				parent,
 			};
@@ -74,6 +76,7 @@ class Backend {
 			return null;
 		}
 		folder.mails = response.content;
+		folder.length = folder.mails.length;
 		return folder;
 	}
 }

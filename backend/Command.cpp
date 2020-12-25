@@ -24,7 +24,7 @@ std::string Command::getFolders(nlohmann::json payload) {
     json result;
 
     result["type"] = "getFoldersResponse";
-    std::vector<std::string> folders = this->_manager->_mailer.getFolders();
+    std::vector<json> folders = this->_manager->_mailer.getFolders();
     result["content"] = folders;
 
     std::stringstream ss;

@@ -167,8 +167,8 @@ json Mailer::parseMail(std::string _raw) {
 	return mail;
 }
 
-std::vector<std::string> Mailer::getFolders() {
-	std::vector<std::string> results;
+std::vector<json> Mailer::getFolders() {
+	std::vector<json> results;
 	std::string list;
 	this->_imapClient.List(list);
 	// std::cout << list << std::endl;
@@ -177,9 +177,36 @@ std::vector<std::string> Mailer::getFolders() {
   std::regex e ("\\* LIST \\(.*\\) \".\" \"?([^\"\n\r]+)\"?");   // * LIST (\HasChildren) "." INBOX
 
 	while(std::regex_search (list,m,e)) {
-		results.push_back(m[1]);
+		json folder;
+
+		std::string name = m[1].str();
+		folder["name"] = name;
+
+		// std::cout << "FOLDER " << name << std::endl;
+
     list = m.suffix().str();
+		std::string infos;
+		this->_imapClient.InfoFolder(name, infos);
+
+		// std::cout << infos << std::endl;
+		// exists 
+		std::regex ex = std::regex("\\* (.*) EXISTS"); 
+		if(std::regex_search (infos,m,ex) == false) {
+			// TODO: Error no EXISTS field
+			std::cout << "ERROR no exists field" << std::endl;
+		}
+		folder["length"] = m[1].str();
+
+		// modseq
+		ex = std::regex("\\* OK \\[HIGHESTMODSEQ ([^\\]]+)\\]"); 
+		if(std::regex_search (infos,m,ex)) {
+			folder["highestmodseq"] = m[1].str();
+			// std::cout << "MODSEQ" << m[1] << std::endl;
+		}
+
+		results.push_back(folder);
 	}
+
 
 	return results;
 }

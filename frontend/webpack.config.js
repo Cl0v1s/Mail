@@ -1,7 +1,6 @@
 const path = require('path');
 
 module.exports = {
-	watch: true,
   entry: [
 		'babel-polyfill',
 		path.resolve(__dirname, "index.jsx") 
