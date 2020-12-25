@@ -194,8 +194,9 @@ std::vector<json> Mailer::getFolders() {
 		if(std::regex_search (infos,m,ex) == false) {
 			// TODO: Error no EXISTS field
 			std::cout << "ERROR no exists field" << std::endl;
+		} else {
+			folder["length"] = std::stoi(m[1].str());
 		}
-		folder["length"] = m[1].str();
 
 		// modseq
 		ex = std::regex("\\* OK \\[HIGHESTMODSEQ ([^\\]]+)\\]"); 
@@ -212,28 +213,16 @@ std::vector<json> Mailer::getFolders() {
 }
 
 
-std::vector<std::string> Mailer::getMails(std::string folder) {
+std::vector<std::string> Mailer::getMails(json folder) {
 	std::vector<std::string> results;
 
-	std::cout << "Retrieving folder " << folder << std::endl;
-	// retrieving number of emails in folder
-	std::string infos;
-	this->_imapClient.InfoFolder(folder, infos);
+	std::cout << "Retrieving folder " << folder["name"] << std::endl;
 
-	std::smatch m;
-  std::regex e ("\\* (.*) EXISTS");   // * 24 EXISTS
-  if(std::regex_search (infos,m,e) == false) {
-		// TODO: Error
-		results.push_back(infos);
-		return results;
-	}
-
-	// m[1] contains the number of emails
-	int len = std::stoi(m[1]);
+	int len = folder["length"];
 	for(int i = 0; i < len; i += 1) {
 		std::string id = std::to_string(i+1); // array starts at 1
 		std::string mail;
-		this->_imapClient.GetHeader(id, mail, folder);
+		this->_imapClient.GetHeader(id, mail, folder["name"]);
 		// std::cout << mail << std::endl;
 		results.push_back(mail);
 	}

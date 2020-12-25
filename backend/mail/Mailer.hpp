@@ -33,7 +33,7 @@ class Mailer {
 		json parseBody(std::string body, json contentType);
 
 		std::vector<json> getFolders();
-		std::vector<std::string> getMails(std::string folder);
+		std::vector<std::string> getMails(json folder);
 		std::string getBody(std::string folder, std::string id);
 
 	private: 

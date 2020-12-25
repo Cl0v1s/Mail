@@ -66,7 +66,7 @@ class Backend {
 		const request = {
 			type: "getMailsRequest",
 			content: {
-				folder: folder.name,
+				folder,
 			}
 		};
 		const response = await this.ask(request);
@@ -75,7 +75,11 @@ class Backend {
 			console.error(response);
 			return null;
 		}
-		folder.mails = response.content;
+		const mails = response.content.map((mail, index) => {
+			mail["id"] = index;
+			return mail; 
+		})
+		folder.mails = mails;
 		folder.length = folder.mails.length;
 		return folder;
 	}
