@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import Backend from './../Backend';
 
-import MailHeader from './MailHeader.jsx';
+import MailList from './MailList.jsx';
 import Folder from './Folder.jsx';
 
 export default class Read extends Component {
@@ -12,14 +12,34 @@ export default class Read extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
+		this.state = this.load();
+	}
+
+	load = () => {
+		const raw = localStorage.getItem('Read');
+		if(raw) {
+			const data = JSON.parse(raw);
+			return data;
+		}
+		return {
 			folders: null,
 			selectedFolder: null
 		}
 	}
 
+	save = () => {
+		localStorage.setItem('Read', JSON.stringify(this.state));
+	}
+
+	setState = (state, callback = null) => {
+		super.setState(state, () => {
+			this.save();
+			if(callback) callback();
+		});
+	}
+
 	async componentDidMount() {
-		const folders = await Backend.getFolders();
+		const folders = await Backend.getFolders(this.state.folders);
 		// updating folders list
 		this.setState({
 			folders,
@@ -46,16 +66,16 @@ export default class Read extends Component {
 
 	render = () => (
 		<div className="component-read flex">
-			<div className="folders mr-2 max-h-screen overflow-y-scroll">
+			<div className="folders max-h-screen overflow-y-scroll flex flex-col">
 				{
 					this.state.folders
 					&& this.state.folders.map((folder, i) => <Folder key={i} folder={folder} onClick={this.onChangeFolder} />)
 				}
 			</div>
-			<div className="mails flex-auto max-h-screen overflow-y-scroll">
+			<div className="mails px-2 flex-auto h-screen overflow-y-scroll">
 				{
 					this.state.selectedFolder
-					&& this.state.selectedFolder.mails.map((mail, i) => <MailHeader key={i} mail={mail} />)
+					&& <MailList mails={this.state.selectedFolder.mails} />
 				}
 			</div>
 		</div>

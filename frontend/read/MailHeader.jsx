@@ -7,7 +7,7 @@ export default ({mail, onClick}) => {
 		year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: "2-digit"
 	});
 	const froms = mail.From.map((from, i) => 
-		<span key={i} className="from rounded p-1 text-white bg-purple-500" title={ from.address }>
+		<span key={i} className="from rounded-full py-1 px-2 text-purple-900 bg-purple-100" title={ from.address }>
 			{ from.name ? from.name : from.address }
 		</span>
 	);

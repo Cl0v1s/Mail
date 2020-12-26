@@ -31,7 +31,7 @@ class Backend {
 		});
 	}
 
-	getFolders = async () => {
+	getFolders = async (previousFolders) => {
 		const request = {
 			type: "getFoldersRequest",
 		};
@@ -47,12 +47,14 @@ class Backend {
 			? folder.name.split('.')[0]
 			: null;
 
+			const previous = previousFolders && previousFolders.find(f => f.name == folder.name);
+
 			return {
 				// highestmodseq: folder.highestmodseq,
 				name: folder.name,
 				unread: 0, // TODO: get new email number
 				length: folder.length,
-				mails: [],
+				mails: previous ? previous.mails : [],
 				parent,
 			};
 		}).sort((a, b) => {
