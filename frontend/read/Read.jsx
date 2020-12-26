@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Backend from './../Backend';
 
 import MailList from './MailList.jsx';
-import Folder from './Folder.jsx';
+import FolderList from './FolderList.jsx';
 
 export default class Read extends Component {
 
@@ -12,7 +12,11 @@ export default class Read extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = this.load();
+		this.state = {
+			...this.load(),
+			loadingFolders: false,
+			loadingFolderIndex: -1,
+		}
 	}
 
 	load = () => {
@@ -23,59 +27,68 @@ export default class Read extends Component {
 		}
 		return {
 			folders: null,
-			selectedFolder: null
+			selectedFolderIndex: null
 		}
 	}
 
-	save = () => {
-		localStorage.setItem('Read', JSON.stringify(this.state));
+	save = (state) => {
+		if(
+			state["folders"] 
+			|| state["selectedFolderIndex"]
+		) {
+			localStorage.setItem('Read', JSON.stringify({
+				folders: this.state.folders,
+				selectedFolderIndex: this.state.selectedFolderIndex,
+			}));
+		}
 	}
 
 	setState = (state, callback = null) => {
 		super.setState(state, () => {
-			this.save();
+			this.save(state);
 			if(callback) callback();
 		});
 	}
 
 	async componentDidMount() {
+		this.setState({
+			loadingFolders: true,
+		})
 		const folders = await Backend.getFolders(this.state.folders);
 		// updating folders list
 		this.setState({
 			folders,
+			loadingFolders: false,
 		});
 		// retrieving default selected mails
 		const index = folders.findIndex(f => f.name == Read.defaultSelectedFolder);
-		this.onChangeFolder(folders[index]);
+		this.onChangeFolder(index);
 	}
 
-	onChangeFolder = async (folder) => {
-		// updating selectedFolders
-		this.setState({
-			selectedFolder: folder
-		});
+	onChangeFolder = async (index) => {
 		// eventually retrieving new mails
 		const folders = this.state.folders;
-		const index = folders.findIndex(f => f.name == folder.name);
+		// updating selectedFolders
+		this.setState({
+			selectedFolderIndex: index,
+			loadingFolderIndex: index,
+		});
 		folders[index] = await Backend.getMails(folders[index]);
 		this.setState({
 			folders,
-			selectedFolder: folders[index]
+			loadingFolderIndex: -1,
 		});
 	}
 
 	render = () => (
 		<div className="component-read flex">
-			<div className="folders max-h-screen overflow-y-scroll flex flex-col">
-				{
-					this.state.folders
-					&& this.state.folders.map((folder, i) => <Folder key={i} folder={folder} onClick={this.onChangeFolder} />)
-				}
+			<div className="folders">
+				<FolderList folderSelected={this.state.selectedFolderIndex} folderLoadingIndex={this.state.loadingFolderIndex} loading={this.state.loadingFolders} folders={this.state.folders} onChangeFolder={this.onChangeFolder} />
 			</div>
 			<div className="mails px-2 flex-auto h-screen overflow-y-scroll">
 				{
-					this.state.selectedFolder
-					&& <MailList mails={this.state.selectedFolder.mails} />
+					this.state.folders[this.state.selectedFolderIndex]
+					&& <MailList mails={this.state.folders[this.state.selectedFolderIndex].mails} />
 				}
 			</div>
 		</div>
