@@ -76,12 +76,30 @@ class Backend {
 			return null;
 		}
 		const mails = response.content.map((mail, index) => {
-			mail["id"] = index;
+			mail["id"] = index+1;
 			return mail; 
 		})
 		folder.mails = mails;
 		folder.length = folder.mails.length;
 		return folder;
+	}
+
+	getBody = async (folder, mail) => {
+		const request = {
+			type: "getBodyRequest",
+			content: {
+				folder: folder.name,
+				id: mail.id.toString(),
+				"Content-Type": mail["Content-Type"],
+			}
+		};
+		const response = await this.ask(request);
+		if(response.type != "getBodyResponse") {
+			//TODO: error unable to retrieve mail body
+			console.error(response);
+			return null;
+		}
+		console.log(response);
 	}
 }
 
