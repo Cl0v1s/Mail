@@ -24,9 +24,6 @@ set(SOURCES
             "backend/PGP/PGP.hpp"
             "backend/PGP/PGP.cpp"
 
-            "backend/socket/Socket.hpp"
-            "backend/socket/Socket.cpp"
-
             "backend/GUI/MailApp.h"
             "backend/GUI/MailApp.cpp"
 

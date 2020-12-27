@@ -2,29 +2,39 @@
 
 using namespace nlohmann;
 
-Command::Command(Socket& socket, AccountManager& manager)
-{
-    this->_manager = &manager;
+std::map<std::string, std::function<std::string(AccountManager&, nlohmann::json&)>> Command::createBindings() {
+    std::map<std::string, std::function<std::string(AccountManager&, nlohmann::json&)>> bindings;
 
-    socket.bind("getMailsRequest", [this](nlohmann::json payload){
-        return this->getMails(payload);
+    bindings.insert({
+        "getMailsRequest", 
+        [this](AccountManager& manager, nlohmann::json& payload){
+            return this->getMails(manager, payload);
+        }
     });
 
-    socket.bind("getBodyRequest", [this](nlohmann::json payload){
-        return this->getBody(payload);
+    bindings.insert({
+        "getBodyRequest",
+        [this](AccountManager& manager, nlohmann::json& payload){
+            return this->getBody(manager, payload);
+        }
     });
 
-    socket.bind("getFoldersRequest", [this](nlohmann::json payload){
-        return this->getFolders(payload);
+    bindings.insert({
+        "getFoldersRequest",
+        [this](AccountManager& manager, nlohmann::json& payload){
+            return this->getFolders(manager, payload);
+        }
     });
+
+    return bindings;
 }
 
 // payload: empty
-std::string Command::getFolders(nlohmann::json payload) {
+std::string Command::getFolders(AccountManager& manager, nlohmann::json& payload) {
     json result;
 
     result["type"] = "getFoldersResponse";
-    std::vector<json> folders = this->_manager->_mailer.getFolders();
+    std::vector<json> folders = manager._mailer.getFolders();
     result["content"] = folders;
 
     std::stringstream ss;
@@ -33,15 +43,15 @@ std::string Command::getFolders(nlohmann::json payload) {
 }
 
 // payload: { "folder": folder }
-std::string Command::getMails(nlohmann::json payload) {
+std::string Command::getMails(AccountManager& manager, nlohmann::json& payload) {
     json result;
     std::vector<json> parsed;
 
     result["type"] = "getMailsResponse";
     result["content"] = json();
-    std::vector<std::string> mails = this->_manager->_mailer.getMails(payload["content"]["folder"]);
+    std::vector<std::string> mails = manager._mailer.getMails(payload["content"]["folder"]);
     for(size_t i = 0; i < mails.size(); i += 1) {
-        json mail = this->_manager->_mailer.parseMail(mails[i]);
+        json mail = manager._mailer.parseMail(mails[i]);
         parsed.push_back(mail);
     }
     result["content"] = parsed;
@@ -53,14 +63,14 @@ std::string Command::getMails(nlohmann::json payload) {
 
 // payload: { "folder": folder, "id": id, "Content-Type": ct}
 // ct: { "type": type, "boundary": boundary}
-std::string Command::getBody(nlohmann::json payload) {
+std::string Command::getBody(AccountManager& manager, nlohmann::json& payload) {
     json result;
 
     result["type"] = "getBodyResponse";
-    std::string raw = this->_manager->_mailer.getBody(payload["content"]["folder"], payload["content"]["id"]);
+    std::string raw = manager._mailer.getBody(payload["content"]["folder"], payload["content"]["id"]);
     json headers;
     headers["Content-Type"] = payload["content"]["Content-Type"];
-    result["content"] = this->_manager->_mailer.parseBody(raw, headers);
+    result["content"] = manager._mailer.parseBody(raw, headers);
 
     std::stringstream ss;
     ss << result;
