@@ -18,7 +18,7 @@ namespace websocket = boost::beast::websocket;  // from <boost/beast/websocket.h
 void session_start(tcp::socket socket) {
     try
     {
-        std::cout << "Starting new session" << std::endl;
+        std::cout << "Starting new session " << &socket << std::endl;
         // creating bindings
         AccountManager manager;
         Command cmd;
@@ -55,6 +55,8 @@ void session_start(tcp::socket socket) {
         // This indicates that the session was closed
         if(se.code() != websocket::error::closed)
             std::cerr << "Error: " << se.code().message() << std::endl;
+        else 
+          std::cout << "Session " << &socket << " ended." << std::endl;
     }
     catch(std::exception const& e)
     {

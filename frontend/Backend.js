@@ -1,33 +1,52 @@
 class Backend {
 	static INSTANCE = new Backend();
 
+	static ADDR = "ws://localhost:8081/echo";
+
 	constructor() {
-		this.websocket = new WebSocket("ws://localhost:8081/echo");
-		this.callback = null;
+		this.sessions = [
+			this.createSession(),
+		];
+	}
 
-		this.websocket.onmessage=(evt) => {
+	createSession = () => {
+		const session  = {
+			socket: new WebSocket(Backend.ADDR),
+			callback: null,
+			ready: null,
+		};
+
+		session.socket.onmessage = (evt) => {
 			const payload = JSON.parse(evt.data);
-			if(this.callback != null) {
+			if(session.callback != null) {
 				console.log(payload);
-				this.callback(payload);
-				this.callback = null;
+				session.callback(payload);
+				session.callback = null;
 			}
-		}
+		};
 
-		this.ready = new Promise((resolve) => {
-			this.websocket.onopen=(evt) => {
+		session.ready = new Promise((resolve) => {
+			session.socket.onopen = (evt) => {
 				console.log('Socket ready');
 				resolve();
 			};
 		});
+	}
 
+	getAvailableSession = () => {
+		const available = this.sessions.filter(session => session.callback == null);
+		if(this.sessions.length > 0) return available[0];
+		const session = this.createSession();
+		this.sessions.push(session);
+		return session;
 	}
 
 	ask = (request) => {
+		const session = this.getAvailableSession();
 		return new Promise(async (resolve, reject) => {
-			await this.ready;
-			this.callback = resolve;
-			this.websocket.send(JSON.stringify(request));
+			await session.ready;
+			session.callback = resolve;
+			session.socket.send(JSON.stringify(request));
 		});
 	}
 
