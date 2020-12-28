@@ -1,8 +1,6 @@
 class Backend {
 	static INSTANCE = new Backend();
 
-	static ADDR = "ws://localhost:8081/echo";
-
 	constructor() {
 		this.sessions = [
 			this.createSession(),
@@ -11,7 +9,7 @@ class Backend {
 
 	createSession = () => {
 		const session  = {
-			socket: new WebSocket(Backend.ADDR),
+			socket: new WebSocket("ws://localhost:8081/echo"),
 			callback: null,
 			ready: null,
 		};
@@ -31,6 +29,7 @@ class Backend {
 				resolve();
 			};
 		});
+		return session;
 	}
 
 	getAvailableSession = () => {
@@ -52,35 +51,25 @@ class Backend {
 
 	getFolders = async (previousFolders) => {
 		const request = {
-			type: "getFoldersRequest",
+			type: "getFoldersRequest"
 		};
 		const response = await this.ask(request);
-		if(response.type !== "getFoldersResponse") {
-			// TODO: error unable to retrieve folders
+		if(response.type != "getFoldersResponse") {
+			debugger;
 			console.error(response);
-			return null;
 		}
-
-		return response.content.map((folder) => {
-			const parent = folder.name.indexOf('.') !== -1 
-			? folder.name.split('.')[0]
-			: null;
-
-			const previous = previousFolders && previousFolders.find(f => f.name == folder.name);
+		return response.content.map((entry) => {
+			const previous = previousFolders != null && previousFolders.find(a => a.name == entry.name);
+			let isNew = false;
+			if(previous) isNew = previous.highestmodseq != entry.highestmodseq;
 
 			return {
-				// highestmodseq: folder.highestmodseq,
-				name: folder.name,
-				unread: 0, // TODO: get new email number
-				length: folder.length,
-				mails: previous ? previous.mails : [],
-				parent,
-			};
-		}).sort((a, b) => {
-			if(a.name === b.parent) return -1;
-			if(b.name === a.parent) return 1;
-			return 0;
-		})
+				name: entry.name,
+				length: entry.length,
+				highestmodseq: entry.highestmodseq,
+				isNew,
+			}
+		});
 	}
 
 	getMails = async (folder) => {
@@ -91,36 +80,7 @@ class Backend {
 			}
 		};
 		const response = await this.ask(request);
-		if(response.type != "getMailsResponse") {
-			// TODO: error unable to retrieve mails
-			console.error(response);
-			return null;
-		}
-		const mails = response.content.map((mail, index) => {
-			mail["id"] = index+1;
-			return mail; 
-		})
-		folder.mails = mails;
-		folder.length = folder.mails.length;
-		return folder;
-	}
-
-	getBody = async (folder, mail) => {
-		const request = {
-			type: "getBodyRequest",
-			content: {
-				folder: folder.name,
-				id: mail.id.toString(),
-				"Content-Type": mail["Content-Type"],
-			}
-		};
-		const response = await this.ask(request);
-		if(response.type != "getBodyResponse") {
-			//TODO: error unable to retrieve mail body
-			console.error(response);
-			return null;
-		}
-		console.log(response);
+		return [];
 	}
 }
 
