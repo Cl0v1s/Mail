@@ -21,6 +21,7 @@ using namespace nlohmann;
 class Mailer {
 	public:
 		Mailer(PGP& pgp);
+		~Mailer();
 
 		void init(std::string smtpAddress, std::string imapAddress, std::string username, std::string password);
 

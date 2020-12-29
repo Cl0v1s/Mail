@@ -60,7 +60,10 @@ const bool CIMAPClient::GetString(const std::string& strMsgNumber, std::string& 
    m_strMsgNumber = strMsgNumber;
    m_pstrText = &strOutput;
    m_eOperationType = IMAP_RETR_STRING;
-   m_strFolderName = strFolder;
+   // we need to escape folder in url request
+   char* escaped = curl_easy_escape(m_pCurlSession, strFolder.c_str(), strFolder.size());
+   m_strFolderName = std::string(escaped);
+   curl_free(escaped);
 
    return Perform();
 }
@@ -138,8 +141,10 @@ const bool CIMAPClient::GetHeader(const std::string& strMsgNumber, std::string& 
    m_strMsgNumber = strMsgNumber;
    m_pstrText = &strOutput;
    m_eOperationType = IMAP_RETR_HEADER;
-   m_strFolderName = strFolder;
-
+   // we need to escape folder in url request
+   char* escaped = curl_easy_escape(m_pCurlSession, strFolder.c_str(), strFolder.size());
+   m_strFolderName = std::string(escaped);
+   curl_free(escaped);
    return Perform();
 }
 
@@ -335,7 +340,8 @@ const bool CIMAPClient::PrePerform()
             return false;
 
          /* Set the EXAMINE command specifing the mailbox folder */
-         curl_easy_setopt(m_pCurlSession, CURLOPT_CUSTOMREQUEST, ("EXAMINE " + m_strFolderName).c_str());
+         // we need add \" to handle folder names with spaces
+         curl_easy_setopt(m_pCurlSession, CURLOPT_CUSTOMREQUEST, ("EXAMINE \"" + m_strFolderName + "\"").c_str());
 
          break;
 
@@ -436,10 +442,10 @@ const bool CIMAPClient::PrePerform()
          break;
 
       case IMAP_RETR_HEADER:
-         if (!m_strMsgNumber.empty())
+         if (!m_strMsgNumber.empty()) {
             // MAILINDEX INSTEAD OF UID https://github.com/curl/curl/issues/4479
             strRequestURL += m_strFolderName + ";MAILINDEX=" + m_strMsgNumber + "/;SECTION=HEADER";
-         else
+         } else
             return false;
 
          /* This will retrieve message 'm_strMsgNumber' from the user's mailbox */
@@ -459,7 +465,6 @@ const bool CIMAPClient::PrePerform()
          break;
    }
    curl_easy_setopt(m_pCurlSession, CURLOPT_URL, strRequestURL.c_str());
-
    return true;
 }
 

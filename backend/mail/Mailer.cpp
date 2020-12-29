@@ -20,6 +20,10 @@ void Mailer::init(std::string smtpAddress, std::string imapAddress, std::string 
       CMailClient::SettingsFlag::ALL_FLAGS, CMailClient::SslTlsFlag::ENABLE_SSL);
 }
 
+Mailer::~Mailer() {
+	this->_imapClient.CleanupSession();
+}
+
 std::string Mailer::decode(std::string _encoded) {
 	std::function<std::string (std::string)> translate = [](std::string encoded) {
 		std::smatch m;
@@ -194,6 +198,7 @@ std::vector<json> Mailer::getFolders() {
 		if(std::regex_search (infos,m,ex) == false) {
 			// TODO: Error no EXISTS field
 			std::cout << "ERROR no exists field" << std::endl;
+			folder["length"] = 0;
 		} else {
 			folder["length"] = std::stoi(m[1].str());
 		}
