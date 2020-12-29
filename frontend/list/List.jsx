@@ -37,12 +37,14 @@ export default class List extends Component {
 		await this.getFolders();
 		const folders = this.context.model.folders;
 		const selectedFolderIndex = folders.findIndex(f => f.name === List.defautlFolder);
+		// retrieving selected box first
 		if(selectedFolderIndex !== -1) {
 			this.setState({
 				selectedFolderIndex,
 			});
-			this.getMails(selectedFolderIndex);
+			await this.getMails(selectedFolderIndex);
 		}
+		// retrieving others 
 		folders.forEach((folder, i) => {
 			if(i === selectedFolderIndex) return;
 			this.getMails(i);
@@ -129,10 +131,6 @@ export default class List extends Component {
 									<div key={i} onClick={() => this.onSelectFolder(i)}>
 										{ (folder.isNew || news[folder.name]) && "Nouveau" }
 										{ folder.name }
-										{
-											this.state.loadingFolderIndex === i &&
-											<i className="fa fa-circle-notch fa-spin"></i>
-										}
 									</div>
 								))
 							}
@@ -145,6 +143,12 @@ export default class List extends Component {
 								folder != null &&
 								<h3>{ folder.name }</h3>
 							}
+						</div>
+						<div>
+						{
+							this.state.loadingFolderIndex === this.state.selectedFolderIndex &&
+							<i className="fa fa-circle-notch fa-spin"></i>
+						}
 						</div>
 						<div>
 							{

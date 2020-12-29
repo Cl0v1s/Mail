@@ -10,7 +10,7 @@ class Backend {
 	}
 
 	createSession = () => {
-		console.log('New session');
+		console.log('Creating session...');
 		const session  = {
 			socket: new WebSocket("ws://localhost:8081/echo"),
 			callback: null,
@@ -23,6 +23,12 @@ class Backend {
 				console.log(payload);
 				session.callback(payload);
 				session.callback = null;
+				if(this.sessions.length > 1) {
+					session.socket.close();
+					const index = this.sessions.findIndex(s => s === session);
+					this.sessions.splice(index, 1);
+					console.log('Removed session '+index);
+				}
 			}
 		};
 
@@ -36,8 +42,10 @@ class Backend {
 	}
 
 	getAvailableSession = () => {
-		const available = this.sessions.filter(session => session.callback == null);
-		if(available > 0) return available[0];
+		const available = this.sessions.filter(session => {
+			return session.callback == null
+		});
+		if(available.length > 0) return available[0];
 		const session = this.createSession();
 		this.sessions.push(session);
 		return session;
@@ -46,8 +54,8 @@ class Backend {
 	ask = (request) => {
 		const session = this.getAvailableSession();
 		return new Promise(async (resolve, reject) => {
-			await session.ready;
 			session.callback = resolve;
+			await session.ready;
 			session.socket.send(JSON.stringify(request));
 		});
 	}
