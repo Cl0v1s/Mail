@@ -1,3 +1,5 @@
+import md5 from 'blueimp-md5';
+
 class Backend {
 	static INSTANCE = new Backend();
 
@@ -8,6 +10,7 @@ class Backend {
 	}
 
 	createSession = () => {
+		console.log('New session');
 		const session  = {
 			socket: new WebSocket("ws://localhost:8081/echo"),
 			callback: null,
@@ -34,7 +37,7 @@ class Backend {
 
 	getAvailableSession = () => {
 		const available = this.sessions.filter(session => session.callback == null);
-		if(this.sessions.length > 0) return available[0];
+		if(available > 0) return available[0];
 		const session = this.createSession();
 		this.sessions.push(session);
 		return session;
@@ -72,7 +75,7 @@ class Backend {
 		});
 	}
 
-	getMails = async (folder) => {
+	getMails = async (folder, previousMails) => {
 		const request = {
 			type: "getMailsRequest",
 			content: {
@@ -80,7 +83,18 @@ class Backend {
 			}
 		};
 		const response = await this.ask(request);
-		return [];
+		return response.content.map((entry) => {
+			const hash = md5(
+				entry.Date + entry.Subject + JSON.stringify(entry.From) + JSON.stringify(entry.To)
+			);
+			const previous = previousMails != null && previousMails.find(a => a.hash === hash);
+
+			return {
+				...entry,
+				isNew: previous == null,
+				hash,
+			}
+		})
 	}
 }
 
