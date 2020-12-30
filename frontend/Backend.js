@@ -94,7 +94,7 @@ class Backend {
 			}
 		};
 		const response = await this.ask(request);
-		return response.content.map((entry) => {
+		return response.content.map((entry, index) => {
 			const hash = md5(
 				entry.Date + entry.Subject + JSON.stringify(entry.From) + JSON.stringify(entry.To)
 			);
@@ -102,11 +102,25 @@ class Backend {
 
 			return {
 				...entry,
+				id: index+1,
 				isNew: previous == null,
 				hash,
 				body: null,
 			}
 		})
+	};
+
+	getBody = async (folder, mail) => {
+		const request = {
+			type: "getBodyRequest",
+			content: {
+				folder: folder.name,
+				id: mail.id.toString(),
+				"Content-Type": mail["Content-Type"],
+			}
+		}
+		const response = await this.ask(request);
+		return response.content;
 	}
 }
 

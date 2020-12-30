@@ -106,9 +106,9 @@ export default class List extends Component {
 	}
 
 	onClickMail = (mail) => {
-		/*this.context.updateModel({
+		this.context.updateModel({
 			currentConversation: [mail]
-		})*/
+		});
 	}
 
 	/**
@@ -126,9 +126,10 @@ export default class List extends Component {
 	render() {
 		const selectedFolderIndex = this.context.model.currentFolderIndex;
 		if(selectedFolderIndex == null) return null;
+		const folders = this.context.model.folders;
+		if(folders.length == 0) return null;
 
 		const news = this.getHasNewMails();
-		const folders = this.context.model.folders;
 		const folder = folders[selectedFolderIndex];
 		const mails = this.context.model.mails[folder.name];
 		return (
