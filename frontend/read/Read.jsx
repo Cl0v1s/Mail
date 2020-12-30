@@ -1,106 +1,45 @@
-import React, { Component} from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import ModelContext from '../Model';
 
-import Backend from '../Backend';
-
-import ModelContext from './../Model';
+import Mail from './Mail.jsx';
 
 export default class Read extends Component {
 	static contextType = ModelContext;
 
-	static propTypes = {
-		'mail': PropTypes.object.isRequired,
-	}
-
-	static defaultAlternative = "text/plain";
-
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			alternative: Read.defaultAlternative,
-			alternatives: null,
-		}
+		this.currentFolder = null;
+		this.currentMail = null;
+		this.conversation = null;
 	}
 
 	async componentDidMount() {
-		const mail = await this.prepareBody();
-		this.prepareAlternatives(mail);
+		this.currentFolder = this.context.model.folders[this.context.model.currentFolderIndex];
+		this.conversation = this.context.model.currentConversation;
+		this.currentMail = await this.getBody(this.currentFolder, this.conversation[0]);
 	}
 
-	prepareBody = () => new Promise(async (resolve) => {
-		const folder = this.context.model.folders[this.context.model.currentFolderIndex];
-		let mail = this.context.model.currentConversation[0];
+	getBody = async (folder, mail) => {
 		if(mail.body != null) {
-			resolve(mail);
-			return;
+			return mail;
 		};
 		const body = await Backend.getBody(folder, mail);
 		mail = {
 			...mail,
 			body: body,
 		};
-		this.context.updateModel({
-			currentConversation: [mail],
-		}, () => resolve(mail));
-	}); 
-
-	prepareAlternatives = (mail) => new Promise((resolve) => {
-		if(mail.body.headers["Content-Type"].type != "multipart/alternative") {
-			resolve();
-			return;
-		};
-		const alternatives = mail.body.parts.map((part) => part.headers["Content-Type"].type);
-		this.setState({
-			alternatives,
-		}, resolve);
-	});
-
-	renderBody = (part) => {
-		switch(part.headers["Content-Type"].type) {
-			case "multipart/alternative": {
-				const alternative = this.state.alternative;
-				let selected = part.parts.find((p) => p.headers["Content-Type"].type == alternative);
-				if(selected == null) selected = part.parts[0];
-				return this.renderBody(selected);
-			}
-			case "text/plain": {
-				return <pre>{part.content}</pre>
-			}
-			case "text/html": {
-				//TODO: to sanitize 
-				return <div dangerouslySetInnerHTML={{__html: part.content}}></div>
-			}
-			default: {
-				alert('Unsupported MIME '+part.headers["Content-Type"].type);
-				return part.content;
-			}
-		}
-	}
-
-	onSwitchAlternative = (alt) => this.setState({ alternative: alt }); 
+		return mail;
+	}; 
 
 	render() {
-		const mail = this.context.model.currentConversation[0];
+		const conversation = this.context.model.currentConversation;
 		return (
 			<div className="component-read">
-				<div>
-					{ mail.Subject }
-				</div>
-				<div>
-					{ mail.Date }
-				</div>
-				<div>
-					{ 
-						this.state.alternatives &&
-						this.state.alternatives.map((alt) => 
-							<button onClick={() => this.onSwitchAlternative(alt)}>{alt}</button>
-						)
-					}
-				</div>
-				<div>
-					{ mail.body == null ? <i className="fa fa-circle-notch fa-spin"></i> : this.renderBody(mail.body) }
-				</div>
+				{
+					conversation &&
+					conversation.map((mail, i) => <Mail key={i} mail={mail} />)
+				}
 			</div>
 		)
 	}
