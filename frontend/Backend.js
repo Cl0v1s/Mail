@@ -42,10 +42,13 @@ class Backend {
 	}
 
 	getAvailableSession = () => {
-		const available = this.sessions.filter(session => {
+		const available = this.sessions.findIndex(session => {
 			return session.callback == null
 		});
-		if(available.length > 0) return available[0];
+		if(available >= 0) {
+			console.log('Reusing session '+available);
+			return this.sessions[available];
+		}
 		const session = this.createSession();
 		this.sessions.push(session);
 		return session;
@@ -101,6 +104,7 @@ class Backend {
 				...entry,
 				isNew: previous == null,
 				hash,
+				body: null,
 			}
 		})
 	}

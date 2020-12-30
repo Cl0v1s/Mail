@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import ModelContext, { Model } from './Model';
 
 import List from './list/List.jsx';
+import Read from './read/Read.jsx';
 
 export default class App extends Component {
 	constructor(props) {
@@ -13,20 +14,27 @@ export default class App extends Component {
 		}
 	}
 
-	updateModel = (props) => {
+	updateModel = (props, callback = null) => {
 		this.setState(prevState => ({
 			model: {
 				... prevState.model,
 				... props
 			}
-		}), () => Model.save(this.state.model));
+		}), () => {
+			Model.save(this.state.model);
+			if(callback) callback();
+		});
 	}
 
 	render() {
 		return (
 			<div className="component-app">
 				<ModelContext.Provider value={this.state}>
-					<List />
+					{
+						this.state.model.currentConversation.length == 0
+						? <List />
+						: <Read />
+					}
 				</ModelContext.Provider>
 			</div>
 		);

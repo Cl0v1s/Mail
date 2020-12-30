@@ -5,6 +5,7 @@ export class Model {
 	constructor() {
 		this.folders = [];
 		this.mails = {};
+		this.currentFolderIndex = null;
 		this.currentConversation = [];
 		this.currentComposition = "";
 	}

@@ -15,40 +15,51 @@ export default class List extends Component {
 		this.state = {
 			loadingFolders: false,
 			loadingFolderIndex: null,
-			selectedFolderIndex: null,
 		}
 	}
 
 	async componentDidMount() {
-		this.prepareFromCache();
+		await this.prepareFromCache();
 		this.prepareFromRemote();
 	}
 
 	prepareFromCache = () => {
-		const selectedFolderIndex = this.context.model.folders.findIndex(f => f.name === List.defautlFolder);
-		if(selectedFolderIndex !== -1) {
-			this.setState({
-				selectedFolderIndex,
-			})
-		}
+		// if currentFolderIndex isnt saved, we need to generate a new default
+		if(this.context.model.currentFolderIndex != null) return; 
+		return new Promise((resolve) => this.context.updateModel({
+			currentFolderIndex: Math.max(
+				this.context.model.folders.findIndex(f => f.name === List.defautlFolder),
+				0
+			)
+		}, resolve));
 	}
 
 	prepareFromRemote = async () => {
-		await this.getFolders();
-		const folders = this.context.model.folders;
-		const selectedFolderIndex = folders.findIndex(f => f.name === List.defautlFolder);
-		// retrieving selected box first
-		if(selectedFolderIndex !== -1) {
-			this.setState({
-				selectedFolderIndex,
-			});
-			await this.getMails(selectedFolderIndex);
+		let selectedFolderIndex = this.context.model.currentFolderIndex;
+
+		// getting folders and compare with saved data
+		const previousFolders = this.context.model.folders.concat([]);
+		const newFolders = await this.getFolders();
+		const prevHash = previousFolders.map(f => f.name).join('');
+		const newHash = newFolders.map(f => f.name).join('');
+		// if new array and old array arent the same, selectedFolderIndex become default
+		if(prevHash != newHash) {
+			selectedFolderIndex = Math.max(
+				this.context.model.folders.findIndex(f => f.name === List.defautlFolder),
+				0
+			);
 		}
+		// retrieving selected box first
+		await this.getMails(selectedFolderIndex);
 		// retrieving others 
-		folders.forEach((folder, i) => {
+		newFolders.forEach((folder, i) => {
 			if(i === selectedFolderIndex) return;
 			this.getMails(i);
 		});
+		// saving new selectedFolderIndex
+		this.context.updateModel({
+			currentFolderIndex: selectedFolderIndex
+		})
 	}
 
 	getFolders = async () => {
@@ -62,6 +73,7 @@ export default class List extends Component {
 		this.setState({
 			loadingFolders: false,
 		})
+		return folders;
 	}
 
 	getMails = async (folderIndex) => {
@@ -83,6 +95,7 @@ export default class List extends Component {
 		this.setState({
 			loadingFolderIndex: null,
 		})
+		return mails;
 	}
 
 	onSelectFolder = (index) => {
@@ -90,6 +103,12 @@ export default class List extends Component {
 			selectedFolderIndex: index,
 		});
 		this.getMails(index);
+	}
+
+	onClickMail = (mail) => {
+		/*this.context.updateModel({
+			currentConversation: [mail]
+		})*/
 	}
 
 	/**
@@ -105,11 +124,13 @@ export default class List extends Component {
 
 
 	render() {
-		const news = this.getHasNewMails();
+		const selectedFolderIndex = this.context.model.currentFolderIndex;
+		if(selectedFolderIndex == null) return null;
 
+		const news = this.getHasNewMails();
 		const folders = this.context.model.folders;
-		const folder = this.state.selectedFolderIndex != null && this.context.model.folders[this.state.selectedFolderIndex];
-		const mails = folder != null && this.context.model.mails[folder.name];
+		const folder = folders[selectedFolderIndex];
+		const mails = this.context.model.mails[folder.name];
 		return (
 			<div className="component-list">
 
@@ -154,7 +175,7 @@ export default class List extends Component {
 							{
 								mails != null &&
 								mails.map((mail, i) => (
-									<div key={i}>
+									<div key={i} onClick={() => this.onClickMail(mail)}>
 										{
 											mail.From.map((f, fi) => (
 												<span key={fi}>
