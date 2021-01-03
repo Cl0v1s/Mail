@@ -121,6 +121,19 @@ class Backend {
 		}
 		const response = await this.ask(request);
 		return response.content;
+	};
+
+	searchMails = async () => {
+		const request = {
+			type: "searchMailsRequest",
+			content: {
+				operation: "SUBJECT",
+				string: "kjjdkljldejazea",
+				folder: "INBOX"
+			}
+		};
+		const response = await this.ask(request);
+		return response.content;
 	}
 }
 

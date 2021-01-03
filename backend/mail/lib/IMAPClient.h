@@ -31,7 +31,8 @@ public:
       FLAGGED,
       NEW,
       RECENT,
-      SEEN
+      SEEN,
+      SUBJECT,
    };
 
 
@@ -77,7 +78,7 @@ public:
    const bool SetMailProperty(const std::string& strMsgNumber, MailProperty eNewProperty);
    
    /* search for e-mails according to SearchOption */
-   const bool Search(std::string& strRes, const std::string& strSearch, const std::string& strFolder = "INBOX");
+   const bool Search(std::string& strRes, SearchOption eSearchOption, const std::string& strSearchString = "", const std::string& strFolder = "INBOX");
       
    /* obtain information about a folder */
    const bool InfoFolder(std::string& strFolderName, std::string& strInfo);
@@ -112,8 +113,9 @@ protected:
 
    MailOperation        m_eOperationType;
    MailProperty         m_eMailProperty;
-   std::string          m_eSearchOption;
+   SearchOption          m_eSearchOption;
 
+   std::string          m_strSearchString;
    std::string          m_strFrom;
    std::string          m_strTo;
    std::string          m_strCc;

@@ -17,6 +17,8 @@ export default class Read extends Component {
 	async componentDidMount() {
 		this.currentFolder = this.context.model.folders[this.context.model.currentFolderIndex];
 		this.conversation = this.context.model.currentConversation;
+
+		Backend.searchMails();
 	}
 
 	onBackList = () => {

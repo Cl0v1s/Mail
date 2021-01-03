@@ -3,6 +3,9 @@
 * @brief implementation of the IMAP client class
 * @author Mohamed Amine Mzoughi <mohamed-amine.mzoughi@laposte.net>
 * Ressources: https://busylog.net/test-imap-with-curl-imap-example/
+
+* Possible command
+* https://tools.ietf.org/html/rfc3501
 */
 
 #include "IMAPClient.h"
@@ -118,10 +121,11 @@ const bool CIMAPClient::SetMailProperty(const std::string& strMsgNumber, MailPro
    return Perform();
 }
 
-const bool CIMAPClient::Search(std::string& strRes, const std::string& strSearch, const std::string& strFolder)
+const bool CIMAPClient::Search(std::string& strRes, SearchOption eSearchOption, const std::string& strSearchString, const std::string& strFolder)
 {
    m_pstrText = &strRes;
-   m_eSearchOption = strSearch;
+   m_eSearchOption = eSearchOption;
+   m_strSearchString = strSearchString;
    m_strFolderName = strFolder;
    m_eOperationType = IMAP_SEARCH;
 
@@ -399,7 +403,26 @@ const bool CIMAPClient::PrePerform()
 
          strRequestURL += m_strFolderName;
 
-         strCmd = m_eSearchOption;
+         if (m_eSearchOption == SearchOption::ANSWERED)
+            strCmd = "ANSWERED";
+         else if (m_eSearchOption == SearchOption::DELETED)
+            strCmd = "DELETED";
+         else if (m_eSearchOption == SearchOption::DRAFT)
+            strCmd = "DRAFT";
+         else if (m_eSearchOption == SearchOption::FLAGGED)
+            strCmd = "FLAGGED";
+         else if (m_eSearchOption == SearchOption::NEW)
+            strCmd = "NEW";
+         else if (m_eSearchOption == SearchOption::RECENT)
+            strCmd = "RECENT";
+         else if (m_eSearchOption == SearchOption::SEEN)
+            strCmd = "SEEN";
+         else if(m_eSearchOption == SearchOption::SUBJECT && m_strSearchString != "")
+            strCmd = "SUBJECT \"" + m_strSearchString + "\"";
+         else
+         {
+            return false;
+         }
 
          /* Set the SEARCH command specifing what we want to search for. Note that
          * this can contain a message sequence set and a number of search criteria

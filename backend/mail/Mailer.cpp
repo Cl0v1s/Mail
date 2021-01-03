@@ -276,3 +276,36 @@ std::string Mailer::getBody(std::string folder, std::string id) {
 	result = boost::algorithm::join(parts, "\r\n\r\n"); // convert to string
 	return result;
 }
+
+std::vector<std::string> Mailer::searchMails(std::string operation, std::string searchString, std::string folderName) {
+	std::vector<std::string> results;
+	CIMAPClient::SearchOption op;
+	if(operation == "SUBJECT") {
+			op = CIMAPClient::SearchOption::SUBJECT;
+	} else {
+		//TODO: ERROR 
+		std::cout << "ERROR: unsupported operation" << std::endl;
+		return results;
+	}
+
+	std::string raw_ids;
+	this->_imapClient.Search(raw_ids, op, searchString, folderName);
+	if(raw_ids == "* SEARCH\r\n") return results;
+	// remove "* SEARCH "
+	raw_ids.erase(0, 9);
+	// remove \r\n
+	raw_ids.erase(raw_ids.size() - 2, 2);
+
+	std::vector<std::string> ids;
+	char* c_raw_ids = &raw_ids[0];
+  char* token = std::strtok(c_raw_ids, " ");
+	while(token != NULL) {
+		std::string mail;
+		this->_imapClient.GetHeader(std::string(token), mail, folderName);
+		results.push_back(mail);
+		token = std::strtok(NULL, " ");
+	}
+
+	return results;
+}
+

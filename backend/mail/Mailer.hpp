@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <string.h>
 #include <iostream>
 #include <regex>
 #include <nlohmann/json.hpp>
@@ -36,6 +37,7 @@ class Mailer {
 		std::vector<json> getFolders();
 		std::vector<std::string> getMails(json folder);
 		std::string getBody(std::string folder, std::string id);
+		std::vector<std::string> searchMails(std::string operation, std::string searchString = "", std::string folderName = "");
 
 	private: 
 		PGP* _pgp;

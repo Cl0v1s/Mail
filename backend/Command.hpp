@@ -23,6 +23,7 @@ class Command {
         std::string getFolders(AccountManager& manager, nlohmann::json& payload);
         std::string getMails(AccountManager& manager, nlohmann::json& payload);
         std::string getBody(AccountManager& manager, nlohmann::json& payload);
+        std::string searchMails(AccountManager& manager, nlohmann::json& payload);
 
         // OutBox
         std::string sendMail(AccountManager& manager, nlohmann::json& payload);

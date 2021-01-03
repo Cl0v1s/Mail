@@ -26,6 +26,13 @@ std::map<std::string, std::function<std::string(AccountManager&, nlohmann::json&
         }
     });
 
+    bindings.insert({
+        "searchMailsRequest",
+        [this](AccountManager& manager, nlohmann::json& payload){
+            return this->searchMails(manager, payload);
+        }  
+    });
+
     return bindings;
 }
 
@@ -71,6 +78,17 @@ std::string Command::getBody(AccountManager& manager, nlohmann::json& payload) {
     json headers;
     headers["Content-Type"] = payload["content"]["Content-Type"];
     result["content"] = manager._mailer.parseBody(raw, headers);
+
+    std::stringstream ss;
+    ss << result;
+    return ss.str();
+}
+
+// payload: { "operation": string, "string": string, "folder": string}
+std::string Command::searchMails(AccountManager& manager, nlohmann::json& payload) {
+    json result;
+
+    manager._mailer.searchMails(payload["content"]["operation"], payload["content"]["string"], payload["content"]["folder"]);
 
     std::stringstream ss;
     ss << result;
