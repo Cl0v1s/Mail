@@ -10,6 +10,7 @@ export default class Mail extends Component {
 
 	static propTypes = {
 		mail: PropTypes.object.isRequired,
+		folder: PropTypes.object.isRequired,
 	}
 
 	static defaultAlternative = "text/plain";
@@ -20,23 +21,38 @@ export default class Mail extends Component {
 		this.state = {
 			alternative: Mail.defaultAlternative,
 			alternatives: null,
+			body: null,
 		}
 	}
 
 	async componentDidMount() {
-		this.prepareAlternatives(this.props.mail);
+		const body = await this.getBody();
+		const alternatives = this.prepareAlternatives(body);
+
+		this.setState({
+			body,
+			alternatives,
+		})
 	}
 
-	prepareAlternatives = (mail) => new Promise((resolve) => {
-		if(mail.body.headers["Content-Type"].type != "multipart/alternative") {
-			resolve();
-			return;
+	getBody = async () => {
+		const mail = this.props.mail;
+		const folder = this.props.folder;
+
+		if(mail.body != null) {
+			return mail.body;
 		};
-		const alternatives = mail.body.parts.map((part) => part.headers["Content-Type"].type);
-		this.setState({
-			alternatives,
-		}, resolve);
-	});
+		const body = await Backend.getBody(folder, mail);
+		return body;
+	};
+
+	prepareAlternatives = (body) => {
+		if(body.headers["Content-Type"].type != "multipart/alternative") {
+			return null;
+		};
+		const alternatives = body.parts.map((part) => part.headers["Content-Type"].type);
+		return alternatives;
+	};
 
 	renderBody = (part) => {
 		switch(part.headers["Content-Type"].type) {
@@ -75,13 +91,13 @@ export default class Mail extends Component {
 				<div>
 					{ 
 						this.state.alternatives &&
-						this.state.alternatives.map((alt) => 
-							<button onClick={() => this.onSwitchAlternative(alt)}>{alt}</button>
+						this.state.alternatives.map((alt, i) => 
+							<button key={i} onClick={() => this.onSwitchAlternative(alt)}>{alt}</button>
 						)
 					}
 				</div>
 				<div>
-					{ mail.body == null ? <i className="fa fa-circle-notch fa-spin"></i> : this.renderBody(mail.body) }
+					{ this.state.body == null ? <i className="fa fa-circle-notch fa-spin"></i> : this.renderBody(this.state.body) }
 				</div>
 			</div>
 		)
