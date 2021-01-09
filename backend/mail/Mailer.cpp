@@ -101,11 +101,12 @@ json Mailer::parseContentType(std::string raw) {
 	json result;
 
 	std::smatch m;
-	std::regex e = std::regex("([^;]+)(?:; ?boundary=\"?([^\"]+)\"?)?");   // * LIST (\HasChildren) "." INBOX
+	std::regex e = std::regex("([^;]+)(?:; ?boundary=\"?([^\"]+)\"?)?(?:; ?charset=\"?([^\"]+)\"?)?");   // * LIST (\HasChildren) "." INBOX
 	if(std::regex_search(raw, m, e)) {
 		result["raw"] = m[0];
 		result["type"] = m[1];
 		result["boundary"] = m[2];
+		result["charset"] = m[3];
 	}
 
 	return result;
@@ -116,7 +117,7 @@ json Mailer::parseMail(std::string _raw) {
 	std::smatch m;
 
 	// unfolding headers https://tools.ietf.org/html/rfc2822#section-2.2.3
-  std::regex e = std::regex("\r\n ");
+  std::regex e = std::regex("\r\n[ \t]");
 	std::string raw = std::regex_replace(_raw, e, "");
 
 	// MANDATORY FIELDS
@@ -165,8 +166,6 @@ json Mailer::parseMail(std::string _raw) {
 		mail["others"][m[1]] = m[2];
     raw = m.suffix().str();
 	}
-
-
 
 	return mail;
 }
