@@ -51,7 +51,7 @@ static bool example_pass_provider(
 		return false;
 }
 
-bool PGP::decrypt(string input, string& output) {
+bool PGP::decrypt(string input, vector<uint8_t>& output) {
 	// setting password dialog provider
 	rnp_ffi_set_pass_provider(this->_ffi, example_pass_provider, NULL);
 
@@ -71,6 +71,6 @@ bool PGP::decrypt(string input, string& output) {
 	uint8_t* buf;
 	size_t len;
 	rnp_output_memory_get_buf(this->_output, &buf, &len, false);
-	output = std::string((char*)buf);
+	output = vector<uint8_t>(buf, buf+len);
 	return true;
 }

@@ -26,8 +26,9 @@ class Mailer {
 
 		void init(std::string smtpAddress, std::string imapAddress, std::string username, std::string password);
 
+		void convert(std::vector<uint8_t>& ascii);
 		std::string decode(std::string encoded);
-		std::string decrypt(std::string encrypted);
+		std::vector<uint8_t> decrypt(std::string encrypted);
 
 		json parseContentType(std::string raw);
 		std::vector<json> parseAddressList(std::string list);

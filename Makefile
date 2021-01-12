@@ -2,6 +2,7 @@ build-front:
 	cd frontend && npx webpack
 
 build-back: 
+	mkdir -p build
 	rm -rf build/MyApp.app
 	cd build && cmake .. && cmake --build . --config Release
 

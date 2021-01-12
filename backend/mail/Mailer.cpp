@@ -24,6 +24,26 @@ Mailer::~Mailer() {
 	this->_imapClient.CleanupSession();
 }
 
+void Mailer::convert(std::vector<uint8_t>& ascii) {
+	std::vector<uint8_t> converted;
+	
+	for(int i = 0; i < ascii.size(); i += 1) {
+		uint8_t c = ascii[i];
+		if(c < 128)
+		{
+			converted.push_back(c);
+		}
+		else
+		{
+			converted.push_back((c >> 6) | 0xC0);
+			converted.push_back((c & 0x3F) | 0x80);
+		}
+
+	}
+	
+	ascii = converted;
+}
+
 std::string Mailer::decode(std::string _encoded) {
 	std::function<std::string (std::string)> translate = [](std::string encoded) {
 		std::smatch m;
@@ -60,16 +80,16 @@ std::string Mailer::decode(std::string _encoded) {
 	return _encoded;
 }
 
-std::string Mailer::decrypt(std::string encrypted) {
+std::vector<uint8_t> Mailer::decrypt(std::string encrypted) {
 	// check if string is indeed encrypted
 	if(encrypted.rfind("-----BEGIN PGP MESSAGE-----", 0) != 0) {
-		return encrypted;
+		return std::vector<uint8_t>(encrypted.begin(), encrypted.end());
 	}
 
-	std::string decrypted;
+	std::vector<uint8_t> decrypted;
 	if(this->_pgp->decrypt(encrypted, decrypted) == false) {
 		//TODO: error UNABLE TO DECRYPT
-		return encrypted;
+		return std::vector<uint8_t>(encrypted.begin(), encrypted.end());
 	}
 
 	return decrypted;
@@ -240,7 +260,18 @@ json Mailer::parseBody(std::string body, json headers) {
 
 	bool isThereBoundary = std::string(headers["Content-Type"]["boundary"]).length() > 0;
 	if(isThereBoundary == false) {
-		bodypart["content"] = this->decrypt(body);
+		std::vector<uint8_t> content = this->decrypt(body);
+		// convert from ascii to utf-8
+		if(headers["Content-Type"]["charset"] == "ascii" || headers["Content-Type"]["charset"] == "us-ascii") {
+			this->convert(content);
+		}
+		// convert non-text to base64
+		if( headers["Content-Type"]["type"].get<std::string>().rfind("text", 0) != 0) {
+			std::string data = base64_encode(content.data(), content.size());
+			bodypart["content"] = data;
+		} else {
+			bodypart["content"] = std::string(content.begin(), content.end());
+		}
 	}	else {
 		bodypart["parts"] = std::vector<json>();
 		// https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
@@ -260,7 +291,7 @@ json Mailer::parseBody(std::string body, json headers) {
 			json part_header = this->parseMail(sections[0]);
 			sections.erase(sections.begin()); // only keep body content
 			std::string part_body = boost::algorithm::join(sections, "\r\n\r\n");
-			bodypart["parts"].push_back(this->parseBody(part_body, part_header));
+			bodypart["parts"].push_back(std::move(this->parseBody(part_body, part_header)));
 		}
 	}
 	return bodypart;
