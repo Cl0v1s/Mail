@@ -1,38 +1,74 @@
-# ultralight-quick-start
+# Mail
 
-__Clone this repo to try a simple Ultralight app!__
+Il y a quelques mois j'ai paramétré un petit serveur de mail destiné à mon usage personnel et à celui de mes amis.  
+Dans un soucis de confidentialité et de sécurité, j'ai souhaité faire en sorte de chiffrer les mails reçus par défaut, à l'aide d'une clef publique associée à chaque boîte mail, sur le serveur. 
 
-This is a minimal Ultralight app you can use with the [Writing Your First App](https://docs.ultralig.ht/docs/writing-your-first-app) article in the Ultralight documentation.
+Malheureusement, ce système n'est pas satisfaisant en l'état, la plupart des logiciels de mailing gère mal un tel montage (par exemple, Thunderbird ne décrypte pas les pièces jointes et affiche le code html au lieu de le rendre). De fait, il est inutilisable en l'état.
 
-## 1. Install the Prerequisites
+J'ai donc développé ce projet parallèle visant à expérimenter une nouvelle approche, profitant de la rapidité de traitement offerte par le C++ (notamment pour ce qui concerne le chiffrement/déchiffrement des mails) et de la praticité des technologies web, pour ce qui concerne la construction d'interfaces. 
 
-Before you build and run, you'll need to [install the prerequisites](https://docs.ultralig.ht/docs/installing-prerequisites) for your platform.
+Ce projet s'articule donc autour de deux ensembles: 
+* Le backend, en C++ réalise les opérations effectives (chiffrement/dechiffrement, récupérations des données depuis le serveur de mail)
+* Le frontend en HTML/CSS/JS (React) rendu à l'aide d'ultralight (pour contourner la consommation excessive d'Electron)
 
-## 2. Clone and build the app
+## Le modèle de données
+La communication entre le frontend et le backend ainsi que le traitement des données se construit autour des ensembles suivants: 
 
-To clone the repo and build, run the following:
+**Mail**
+* Headers (key/value)
+    * headers connus (content-type, date etc...)
+		* headers non-connus (X- et tout le reste)
+* Bodies (liste)
+    * Liste de toutes les alternatives possibles pour le mail
+* Attachments (liste)
+    * Liste de toutes les pièces jointes 
+* Attributs (key/value)
+    * A définir 
 
-```shell
-git clone https://github.com/ultralight-ux/ultralight-quick-start
-cd ultralight-quick-start
-mkdir build
-cd build
-cmake ..
-cmake --build . --config Release
-```
+**Folder**
+* name (string)
+    * Nom du dossier
+* mails (liste)
+    * Liste de tous les mails contenus dans le dossier
 
-> **Note**: _To force CMake to generate 64-bit projects on Windows, use `cmake .. -DCMAKE_GENERATOR_PLATFORM=x64` instead of `cmake ..`_
+**Account**
+* imap (key/value)
+    * host (string)
+	      * Adresse du serveur IMAP
+		* username (string)
+		    * Nom d'utilisateur 
+		* password (string)
+		    * Mot de passe
+* smtp (key/value)
+    * host (string)
+	      * Adresse du serveur IMAP
+		* username (string)
+		    * Nom d'utilisateur 
+		* password (string)
+		    * Mot de passe
+* key (string)
+    * Chemin de la clef privée sur le disque 
+	
+## Le backend 
+Pour proposer une base de fonctionnalités acceptable, le backend doit proposer les opérations suivantes: 
 
-## 3. Run the app
+**Sur les mails**
 
-### On macOS and Linux
+* Envoyer un mail
+* Consulter/déchiffrer un mail
+* Modifier les attributs d'un mail (lu/non lu etc...)
+* Supprimer un mail
 
-Navigate to `ultralight-quick-start/build` and run `MyApp` to launch the program.
+**Sur les dossiers**
 
-### On Windows
+* Créer un dossier
+* Récupérer le contenu d'un dossier (lister tous les mails/chercher des mails)
+* Ajouter/supprimer un mail
+* Supprimer un dossier 
 
-Navigate to `ultralight-quick-start/build/Release` and run `MyApp` to launch the program.
+**Sur les comptes**
 
-## Further Reading
-
-Follow the [Writing Your First App](https://docs.ultralig.ht/docs/writing-your-first-app) guide and other tutorials in the documentation for more info.
+* Initialiser un compte 
+* Lister tous les dossiers
+* Modifier le compte (credentials/clef privée)
+* Supprimer le compte 
