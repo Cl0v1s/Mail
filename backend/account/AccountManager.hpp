@@ -8,37 +8,25 @@
 #include "./../PGP/PGP.hpp"
 #include "./../mail/Mailer.hpp"
 
+#include "../model/Account.hpp"
 
 using namespace nlohmann;
-
-/* Account 
-	- name 
-	- email
-	- smtp
-	- imap
-	- username 
-	- password
-	- privateKey
-	- publicKeys 
-*/
 
 class AccountManager {
 	public:
 		AccountManager();
-		
+
 		bool useAccount(std::string name);
-
-		bool addAccount(json account);
-		bool editAccount(std::string name, json account);
+		
+		bool addAccount(Account account);
+		std::vector<Account> getAccounts();
 		bool removeAccount(std::string name);
-	private:
-		json load();
-		void save();
 
+	private:
 		Mailer _mailer;
 		PGP _pgp;
-		json _currentAccount;
-		std::vector<json> _accounts;
+		int _currentAccount;
+		std::vector<Account> _accounts;
 
 		friend class Command;
 };

@@ -5,37 +5,19 @@ using namespace nlohmann;
 std::map<std::string, std::function<std::string(AccountManager&, nlohmann::json&)>> Command::createBindings() {
     std::map<std::string, std::function<std::string(AccountManager&, nlohmann::json&)>> bindings;
 
-    bindings.insert({
+    /*bindings.insert({
         "getMailsRequest", 
         [this](AccountManager& manager, nlohmann::json& payload){
             return this->getMails(manager, payload);
         }
-    });
-
-    bindings.insert({
-        "getBodyRequest",
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->getBody(manager, payload);
-        }
-    });
-
-    bindings.insert({
-        "getFoldersRequest",
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->getFolders(manager, payload);
-        }
-    });
-
-    bindings.insert({
-        "searchMailsRequest",
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->searchMails(manager, payload);
-        }  
-    });
+    });*/
 
     return bindings;
 }
 
+
+
+/*
 // payload: empty
 std::string Command::getFolders(AccountManager& manager, nlohmann::json& payload) {
     json result;
@@ -94,3 +76,4 @@ std::string Command::searchMails(AccountManager& manager, nlohmann::json& payloa
     ss << result;
     return ss.str();
 }
+*/
