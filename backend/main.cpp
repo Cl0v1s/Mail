@@ -90,9 +90,9 @@ thread server_start() {
 int main() {
   thread data_thread = server_start();
 
-  MailApp app;
-  app.Run();
-  cout << "GUI closed" << endl;
+  // MailApp app;
+  // app.Run();
+  // cout << "GUI closed" << endl;
 
   data_thread.join();
   cout << "Data thread close" << endl;
