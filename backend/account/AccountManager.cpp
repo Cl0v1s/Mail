@@ -9,7 +9,6 @@ AccountManager::AccountManager()
 {
 }
 
-
 bool AccountManager::useAccount(std::string name) {
 	int index = -1;
 	int i = 0;
@@ -37,11 +36,15 @@ bool AccountManager::useAccount(std::string name) {
 	return true;
 }
 
-bool AccountManager::addAccount(Account account) {
+std::vector<Account> AccountManager::getAccounts() {
+	return this->_accounts;
+}
+
+bool AccountManager::addAccount(Account& account) {
 	for(int i = 0; i < this->_accounts.size(); i++) {
 		if(this->_accounts[i]._name == account._name) return false;
 	}
-	this->_accounts.push_back(account);
+	this->_accounts.push_back(std::move(account));
 	return true;
 }
 

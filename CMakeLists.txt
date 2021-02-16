@@ -30,6 +30,13 @@ set(SOURCES
             "backend/account/AccountManager.hpp"
             "backend/account/AccountManager.cpp"
 
+            "backend/model/Account.hpp"
+            "backend/model/Account.cpp"
+            "backend/model/Folder.hpp"
+            "backend/model/Folder.cpp"
+            "backend/model/Mail.hpp"
+            "backend/model/Mail.cpp"
+
             "backend/Command.hpp"
             "backend/Command.cpp"
             

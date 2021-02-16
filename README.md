@@ -70,5 +70,4 @@ Pour proposer une base de fonctionnalités acceptable, le backend doit proposer 
 
 * Initialiser un compte 
 * Lister tous les dossiers
-* Modifier le compte (credentials/clef privée)
 * Supprimer le compte 

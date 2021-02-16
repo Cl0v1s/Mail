@@ -69,6 +69,7 @@ thread server_start() {
         boost::asio::io_context ioc{1};
         tcp::acceptor acceptor{ioc, {boost::asio::ip::make_address("0.0.0.0"), 8081}};
         std::vector<thread> sessions;
+        std::cout << "Waiting for frontend connections" << std::endl;
         for(;;)
         {
             tcp::socket socket{ioc};

@@ -18,7 +18,7 @@ class AccountManager {
 
 		bool useAccount(std::string name);
 		
-		bool addAccount(Account account);
+		bool addAccount(Account& account);
 		std::vector<Account> getAccounts();
 		bool removeAccount(std::string name);
 
