@@ -69,13 +69,13 @@ public:
    const bool Noop();
 
    /* copy an e-mail from one folder to another */
-   const bool CopyMail(const std::string& strMsgNumber, const std::string& strFolder);
+   const bool CopyMail(const std::string& strMsgNumber, std::string& strFolderFrom, const std::string& strFolderTo);
 
    /* create a new folder */
    const bool CreateFolder(const std::string& strFolderName);
 
    /* modify the properties of an e-mail according to MailProperty */
-   const bool SetMailProperty(const std::string& strMsgNumber, MailProperty eNewProperty);
+   const bool SetMailProperty(const std::string& strMsgNumber, MailProperty eNewProperty, const std::string& strFolder);
    
    /* search for e-mails according to SearchOption */
    const bool Search(std::string& strRes, SearchOption eSearchOption, const std::string& strSearchString = "", const std::string& strFolder = "INBOX");

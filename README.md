@@ -62,6 +62,7 @@ Pour proposer une base de fonctionnalités acceptable, le backend doit proposer 
 **Sur les dossiers**
 
 * Créer un dossier
+* Récupérer les dossiers d'un compte
 * Récupérer le contenu d'un dossier (lister tous les mails/chercher des mails)
 * Ajouter/supprimer un mail
 * Supprimer un dossier 

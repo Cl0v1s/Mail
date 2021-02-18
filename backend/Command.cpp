@@ -33,6 +33,45 @@ std::map<std::string, std::function<std::string(AccountManager&, nlohmann::json&
         }
     });
 
+    /*
+    * Folders
+    */
+
+    bindings.insert({
+        "createFolder", 
+        [this](AccountManager& manager, nlohmann::json& payload){
+            return this->createFolder(manager, payload);
+        }
+    });
+
+    bindings.insert({
+        "listFolder", 
+        [this](AccountManager& manager, nlohmann::json& payload){
+            return this->listFolder(manager, payload);
+        }
+    });
+
+    bindings.insert({
+        "addMailToFolder", 
+        [this](AccountManager& manager, nlohmann::json& payload){
+            return this->addMailToFolder(manager, payload);
+        }
+    });
+
+    bindings.insert({
+        "removeMailfromFolder", 
+        [this](AccountManager& manager, nlohmann::json& payload){
+            return this->removeMailfromFolder(manager, payload);
+        }
+    });
+
+    bindings.insert({
+        "removeFolder", 
+        [this](AccountManager& manager, nlohmann::json& payload){
+            return this->removeFolder(manager, payload);
+        }
+    });
+
     return bindings;
 }
 
@@ -45,21 +84,18 @@ std::string Command::generateResult(std::string operation, nlohmann::json& resul
 }
 
 
-/** Gestion des comptes 
-* Initialiser un compte 
-* Lister tous les dossiers
-* Modifier le compte (credentials/clef privée)
-* Supprimer le compte 
-*/
-
-std::string Command::initAccount(AccountManager& manager, nlohmann::json& payload) {
+/**
+ * Accounts
+ */
+std::string Command::initAccount(AccountManager& manager, nlohmann::json& raw) {
+    json& payload = raw["content"];
     Account account(payload["name"], payload["imap"], payload["smtp"], payload["key"]);
     json data;
     data["result"] = manager.addAccount(account);
     return this->generateResult("initAccount", data);
 }
 
-std::string Command::listAccount(AccountManager& manager, nlohmann::json& payload) {
+std::string Command::listAccount(AccountManager& manager, nlohmann::json& raw) {
     std::vector<Account> accounts = manager.getAccounts();
     std::vector<json> list;
 
@@ -72,18 +108,68 @@ std::string Command::listAccount(AccountManager& manager, nlohmann::json& payloa
     return this->generateResult("listAccount", data);
 }
 
-std::string Command::useAccount(AccountManager& manager, nlohmann::json& payload) {
+std::string Command::useAccount(AccountManager& manager, nlohmann::json& raw) {
+    json& payload = raw["content"];
     json data;
     data["result"] = manager.useAccount(payload["name"]);
     return this->generateResult("useAccount", data);
 }
 
-std::string Command::removeAccount(AccountManager& manager, nlohmann::json& payload) {
+std::string Command::removeAccount(AccountManager& manager, nlohmann::json& raw) {
+    json& payload = raw["content"];
     json data;
     data["result"] = manager.removeAccount(payload["name"]);
     return this->generateResult("removeAccount", data);
 }
 
+/**
+ * Folders
+ */
+std::string Command::createFolder(AccountManager& manager, nlohmann::json& raw) {
+    json& payload = raw["content"];
+    Folder folder(payload["folder"]["name"], 0, 0);
+    json data;
+    data["result"] = manager._mailer.createFolder(folder);
+    return this->generateResult("createFolder", data);
+}
+
+std::string Command::listFolder(AccountManager& manager, nlohmann::json& payload) {
+    std::vector<Folder> folders = manager._mailer.getFolders();
+    std::vector<json> res;
+    for(int i = 0; i < folders.size(); i+=1) {
+        res.push_back(folders[i].toJSON());
+    }
+    json data;
+    data["result"] = res;
+    return this->generateResult("listFolder", data);
+}
+
+std::string Command::addMailToFolder(AccountManager& manager, nlohmann::json& raw) {
+    json& payload = raw["content"];
+    Folder from(payload["from"]["name"], 0, 0);
+    Folder to(payload["to"]["name"], 0, 0);
+    Mail mail(payload["mail"]["id"]);
+    json data;
+    data["result"] = manager._mailer.addMailToFolder(mail, from, to);
+    return this->generateResult("addMailToFolder", data);
+}
+
+std::string Command::removeMailfromFolder(AccountManager& manager, nlohmann::json& raw) {
+    json& payload = raw["content"];
+    Folder folder(payload["folder"]["name"], 0, 0);
+    Mail mail(payload["mail"]["id"]);
+    json data;
+    data["result"] = manager._mailer.removeMailFromFolder(mail, folder);
+    return this->generateResult("removeMailfromFolder", data);
+}
+
+std::string Command::removeFolder(AccountManager& manager, nlohmann::json& raw) {
+    json& payload = raw["content"];
+    Folder folder(payload["folder"]["name"], 0, 0);
+    json data;
+    data["result"] = manager._mailer.removeFolder(folder);
+    return this->generateResult("removeFolder", data);
+}
 
 /*
 // payload: empty

@@ -95,10 +95,11 @@ const bool CIMAPClient::Noop()
    return Perform();
 }
 
-const bool CIMAPClient::CopyMail(const std::string& strMsgNumber, const std::string& strFolderName)
+const bool CIMAPClient::CopyMail(const std::string& strMsgNumber, std::string& strFolderFrom, const std::string& strFolderTo)
 {
    m_strMsgNumber = strMsgNumber;
-   m_strFolderName = strFolderName;
+   m_strFolderName = strFolderTo;
+   m_pstrText = &strFolderFrom;
    m_eOperationType = IMAP_COPY;
 
    return Perform();
@@ -112,8 +113,9 @@ const bool CIMAPClient::CreateFolder(const std::string& strFolderName)
    return Perform();
 }
 
-const bool CIMAPClient::SetMailProperty(const std::string& strMsgNumber, MailProperty eNewProperty)
+const bool CIMAPClient::SetMailProperty(const std::string& strMsgNumber, MailProperty eNewProperty, const std::string& strFolder)
 {
+   m_strFolderName = strFolder;
    m_strMsgNumber = strMsgNumber;
    m_eMailProperty = eNewProperty;
    m_eOperationType = IMAP_STORE;
@@ -367,7 +369,7 @@ const bool CIMAPClient::PrePerform()
       case IMAP_COPY:
          if (!m_strMsgNumber.empty() && !m_strFolderName.empty())
          {
-            strRequestURL += "INBOX";
+            strRequestURL += (*m_pstrText);
             /* Set the COPY command specifing the message ID and destination folder */
             curl_easy_setopt(m_pCurlSession, CURLOPT_CUSTOMREQUEST,
                ("COPY "+ m_strMsgNumber + " " + m_strFolderName).c_str());
@@ -453,7 +455,7 @@ const bool CIMAPClient::PrePerform()
                return false;
             }
 
-            strRequestURL += "INBOX";
+            strRequestURL += m_strFolderName;
 
             /* Set the STORE command with the Deleted flag for message m_strMsgNumber */
             curl_easy_setopt(m_pCurlSession, CURLOPT_CUSTOMREQUEST,

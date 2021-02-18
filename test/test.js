@@ -1,1 +1,2 @@
 require('./testAccount');
+require('./testFolder');

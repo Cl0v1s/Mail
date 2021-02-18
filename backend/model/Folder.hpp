@@ -8,10 +8,13 @@
 
 class Folder {
 	public:
-		Folder(std::string name, std::vector<Mail> mails);
+		Folder(std::string name, int length, int highestmodseq);
 		nlohmann::json toJSON();
+
+		std::string getName();
 
 	private:
 		std::string _name;
-		std::vector<Mail> _mails;
+		int _length;
+		int _highestmodseq;
 };

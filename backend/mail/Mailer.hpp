@@ -16,6 +16,9 @@
 
 #include "./../PGP/PGP.hpp"
 
+#include "./../model/Folder.hpp"
+#include "./../model/Mail.hpp"
+
 using namespace nlohmann;
 
 // https://tools.ietf.org/html/rfc2822
@@ -35,10 +38,16 @@ class Mailer {
 		json parseMail(std::string mail);
 		json parseBody(std::string body, json contentType);
 
-		std::vector<json> getFolders();
 		std::vector<std::string> getMails(json folder);
 		std::string getBody(std::string folder, std::string id);
 		std::vector<std::string> searchMails(std::string operation, std::string searchString = "", std::string folderName = "");
+
+		bool createFolder(Folder& folder);
+		std::vector<Folder> getFolders();
+		bool removeFolder(Folder& folder);
+		bool addMailToFolder(Mail& mail, Folder& from, Folder& to);
+		bool removeMailFromFolder(Mail& mail, Folder& folder);
+
 
 	private: 
 		PGP* _pgp;

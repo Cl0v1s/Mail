@@ -190,52 +190,6 @@ json Mailer::parseMail(std::string _raw) {
 	return mail;
 }
 
-std::vector<json> Mailer::getFolders() {
-	std::vector<json> results;
-	std::string list;
-	this->_imapClient.List(list);
-	// std::cout << list << std::endl;
-
-	std::smatch m;
-  std::regex e ("\\* LIST \\(.*\\) \".\" \"?([^\"\n\r]+)\"?");   // * LIST (\HasChildren) "." INBOX
-
-	while(std::regex_search (list,m,e)) {
-		json folder;
-
-		std::string name = m[1].str();
-		folder["name"] = name;
-
-		// std::cout << "FOLDER " << name << std::endl;
-
-    list = m.suffix().str();
-		std::string infos;
-		this->_imapClient.InfoFolder(name, infos);
-
-		// std::cout << infos << std::endl;
-		// exists 
-		std::regex ex = std::regex("\\* (.*) EXISTS"); 
-		if(std::regex_search (infos,m,ex) == false) {
-			// TODO: Error no EXISTS field
-			std::cout << "ERROR no exists field" << std::endl;
-			folder["length"] = 0;
-		} else {
-			folder["length"] = std::stoi(m[1].str());
-		}
-
-		// modseq
-		ex = std::regex("\\* OK \\[HIGHESTMODSEQ ([^\\]]+)\\]"); 
-		if(std::regex_search (infos,m,ex)) {
-			folder["highestmodseq"] = m[1].str();
-			// std::cout << "MODSEQ" << m[1] << std::endl;
-		}
-
-		results.push_back(folder);
-	}
-
-
-	return results;
-}
-
 
 std::vector<std::string> Mailer::getMails(json folder) {
 	std::vector<std::string> results;
@@ -337,5 +291,65 @@ std::vector<std::string> Mailer::searchMails(std::string operation, std::string 
 	}
 
 	return results;
+}
+
+
+bool Mailer::createFolder(Folder& folder) {
+	return this->_imapClient.CreateFolder(folder.getName());
+}
+
+bool Mailer::removeFolder(Folder& folder) {
+	return this->_imapClient.DeleteFolder(folder.getName());
+}
+
+std::vector<Folder> Mailer::getFolders() {
+	std::vector<Folder> results;
+	std::string list;
+	this->_imapClient.List(list);
+	// std::cout << list << std::endl;
+
+	std::smatch m;
+  std::regex e ("\\* LIST \\(.*\\) \".\" \"?([^\"\n\r]+)\"?");   // * LIST (\HasChildren) "." INBOX
+
+	while(std::regex_search (list,m,e)) {
+		std::string name = m[1].str();
+
+		// std::cout << "FOLDER " << name << std::endl;
+
+    list = m.suffix().str();
+		std::string infos;
+		this->_imapClient.InfoFolder(name, infos);
+
+		// std::cout << infos << std::endl;
+		// exists 
+		int length = 0;
+		std::regex ex = std::regex("\\* (.*) EXISTS"); 
+		if(std::regex_search (infos,m,ex) == false) {
+			// TODO: Error no EXISTS field
+			std::cout << "ERROR no exists field" << std::endl;
+		} else {
+			length = std::stoi(m[1].str());
+		}
+
+		// modseq
+		ex = std::regex("\\* OK \\[HIGHESTMODSEQ ([^\\]]+)\\]"); 
+		int highestmodseq = 0;
+		if(std::regex_search (infos,m,ex)) {
+			highestmodseq = std::stoi(m[1].str());
+			// std::cout << "MODSEQ" << m[1] << std::endl;
+		}
+		Folder folder(name, length, highestmodseq);
+		results.push_back(std::move(folder));
+	}
+	return results;
+}
+
+bool Mailer::addMailToFolder(Mail& mail, Folder& from, Folder& to) {
+	std::string frm = from.getName();
+	return this->_imapClient.CopyMail(mail.getId(), frm, to.getName());
+}
+
+bool Mailer::removeMailFromFolder(Mail& mail, Folder& folder) {
+	return this->_imapClient.SetMailProperty(mail.getId(), CIMAPClient::MailProperty::Deleted, folder.getName());
 }
 

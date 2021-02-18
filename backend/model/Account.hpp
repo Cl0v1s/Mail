@@ -16,7 +16,6 @@ class Account {
 		nlohmann::json _imap;
 		nlohmann::json _smtp;
 		std::string _key;
-		std::vector<Folder> _folders;
 
 	friend class AccountManager;
 };

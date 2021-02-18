@@ -47,7 +47,7 @@ set(BOOST_ROOT_DIR "/usr/local/Cellar/boost/1.75.0/")
 find_package(Boost REQUIRED)
 include_directories("${BOOST_ROOT_DIR}include/")
 
-set(OPENSSL_ROOT_DIR "/usr/local/Cellar/openssl@1.1/1.1.1h/")
+set(OPENSSL_ROOT_DIR "/usr/local/Cellar/openssl@1.1/1.1.1i/")
 find_package(OpenSSL REQUIRED)
 include_directories(${OPENSSL_INCLUDE_DIR})
 
@@ -62,7 +62,7 @@ include_directories("/usr/local/include/rnp-0")
 add_app("${SOURCES}")
 # bug in cmake which cause to use apple version of open ssl instead of detected one
 target_link_libraries(${PROJECT_NAME} "${BOOST_ROOT_DIR}/lib/libboost_regex.dylib")
-target_link_libraries(${PROJECT_NAME} "/usr/local/Cellar/openssl@1.1/1.1.1h/lib/libcrypto.dylib")
+target_link_libraries(${PROJECT_NAME} "/usr/local/Cellar/openssl@1.1/1.1.1i/lib/libcrypto.dylib")
 target_link_libraries(${PROJECT_NAME} "/usr/local/Cellar/nlohmann-json/3.9.1_1/lib/cmake/nlohmann_json/nlohmann_jsonConfig.cmake")
 target_link_libraries(${PROJECT_NAME} "${CURL_ROOT_DIR}/lib/libcurl.dylib")
 target_link_libraries(${PROJECT_NAME} "/usr/local/lib/librnp-0.dylib")
