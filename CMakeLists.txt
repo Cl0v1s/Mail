@@ -77,7 +77,6 @@ target_link_libraries(${PROJECT_NAME} "${OpenSSL_LIBRARIES}")
 target_link_libraries(${PROJECT_NAME} "${nlohmann_json_LIBRARIES}")
 target_link_libraries(${PROJECT_NAME} "${CURL_LIBRARIES}")
 target_link_libraries(${PROJECT_NAME} "rnp::librnp")
-target_link_libraries(${PROJECT_NAME} "${LINK_DIRECTORY}/libbotan-2.dylib")
 
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_14)
