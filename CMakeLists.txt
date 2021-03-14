@@ -35,30 +35,49 @@ set(SOURCES
             
             "backend/main.cpp")
 
+include_directories(/usr/local/include)
+link_directories(/usr/local/lib)
+find_package(PkgConfig REQUIRED)
 
-set(BOOST_ROOT_DIR "/usr/local/Cellar/boost/1.75.0/")
-find_package(Boost REQUIRED)
-include_directories("${BOOST_ROOT_DIR}include/")
 
-set(OPENSSL_ROOT_DIR "/usr/local/Cellar/openssl@1.1/1.1.1h/")
+find_package(Boost REQUIRED regex)
+message("Boost found: ${Boost_FOUND}")
+
+set(OPENSSL_ROOT_DIR /usr/local/opt/openssl)
 find_package(OpenSSL REQUIRED)
-include_directories(${OPENSSL_INCLUDE_DIR})
+message("OpenSSL found: ${OpenSSL_FOUND}")
 
-set(JSON_ROOT_DIR "/usr/local/Cellar/nlohmann-json/3.9.1_1")
-include_directories("${JSON_ROOT_DIR}/include")
+find_package(nlohmann_json REQUIRED)
+message("nlohmann_json found: ${nlohmann_json_FOUND}")
 
-set(CURL_ROOT_DIR "/usr/local/opt/curl")
-include_directories("${CURL_ROOT_DIR}/include")
+find_package(CURL REQUIRED)
+message("CURL found: ${CURL_FOUND}")
 
-include_directories("/usr/local/include/rnp-0")
+find_package(rnp REQUIRED librnp)
+message("rnp found: ${rnp_FOUND}")
+
+find_package(ZLIB REQUIRED)
+message("ZLIB found: ${ZLIB_FOUND}")
+
+find_package(BZip2 REQUIRED)
+message("BZip2 found: ${BZip2_FOUND}")
+
+pkg_check_modules(JSONC REQUIRED IMPORTED_TARGET json-c)
+add_library(JSON-C::JSON-C ALIAS PkgConfig::JSONC)
+message("JSON-C Found: TRUE")
+
+pkg_check_modules(Botan2 REQUIRED IMPORTED_TARGET botan-2)
+add_library(Botan2::Botan2 ALIAS PkgConfig::Botan2)
+message("Botan2 Found: TRUE")
 
 add_app("${SOURCES}")
 # bug in cmake which cause to use apple version of open ssl instead of detected one
-target_link_libraries(${PROJECT_NAME} "${BOOST_ROOT_DIR}/lib/libboost_regex.dylib")
-target_link_libraries(${PROJECT_NAME} "/usr/local/Cellar/openssl@1.1/1.1.1h/lib/libcrypto.dylib")
-target_link_libraries(${PROJECT_NAME} "/usr/local/Cellar/nlohmann-json/3.9.1_1/lib/cmake/nlohmann_json/nlohmann_jsonConfig.cmake")
-target_link_libraries(${PROJECT_NAME} "${CURL_ROOT_DIR}/lib/libcurl.dylib")
-target_link_libraries(${PROJECT_NAME} "/usr/local/lib/librnp-0.dylib")
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} "${OpenSSL_LIBRARIES}")
+target_link_libraries(${PROJECT_NAME} "${nlohmann_json_LIBRARIES}")
+target_link_libraries(${PROJECT_NAME} "${CURL_LIBRARIES}")
+target_link_libraries(${PROJECT_NAME} "rnp::librnp")
+target_link_libraries(${PROJECT_NAME} "${LINK_DIRECTORY}/libbotan-2.dylib")
 
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_14)
