@@ -11,4 +11,7 @@ build: build-back
 run: 
 	build/MyApp.app/Contents/MacOS/MyApp
 
+test-back:
+	node test/test.js
+
 .PHONY: build

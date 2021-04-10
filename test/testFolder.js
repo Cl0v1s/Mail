@@ -1,16 +1,51 @@
 const assert = require('assert/strict');
 const Backend = require('./Backend');
 
-(async () => {
-
-	// createFolder
+const test = (async () => {
 
 	// listFolder
+	let response = await Backend.ask({
+		type: "listFolder",
+	});
+	assert(response.result);
 
-	// addMailToFolder
-
-	// removeMailfromFolder
+	// createFolder
+	response = await Backend.ask({
+		type: "createFolder",
+		content: {
+			"folder": {
+				"name": "DevMail",
+			},
+		}
+	});
+	assert(response.result);
+	response = await Backend.ask({
+		type: "listFolder",
+	});
+	assert(response.result.find((folder) => folder.name === "DevMail"));
 
 	// removeFolder
+	response = await Backend.ask({
+		type: "removeFolder",
+		content: {
+			"folder": {
+				"name": "DevMail",
+			},
+		}
+	});
+	assert(response.result);
+	response = await Backend.ask({
+		type: "listFolder",
+	});
+	assert(response.result.find((folder) => folder.name === "DevMail") == null);
 
-})();
+	// addMailToFolder
+	// TODO: à tester
+
+	// removeMailfromFolder
+	// TODO: à tester
+
+
+});
+
+module.exports = test;

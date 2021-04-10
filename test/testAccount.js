@@ -1,7 +1,7 @@
 const assert = require('assert/strict');
 const Backend = require('./Backend');
 
-(async () => {
+const test = (async () => {
 	// test initAccount
 	let response = await Backend.ask({
 		type: "initAccount",
@@ -64,4 +64,6 @@ const Backend = require('./Backend');
 	});
 	assert(response.result);
 
-})();
+});
+
+module.exports = test;
