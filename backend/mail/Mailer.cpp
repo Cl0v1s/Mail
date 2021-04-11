@@ -278,10 +278,7 @@ std::string Mailer::getBody(std::string folder, std::string id)
 std::vector<std::string> Mailer::searchMails(std::string operation, std::string searchString, Folder folder)
 {
 	std::string folderName = folder.getName();
-	std::cout << "getting mail for " << folderName << std::endl;
 	std::vector<std::string> results;
-	if (folder.getLength() == 0)
-		return results;
 
 	std::string raw_ids;
 	char *c_raw_ids;
@@ -313,6 +310,7 @@ std::vector<std::string> Mailer::searchMails(std::string operation, std::string 
 	}
 	else
 	{ // else we retrieve all mails from folder
+		if (folder.getLength() == 0) return results;
 		raw_ids = "";
 		for (int i = 0; i < folder.getLength(); i += 1)
 		{
@@ -320,12 +318,10 @@ std::vector<std::string> Mailer::searchMails(std::string operation, std::string 
 		}
 		c_raw_ids = &raw_ids[0];
 	}
-	std::cout << "ids: " << raw_ids << std::endl;
 
 	char *token = std::strtok(c_raw_ids, " ");
 	while (token != NULL)
 	{
-		std::cout << "getting mail " << token << std::endl;
 		std::string mail;
 		this->_imapClient.GetHeader(std::string(token), mail, folderName);
 		results.push_back(mail);

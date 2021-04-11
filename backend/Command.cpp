@@ -193,7 +193,6 @@ std::string Command::listMails(AccountManager& manager, nlohmann::json& raw) {
     */
     json data;
     std::vector<json> res;
-    std::cout << "after folder" << std::endl;
 
     std::string operation = "";
     std::string searchString = "";
@@ -203,8 +202,6 @@ std::string Command::listMails(AccountManager& manager, nlohmann::json& raw) {
         if(payload["filter"]["value"].is_null() == false) searchString = payload["filter"]["value"];
     }
 
-    std::cout << "operation " << operation << std::endl;
-    std::cout << "searchString " << searchString << std::endl;
     std::vector<std::string> mails = manager._mailer.searchMails(operation, searchString, folder);
     for(size_t i = 0; i < mails.size(); i += 1) {
         json headers = manager._mailer.parseHeaders(mails[i]);
