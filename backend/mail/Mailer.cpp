@@ -164,70 +164,27 @@ json Mailer::parseHeaders(std::string _raw)
 	std::regex e = std::regex("\r\n[ \t]");
 	std::string raw = std::regex_replace(_raw, e, "");
 
-	std::cout << "RAW " << std::endl;
-
 	char* c_raw = &raw[0];
-	char* line = std::strtok(c_raw, "\r\n");
-	std::cout << line << std::endl;
+	char* c_line = std::strtok(c_raw, "\r\n");
 
-	// MANDATORY FIELDS
-	// FROM
-	e = std::regex("From: ([^\r\n]+)"); // * LIST (\HasChildren) "." INBOX
-	if (std::regex_search(raw, m, e) == false)
-	{
-		// TODO: error mandatory field
-	}
-	else
-	{
-		mail["From"] = this->parseAddressList(m[1]);
-	}
-	// TO
-	e = std::regex("To: ([^\r\n]+)"); // * LIST (\HasChildren) "." INBOX
-	if (std::regex_search(raw, m, e) == false)
-	{
-		// TODO: error mandatory field
-	}
-	else
-	{
-		mail["To"] = this->parseAddressList(m[1]);
-	}
-	// Date
-	e = std::regex("Date: ([^\r\n]+)"); // * LIST (\HasChildren) "." INBOX
-	if (std::regex_search(raw, m, e) == false)
-	{
-		// TODO: error mandatory field
-	}
-	else
-	{
-		mail["Date"] = m[1];
-	}
-	// COMMON FIELDS
-	// Subject
-	e = std::regex("Subject: ([^\r\n]+)"); // * LIST (\HasChildren) "." INBOX
-	if (std::regex_search(raw, m, e))
-	{
-		mail["Subject"] = this->decode(m[1]);
-	}
-	// CC
-	e = std::regex("Cc: ([^\r\n]+)"); // * LIST (\HasChildren) "." INBOX
-	if (std::regex_search(raw, m, e))
-	{
-		mail["Cc"] = this->parseAddressList(m[1]);
-	}
-	// Content-type
-	e = std::regex("Content-Type: ([^\r\n]+)"); // * LIST (\HasChildren) "." INBOX
-	if (std::regex_search(raw, m, e))
-	{
-		mail["Content-Type"] = this->parseContentType(m[1]);
-	}
-
-	// Others
-	mail["others"] = json();
-	e = std::regex("([^\r\n:]+): ([^\r\n]+)"); // * LIST (\HasChildren) "." INBOX
-	while (std::regex_search(raw, m, e))
-	{
-		mail["others"][m[1]] = m[2];
-		raw = m.suffix().str();
+	while(c_line != NULL) {
+		std::string line = std::string(c_line);
+		int sep = line.find(":");
+		std::string field = line.substr(0, sep);
+		std::string value = line.substr(sep + 2); // +2 because ": "
+		c_line = std::strtok(NULL, "\r\n");
+		// MANDATORY FIELDS
+		if(field == "From"
+			|| field == "To"
+			|| field == "Cc") {
+			mail[field] = this->parseAddressList(value);
+		} else if(field == "Subject") {
+			mail[field] = this->decode(value);
+		} else if(field == "Content-Type") {
+			mail[field] = this->parseContentType(value);
+		} else { // OTHER FIELDS
+			mail[field] = value;
+		}
 	}
 
 	return mail;
