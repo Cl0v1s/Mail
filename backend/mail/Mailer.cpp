@@ -261,10 +261,10 @@ json Mailer::parseBody(std::string body, json headers)
 	return bodypart;
 }
 
-std::string Mailer::getBody(std::string folder, std::string id)
+std::string Mailer::getBody(Folder& folder, Mail& mail)
 {
 	std::string result;
-	this->_imapClient.GetString(id, result, folder); // retrieve mail
+	this->_imapClient.GetString(mail.getId(), result, folder.getName()); // retrieve mail
 	std::vector<std::string> parts;
 	boost::algorithm::split_regex(parts, result, boost::regex("\r\n\r\n")); // split mail headers and body
 	parts.erase(parts.begin());												// only keep mail body

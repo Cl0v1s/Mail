@@ -21,6 +21,10 @@ std::string Mail::getId() {
 	return this->_id;
 }
 
+void Mail::addBody(nlohmann::json body) {
+	this->_bodies.push_back(body);
+}
+
 nlohmann::json Mail::toJSON() {
 	nlohmann::json json;
 	json["id"] = this->_id;

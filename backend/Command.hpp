@@ -34,5 +34,6 @@ class Command {
 
         // mails 
         std::string listMails(AccountManager& manager, nlohmann::json& payload);
+        std::string getMail(AccountManager& manager, nlohmann::json& payload);
 
 };
