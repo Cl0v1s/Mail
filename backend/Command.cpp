@@ -72,6 +72,16 @@ std::map<std::string, std::function<std::string(AccountManager&, nlohmann::json&
         }
     });
 
+    /** 
+    * Mails
+    */
+    bindings.insert({
+        "listMails", 
+        [this](AccountManager& manager, nlohmann::json& payload){
+            return this->listMails(manager, payload);
+        }
+    });
+
     return bindings;
 }
 
@@ -169,6 +179,40 @@ std::string Command::removeFolder(AccountManager& manager, nlohmann::json& raw) 
     json data;
     data["result"] = manager._mailer.removeFolder(folder);
     return this->generateResult("removeFolder", data);
+}
+
+/**
+* Mails 
+**/
+
+std::string Command::listMails(AccountManager& manager, nlohmann::json& raw) {
+    json& payload = raw["content"];
+    Folder folder(payload["folder"]["name"], payload["folder"]["length"], payload["folder"]["highestmodseq"]);
+    /**
+    * Filters are objects like { 'field': 'searchField', 'value': 'searchValue' }
+    */
+    json data;
+    std::vector<json> res;
+    std::cout << "after folder" << std::endl;
+
+    std::string operation = "";
+    std::string searchString = "";
+
+    if(payload["filter"].is_null() == false) {
+        if(payload["filter"]["field"].is_null() == false) operation = payload["filter"]["field"];
+        if(payload["filter"]["value"].is_null() == false) searchString = payload["filter"]["value"];
+    }
+
+    std::cout << "operation " << operation << std::endl;
+    std::cout << "searchString " << searchString << std::endl;
+    std::vector<std::string> mails = manager._mailer.searchMails(operation, searchString, folder);
+    for(size_t i = 0; i < mails.size(); i += 1) {
+        json headers = manager._mailer.parseHeaders(mails[i]);
+        Mail mail(std::to_string(i+1), headers);
+        res.push_back(mail.toJSON());
+    }
+    data["result"] = res;
+    return this->generateResult("listMails", data);
 }
 
 /*

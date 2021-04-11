@@ -35,12 +35,12 @@ class Mailer {
 
 		json parseContentType(std::string raw);
 		std::vector<json> parseAddressList(std::string list);
-		json parseMail(std::string mail);
+		json parseHeaders(std::string mail);
 		json parseBody(std::string body, json contentType);
 
 		std::vector<std::string> getMails(json folder);
 		std::string getBody(std::string folder, std::string id);
-		std::vector<std::string> searchMails(std::string operation, std::string searchString = "", std::string folderName = "");
+		std::vector<std::string> searchMails(std::string operation, std::string searchString, Folder folder);
 
 		bool createFolder(Folder& folder);
 		std::vector<Folder> getFolders();

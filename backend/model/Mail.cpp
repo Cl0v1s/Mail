@@ -4,6 +4,11 @@ Mail::Mail(std::string id) {
 	this->_id = id;
 }
 
+Mail::Mail(std::string id, nlohmann::json headers) {
+	this->_id = id;
+	this->_headers = headers;
+}
+
 Mail::Mail(std::string id, nlohmann::json headers, std::vector<nlohmann::json> bodies, std::vector<std::string> attachments, nlohmann::json attributes) {
 	this->_id = id;
 	this->_headers = headers;

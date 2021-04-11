@@ -12,6 +12,7 @@ class Folder {
 		nlohmann::json toJSON();
 
 		std::string getName();
+		int getLength();
 
 	private:
 		std::string _name;

@@ -7,6 +7,7 @@
 class Mail {
 	public:
 		Mail(std::string id);
+		Mail(std::string id, nlohmann::json headers);
 		Mail(std::string id,nlohmann::json headers, std::vector<nlohmann::json> bodies, std::vector<std::string> attachments, nlohmann::json attributes);
 		nlohmann::json toJSON();
 		std::string getId();

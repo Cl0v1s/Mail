@@ -11,6 +11,10 @@ std::string Folder::getName() {
 	return this->_name;
 }
 
+int Folder::getLength() {
+	return this->_length;
+}
+
 nlohmann::json Folder::toJSON() {
 	nlohmann::json json;
 	json["name"] = this->_name;

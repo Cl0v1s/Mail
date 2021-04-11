@@ -32,5 +32,7 @@ class Command {
         std::string removeMailfromFolder(AccountManager& manager, nlohmann::json& payload);
         std::string removeFolder(AccountManager& manager, nlohmann::json& payload);
 
+        // mails 
+        std::string listMails(AccountManager& manager, nlohmann::json& payload);
 
 };
