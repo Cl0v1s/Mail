@@ -1,0 +1,47 @@
+build/MyApp.app/Contents/MacOS/MyApp
+Waiting for frontend connections
+Starting new session 0x700009e58ed8
+Processing "initAccount"
+Processing "initAccount"
+Processing "removeAccount"
+Processing "listAccount"
+Processing "useAccount"
+Processing "listFolder"
+Processing "createFolder"
+Processing "listFolder"
+Processing "removeFolder"
+Processing "listFolder"
+Processing "listMails"
+Processing "listMails"
+Processing "getMail"
+No boundary
+-----BEGIN PGP MESSAGE-----
+Comment: Charset: utf-8
+
+hQEMA2DreWdhAePhAQf/UJSS65DeHLWskLOFoy54nuyydlHeqfMeSKlAoyv3pjJc
+M61UCgnZnfFd6iMCZgkJXhD73422OhhGOsD1inXenEgxXuuLbUNm6QjhoXeF2lTf
+45ThbOKmbg4L8s0Xvjq4g0P9gtmqrvlxCp9Vt8u+rWlZ1yVAnFRyL4Ky4Bri7NGE
+NeeBt1scvntm/ue/AtjbKDUIgpreURY+i6Bivg4m9MMOFNThfoQ5oz81ocbxYKOF
+Mq5Czdz7tj48jwJLBGCX86Oe56UHdW8doRyoQGy0I9BAUcHBk9qlhAJgllHD2Q4x
+QaA5jxH7QNoqh0v/C9CqpilzzUGoCO10B+I2OaKwR9LA0AEAMgOlRIFZMueyzBMx
+w3ZHTxTv8oS6PraVIuMqIImdU2C66SxC49mjrdBu1gp1pgvTN+1OyQzjIpD9ooqA
+oAaDOEpHS8y0RpM9a5lchaQ8bZexsiNmB98xieCnVqdBmXJoike8ZAXVHPeIWsIY
+cyHJJS44o4B4aA5MbaM+cukqbCSwXw2CLOBEzuaDSS2N5E70wseeFgpwZ6BZRjlO
+p3dM6I8P+lSgzHMCwg8badoL11tmWc+9Bkc00DnLvID9hEw7DjrI0iabuleFJ2GJ
+gztCP4xL7pJrHRQW9zywbvLvf2Oxw5MRlp+fCLnaWPaPE4c8him3YG8pmwbfAMkB
+9UqQAvwzW5qNBSGJsBrC6pCZxTmBF5Haa5gwT5z+BUFNOKPaXlgCUCuGmefh1X0P
+GDO/CMISsM7ecyPAZ+oWs2knlTHE8pd5h5zdANc7Sl4CgvR5OnMLyfZEaewSFnCq
+uSXKd8hDZKn75+oYnz5YZJtzRbLBiFy+CeE2vgHU3NSv2kTfAXhAYj9P1e21odgS
+Ne0=
+=5gVb
+-----END PGP MESSAGE-----
+
+descrypt 1
+descrypt 2
+input: 0
+descrypt 3
+output: 0
+descrypt 4
+0x7f8e92f145c0
+0x7f8e94048380
+0x7f8e9430a000

@@ -40,7 +40,7 @@ class Mailer {
 
 		std::vector<std::string> getMails(json folder);
 		std::string getBody(Folder& folder, Mail& mail);
-		std::vector<std::string> searchMails(std::string operation, std::string searchString, Folder folder);
+		std::vector<nlohmann::json> searchMails(std::string operation, std::string searchString, Folder folder);
 
 		bool createFolder(Folder& folder);
 		std::vector<Folder> getFolders();

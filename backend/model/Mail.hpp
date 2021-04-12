@@ -8,15 +8,14 @@ class Mail {
 	public:
 		Mail(std::string id);
 		Mail(std::string id, nlohmann::json headers);
-		Mail(std::string id,nlohmann::json headers, std::vector<nlohmann::json> bodies, std::vector<std::string> attachments, nlohmann::json attributes);
+		Mail(std::string id,nlohmann::json headers, nlohmann::json body, nlohmann::json attributes);
 		nlohmann::json toJSON();
 		std::string getId();
-		void addBody(nlohmann::json body);
+		void setBody(nlohmann::json body);
 	
 	private:
 		std::string _id;
 		nlohmann::json _headers;
-		std::vector<nlohmann::json> _bodies;
-		std::vector<std::string> _attachments;
+		nlohmann::json _body;
 		nlohmann::json _attributes;
 };

@@ -22,6 +22,7 @@ const test = (async (folders) => {
 		}
 	});
     assert(response.result.length > 0);
+	console.log(response.result[0]);
 	response = await Backend.ask({
 		type: "getMail",
 		content: {

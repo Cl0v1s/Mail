@@ -208,10 +208,10 @@ std::string Command::listMails(AccountManager& manager, nlohmann::json& raw) {
         if(payload["filter"]["value"].is_null() == false) searchString = payload["filter"]["value"];
     }
 
-    std::vector<std::string> mails = manager._mailer.searchMails(operation, searchString, folder);
+    std::vector<nlohmann::json> mails = manager._mailer.searchMails(operation, searchString, folder);
     for(size_t i = 0; i < mails.size(); i += 1) {
-        json headers = manager._mailer.parseHeaders(mails[i]);
-        Mail mail(std::to_string(i+1), headers);
+        json headers = manager._mailer.parseHeaders(mails[i]["headers"]);
+        Mail mail(mails[i]["id"], headers);
         res.push_back(mail.toJSON());
     }
     data["result"] = res;
@@ -224,9 +224,13 @@ std::string Command::getMail(AccountManager& manager, nlohmann::json& raw) {
     Mail mail(payload["mail"]["id"], payload["mail"]["headers"]);
     Folder folder(payload["folder"]["name"], 0, 0);
 
-    std::string body = manager._mailer.getBody(folder, mail);
-    std::cout << "after body " << std::endl;
-    mail.addBody(manager._mailer.parseBody(body, payload["mail"]["headers"]));
+    nlohmann::json headers;
+    headers["Content-Type"] = payload["mail"]["headers"]["Content-Type"];
+
+    std::string raw_body = manager._mailer.getBody(folder, mail);
+    nlohmann::json parsed_body = manager._mailer.parseBody(raw_body, headers);
+
+    mail.setBody(parsed_body);
 
     json data;
     data["result"] = mail.toJSON();

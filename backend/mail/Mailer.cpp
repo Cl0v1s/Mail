@@ -97,12 +97,14 @@ std::vector<uint8_t> Mailer::decrypt(std::string encrypted)
 	// check if string is indeed encrypted
 	if (encrypted.rfind("-----BEGIN PGP MESSAGE-----", 0) != 0)
 	{
+		std::cout << "Not crypted" << std::endl;
 		return std::vector<uint8_t>(encrypted.begin(), encrypted.end());
 	}
 
 	std::vector<uint8_t> decrypted;
 	if (this->_pgp->decrypt(encrypted, decrypted) == false)
 	{
+		std::cout << "Error decrypt" << std::endl;
 		//TODO: error UNABLE TO DECRYPT
 		return std::vector<uint8_t>(encrypted.begin(), encrypted.end());
 	}
@@ -275,10 +277,10 @@ std::string Mailer::getBody(Folder& folder, Mail& mail)
 /*
 * Operation must be in CAPS
 */
-std::vector<std::string> Mailer::searchMails(std::string operation, std::string searchString, Folder folder)
+std::vector<nlohmann::json> Mailer::searchMails(std::string operation, std::string searchString, Folder folder)
 {
 	std::string folderName = folder.getName();
-	std::vector<std::string> results;
+	std::vector<nlohmann::json> results;
 
 	std::string raw_ids;
 	char *c_raw_ids;
@@ -324,7 +326,10 @@ std::vector<std::string> Mailer::searchMails(std::string operation, std::string 
 	{
 		std::string mail;
 		this->_imapClient.GetHeader(std::string(token), mail, folderName);
-		results.push_back(mail);
+		nlohmann::json entry;
+		entry["id"] = token;
+		entry["headers"] = mail;
+		results.push_back(entry);
 		token = std::strtok(NULL, " ");
 	}
 
