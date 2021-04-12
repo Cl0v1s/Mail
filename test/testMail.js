@@ -10,27 +10,31 @@ const test = (async (folders) => {
 		}
 	});
 	assert(response.result);
-    const target = response.result[9];
-	response = await Backend.ask({
-		type: "listMails",
-		content: {
-			"folder": INBOX,
-			"filter": {
-				"field": "SUBJECT",
-				"value": target.headers.Subject.substring(0, 10),
+	const mails = response.result;
+	for(let i = 0; i < mails.length; i += 1) {
+		const target = mails[i];
+		response = await Backend.ask({
+			type: "listMails",
+			content: {
+				"folder": INBOX,
+				"filter": {
+					"field": "SUBJECT",
+					"value": target.headers.Subject.substring(0, 10),
+				}
 			}
-		}
-	});
-    assert(response.result.length > 0);
-	console.log(response.result[0]);
-	response = await Backend.ask({
-		type: "getMail",
-		content: {
-			"folder": INBOX,
-            "mail": response.result[0]
-		}
-	});
-    console.log(response.result);
+		});
+		assert(response.result.length > 0);
+		console.log(response.result[0]);
+		response = await Backend.ask({
+			type: "getMail",
+			content: {
+				"folder": INBOX,
+				"mail": response.result[0]
+			}
+		});
+		assert(response.result.body);
+	}
+	
 
 	// addMailToFolder
 	// TODO: à tester
