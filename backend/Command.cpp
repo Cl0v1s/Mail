@@ -2,120 +2,102 @@
 
 using namespace nlohmann;
 
-std::map<std::string, std::function<std::string(AccountManager&, nlohmann::json&)>> Command::createBindings() {
-    std::map<std::string, std::function<std::string(AccountManager&, nlohmann::json&)>> bindings;
+std::map<std::string, std::function<std::string(AccountManager &, nlohmann::json &)> > Command::createBindings()
+{
+    std::map<std::string, std::function<std::string(AccountManager &, nlohmann::json &)> > bindings;
 
-    bindings.insert({
-        "initAccount", 
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->initAccount(manager, payload);
-        }
-    });
+    bindings.insert({"initAccount",
+                     [this](AccountManager &manager, nlohmann::json &payload) {
+                         return this->initAccount(manager, payload);
+                     }});
 
-    bindings.insert({
-        "listAccount", 
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->listAccount(manager, payload);
-        }
-    });
+    bindings.insert({"listAccount",
+                     [this](AccountManager &manager, nlohmann::json &payload) {
+                         return this->listAccount(manager, payload);
+                     }});
 
-    bindings.insert({
-        "removeAccount", 
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->removeAccount(manager, payload);
-        }
-    });
+    bindings.insert({"removeAccount",
+                     [this](AccountManager &manager, nlohmann::json &payload) {
+                         return this->removeAccount(manager, payload);
+                     }});
 
-    bindings.insert({
-        "useAccount", 
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->useAccount(manager, payload);
-        }
-    });
+    bindings.insert({"useAccount",
+                     [this](AccountManager &manager, nlohmann::json &payload) {
+                         return this->useAccount(manager, payload);
+                     }});
 
     /*
     * Folders
     */
 
-    bindings.insert({
-        "createFolder", 
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->createFolder(manager, payload);
-        }
-    });
+    bindings.insert({"createFolder",
+                     [this](AccountManager &manager, nlohmann::json &payload) {
+                         return this->createFolder(manager, payload);
+                     }});
 
-    bindings.insert({
-        "listFolder", 
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->listFolder(manager, payload);
-        }
-    });
+    bindings.insert({"listFolder",
+                     [this](AccountManager &manager, nlohmann::json &payload) {
+                         return this->listFolder(manager, payload);
+                     }});
 
-    bindings.insert({
-        "addMailToFolder", 
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->addMailToFolder(manager, payload);
-        }
-    });
-
-    bindings.insert({
-        "removeMailfromFolder", 
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->removeMailfromFolder(manager, payload);
-        }
-    });
-
-    bindings.insert({
-        "removeFolder", 
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->removeFolder(manager, payload);
-        }
-    });
+    bindings.insert({"removeFolder",
+                     [this](AccountManager &manager, nlohmann::json &payload) {
+                         return this->removeFolder(manager, payload);
+                     }});
 
     /** 
     * Mails
     */
-    bindings.insert({
-        "listMails", 
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->listMails(manager, payload);
-        }
-    });
-    bindings.insert({
-        "getMail", 
-        [this](AccountManager& manager, nlohmann::json& payload){
-            return this->getMail(manager, payload);
-        }
-    });
+    bindings.insert({"listMails",
+                     [this](AccountManager &manager, nlohmann::json &payload) {
+                         return this->listMails(manager, payload);
+                     }});
+    bindings.insert({"getMail",
+                     [this](AccountManager &manager, nlohmann::json &payload) {
+                         return this->getMail(manager, payload);
+                     }});
+
+    bindings.insert({"copyMail",
+                     [this](AccountManager &manager, nlohmann::json &payload) {
+                         return this->copyMail(manager, payload);
+                     }});
+
+    bindings.insert({"removeMail",
+                     [this](AccountManager &manager, nlohmann::json &payload) {
+                         return this->removeMail(manager, payload);
+                     }});
 
     return bindings;
 }
 
-std::string Command::generateResult(std::string operation, nlohmann::json& result) {
+std::string Command::generateResult(std::string operation, nlohmann::json &result)
+{
     result["operation"] = operation;
 
-    stringstream ss; 
-    ss << result; 
+    stringstream ss;
+    ss << result;
     return ss.str();
 }
-
 
 /**
  * Accounts
  */
-std::string Command::initAccount(AccountManager& manager, nlohmann::json& raw) {
-    json& payload = raw["content"];
+std::string Command::initAccount(AccountManager &manager, nlohmann::json &raw)
+{
+    json &payload = raw["content"];
     Account account(payload["name"], payload["imap"], payload["smtp"], payload["key"]);
     json data;
     data["result"] = manager.addAccount(account);
     return this->generateResult("initAccount", data);
 }
 
-std::string Command::listAccount(AccountManager& manager, nlohmann::json& raw) {
+std::string Command::listAccount(AccountManager &manager, nlohmann::json &raw)
+{
     std::vector<Account> accounts = manager.getAccounts();
     std::vector<json> list;
 
-    for(int i = 0; i < accounts.size(); i += 1) {
+    for (int i = 0; i < accounts.size(); i += 1)
+    {
         list.push_back(accounts[i].toJSON());
     }
 
@@ -124,15 +106,17 @@ std::string Command::listAccount(AccountManager& manager, nlohmann::json& raw) {
     return this->generateResult("listAccount", data);
 }
 
-std::string Command::useAccount(AccountManager& manager, nlohmann::json& raw) {
-    json& payload = raw["content"];
+std::string Command::useAccount(AccountManager &manager, nlohmann::json &raw)
+{
+    json &payload = raw["content"];
     json data;
     data["result"] = manager.useAccount(payload["name"]);
     return this->generateResult("useAccount", data);
 }
 
-std::string Command::removeAccount(AccountManager& manager, nlohmann::json& raw) {
-    json& payload = raw["content"];
+std::string Command::removeAccount(AccountManager &manager, nlohmann::json &raw)
+{
+    json &payload = raw["content"];
     json data;
     data["result"] = manager.removeAccount(payload["name"]);
     return this->generateResult("removeAccount", data);
@@ -141,18 +125,21 @@ std::string Command::removeAccount(AccountManager& manager, nlohmann::json& raw)
 /**
  * Folders
  */
-std::string Command::createFolder(AccountManager& manager, nlohmann::json& raw) {
-    json& payload = raw["content"];
+std::string Command::createFolder(AccountManager &manager, nlohmann::json &raw)
+{
+    json &payload = raw["content"];
     Folder folder(payload["folder"]["name"], 0, 0);
     json data;
     data["result"] = manager._mailer.createFolder(folder);
     return this->generateResult("createFolder", data);
 }
 
-std::string Command::listFolder(AccountManager& manager, nlohmann::json& payload) {
+std::string Command::listFolder(AccountManager &manager, nlohmann::json &payload)
+{
     std::vector<Folder> folders = manager._mailer.getFolders();
     std::vector<json> res;
-    for(int i = 0; i < folders.size(); i+=1) {
+    for (int i = 0; i < folders.size(); i += 1)
+    {
         res.push_back(folders[i].toJSON());
     }
     json data;
@@ -160,27 +147,9 @@ std::string Command::listFolder(AccountManager& manager, nlohmann::json& payload
     return this->generateResult("listFolder", data);
 }
 
-std::string Command::addMailToFolder(AccountManager& manager, nlohmann::json& raw) {
-    json& payload = raw["content"];
-    Folder from(payload["from"]["name"], 0, 0);
-    Folder to(payload["to"]["name"], 0, 0);
-    Mail mail(payload["mail"]["id"]);
-    json data;
-    data["result"] = manager._mailer.addMailToFolder(mail, from, to);
-    return this->generateResult("addMailToFolder", data);
-}
-
-std::string Command::removeMailfromFolder(AccountManager& manager, nlohmann::json& raw) {
-    json& payload = raw["content"];
-    Folder folder(payload["folder"]["name"], 0, 0);
-    Mail mail(payload["mail"]["id"]);
-    json data;
-    data["result"] = manager._mailer.removeMailFromFolder(mail, folder);
-    return this->generateResult("removeMailfromFolder", data);
-}
-
-std::string Command::removeFolder(AccountManager& manager, nlohmann::json& raw) {
-    json& payload = raw["content"];
+std::string Command::removeFolder(AccountManager &manager, nlohmann::json &raw)
+{
+    json &payload = raw["content"];
     Folder folder(payload["folder"]["name"], 0, 0);
     json data;
     data["result"] = manager._mailer.removeFolder(folder);
@@ -191,8 +160,9 @@ std::string Command::removeFolder(AccountManager& manager, nlohmann::json& raw) 
 * Mails 
 **/
 
-std::string Command::listMails(AccountManager& manager, nlohmann::json& raw) {
-    json& payload = raw["content"];
+std::string Command::listMails(AccountManager &manager, nlohmann::json &raw)
+{
+    json &payload = raw["content"];
     Folder folder(payload["folder"]["name"], payload["folder"]["length"], payload["folder"]["highestmodseq"]);
     /**
     * Filters are objects like { 'field': 'searchField', 'value': 'searchValue' }
@@ -203,31 +173,35 @@ std::string Command::listMails(AccountManager& manager, nlohmann::json& raw) {
     std::string operation = "";
     std::string searchString = "";
 
-    if(payload["filter"].is_null() == false) {
-        if(payload["filter"]["field"].is_null() == false) operation = payload["filter"]["field"];
-        if(payload["filter"]["value"].is_null() == false) searchString = payload["filter"]["value"];
+    if (payload["filter"].is_null() == false)
+    {
+        if (payload["filter"]["field"].is_null() == false)
+            operation = payload["filter"]["field"];
+        if (payload["filter"]["value"].is_null() == false)
+            searchString = payload["filter"]["value"];
     }
 
     std::vector<nlohmann::json> mails = manager._mailer.searchMails(operation, searchString, folder);
-    for(size_t i = 0; i < mails.size(); i += 1) {
+    for (size_t i = 0; i < mails.size(); i += 1)
+    {
         json headers = manager._mailer.parseHeaders(mails[i]["headers"]);
-        Mail mail(mails[i]["id"], headers);
+        Mail mail(mails[i]["id"], headers, folder.getName());
         res.push_back(mail.toJSON());
     }
     data["result"] = res;
     return this->generateResult("listMails", data);
 }
 
-std::string Command::getMail(AccountManager& manager, nlohmann::json& raw) {
-    json& payload = raw["content"];
+std::string Command::getMail(AccountManager &manager, nlohmann::json &raw)
+{
+    json &payload = raw["content"];
 
-    Mail mail(payload["mail"]["id"], payload["mail"]["headers"]);
-    Folder folder(payload["folder"]["name"], 0, 0);
+    Mail mail(payload["mail"]["id"], payload["mail"]["headers"], payload["mail"]["folder"]);
 
     nlohmann::json headers;
     headers["Content-Type"] = payload["mail"]["headers"]["Content-Type"];
 
-    std::string raw_body = manager._mailer.getBody(folder, mail);
+    std::string raw_body = manager._mailer.getBody(mail);
     nlohmann::json parsed_body = manager._mailer.parseBody(raw_body, headers);
 
     mail.setBody(parsed_body);
@@ -235,7 +209,25 @@ std::string Command::getMail(AccountManager& manager, nlohmann::json& raw) {
     json data;
     data["result"] = mail.toJSON();
     return this->generateResult("getMail", data);
+}
 
+std::string Command::copyMail(AccountManager &manager, nlohmann::json &raw)
+{
+    json &payload = raw["content"];
+    Folder to(payload["to"]["name"], payload["to"]["length"], 0);
+    Mail mail(payload["mail"]["id"], payload["mail"]["headers"], payload["mail"]["folder"]);
+    json data;
+    data["result"] = manager._mailer.copyMail(mail, to);
+    return this->generateResult("copyMail", data);
+}
+
+std::string Command::removeMail(AccountManager &manager, nlohmann::json &raw)
+{
+    json &payload = raw["content"];
+    Mail mail(payload["mail"]["id"], payload["mail"]["headers"], payload["mail"]["folder"]);
+    json data;
+    data["result"] = manager._mailer.removeMail(mail);
+    return this->generateResult("removeMail", data);
 }
 
 /*

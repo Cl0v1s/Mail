@@ -39,14 +39,6 @@ const test = (async () => {
 	});
 
 	return response.result;
-
-	// addMailToFolder
-	// TODO: à tester
-
-	// removeMailfromFolder
-	// TODO: à tester
-
-
 });
 
 module.exports = test;

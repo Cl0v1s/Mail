@@ -263,10 +263,10 @@ json Mailer::parseBody(std::string body, json headers)
 	return bodypart;
 }
 
-std::string Mailer::getBody(Folder& folder, Mail& mail)
+std::string Mailer::getBody(Mail& mail)
 {
 	std::string result;
-	this->_imapClient.GetString(mail.getId(), result, folder.getName()); // retrieve mail
+	this->_imapClient.GetString(mail.getId(), result, mail.getFolder()); // retrieve mail
 	std::vector<std::string> parts;
 	boost::algorithm::split_regex(parts, result, boost::regex("\r\n\r\n")); // split mail headers and body
 	parts.erase(parts.begin());												// only keep mail body
@@ -336,6 +336,18 @@ std::vector<nlohmann::json> Mailer::searchMails(std::string operation, std::stri
 	return results;
 }
 
+
+bool Mailer::copyMail(Mail &mail, Folder &to)
+{
+	std::string from = mail.getFolder();
+	return this->_imapClient.CopyMail(mail.getId(), from, to.getName());
+}
+
+bool Mailer::removeMail(Mail &mail)
+{
+	return this->_imapClient.SetMailProperty(mail.getId(), CIMAPClient::MailProperty::Deleted, mail.getFolder());
+}
+
 bool Mailer::createFolder(Folder &folder)
 {
 	return this->_imapClient.CreateFolder(folder.getName());
@@ -392,15 +404,4 @@ std::vector<Folder> Mailer::getFolders()
 		results.push_back(std::move(folder));
 	}
 	return results;
-}
-
-bool Mailer::addMailToFolder(Mail &mail, Folder &from, Folder &to)
-{
-	std::string frm = from.getName();
-	return this->_imapClient.CopyMail(mail.getId(), frm, to.getName());
-}
-
-bool Mailer::removeMailFromFolder(Mail &mail, Folder &folder)
-{
-	return this->_imapClient.SetMailProperty(mail.getId(), CIMAPClient::MailProperty::Deleted, folder.getName());
 }

@@ -28,12 +28,11 @@ class Command {
         // folders
         std::string createFolder(AccountManager& manager, nlohmann::json& payload);
         std::string listFolder(AccountManager& manager, nlohmann::json& payload);
-        std::string addMailToFolder(AccountManager& manager, nlohmann::json& payload);
-        std::string removeMailfromFolder(AccountManager& manager, nlohmann::json& payload);
         std::string removeFolder(AccountManager& manager, nlohmann::json& payload);
 
         // mails 
         std::string listMails(AccountManager& manager, nlohmann::json& payload);
         std::string getMail(AccountManager& manager, nlohmann::json& payload);
-
+        std::string copyMail(AccountManager& manager, nlohmann::json& payload);
+        std::string removeMail(AccountManager& manager, nlohmann::json& payload);
 };

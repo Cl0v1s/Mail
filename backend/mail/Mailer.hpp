@@ -39,14 +39,14 @@ class Mailer {
 		json parseBody(std::string body, json contentType);
 
 		std::vector<std::string> getMails(json folder);
-		std::string getBody(Folder& folder, Mail& mail);
+		std::string getBody(Mail& mail);
 		std::vector<nlohmann::json> searchMails(std::string operation, std::string searchString, Folder folder);
+		bool copyMail(Mail& mail, Folder& to);
+		bool removeMail(Mail& mail);
 
 		bool createFolder(Folder& folder);
 		std::vector<Folder> getFolders();
 		bool removeFolder(Folder& folder);
-		bool addMailToFolder(Mail& mail, Folder& from, Folder& to);
-		bool removeMailFromFolder(Mail& mail, Folder& folder);
 
 
 	private: 
