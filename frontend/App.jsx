@@ -6,6 +6,9 @@ import AppContext from './model/context';
 
 import Read from './Read.jsx';
 
+// chargement temporaire de la configuration
+import config from './model/config.json';
+
 export default class App extends Component {
 	constructor(props) {
 		super(props);
@@ -17,13 +20,26 @@ export default class App extends Component {
 		}
 	}
 
+	async componentDidMount() {
+		// Chargement temporaire d'un compte par défaut
+		await this.actions.Account.init(config.name, config.key, config.imap, config.smtp);
+		await this.actions.Account.use(config);
+		await this.actions.Folder.list();
+		console.log(this.state.folders);
+		if(this.state.folders.length <= 0) return;
+		await this.actions.Mail.list(this.state.folders[0]);
+		console.log(this.state.mails);
+	}
+
 	actions = ({
 		Account: {
 			...Account,
 			init: async (name, key, imap, smtp) => {
 				if(await Account.init(name, key, imap, smtp)) this.setState({ accounts: this.state.accounts.concat([{ name, key, imap, smtp}])});
 			},
-			list: async () => this.setState({ accounts: await Account.list()}),
+			list: () => new Promise(async (resolve) => {
+				this.setState({ accounts: await Account.list() }, resolve)
+			}),
 			remove: async (account) => {
 				if(await Account.remove(account)) this.setState({ accounts: this.state.accounts.filter((a) => a.name != account.name)});
 			}
@@ -40,7 +56,7 @@ export default class App extends Component {
 		},
 		Mail: {
 			...Mail,
-			list: async (folder = null, filter = null) => {
+			list: (folder = null, filter = null) => new Promise(async (resolve) => {
 				let mails = [];
 				if(folder == null) {
 					const promises = this.state.folders.map((folder) => Mail.list(folder, filter));
@@ -48,12 +64,9 @@ export default class App extends Component {
 					mails = all.flat();
 				} else {
 					mails = mails.concat(await Mail.list(folder, filter));
-					if(!filter) {
-						mails = mail.concat(this.state.mails.filter((m) => m.folder !== folder.name))
-					}
 				}
-				this.setState({ mails });
-			},
+				this.setState({ mails }, resolve);
+			}),
 			get: async (mail) => {
 				const complete = await Mail.get(mail);
 				this.setState({

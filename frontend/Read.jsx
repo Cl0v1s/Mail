@@ -19,13 +19,12 @@ class Read extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this.props.actions.Folder.list();
-    }
 
-
-    onFolderClick = (folder) => {
-
+    onFolderClick = async (folder) => {
+        await this.props.actions.Mail.list(folder);
+        this.setState({
+            folderIndex: this.props.store.folders.findIndex((f) => f.name === folder.name),
+        })
     }
 
     render() {

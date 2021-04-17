@@ -58,6 +58,7 @@ class Backend {
 		return new Promise(async (resolve, reject) => {
 			session.callback = resolve;
 			await session.ready;
+			console.log(request);
 			session.socket.send(JSON.stringify(request));
 		});
 	}

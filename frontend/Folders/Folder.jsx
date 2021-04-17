@@ -14,10 +14,14 @@ export default class Folder extends React.Component {
         focus: false,
     }
 
+    onClick = () => {
+        this.props.onClick(this.props.folder);
+    }
+
     render() {
         return (
-            <div className={`component-folder border border-gray-50 ${this.props.focus ? 'bg-gray-200' : ''}`}>
-                <div className="text-lg">
+            <div className={`component-folder cursor-pointer border border-gray-50 ${this.props.focus ? 'bg-gray-200' : ''}`} onClick={this.onClick}>
+                <div className="text-lg font-medium">
                     { this.props.folder.name }
                 </div>
                 <div className="text-sm">
