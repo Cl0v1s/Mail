@@ -4,6 +4,8 @@ import { Account, Folder, Mail } from './model/actions';
 
 import AppContext from './model/context';
 
+import Read from './Read.jsx';
+
 export default class App extends Component {
 	constructor(props) {
 		super(props);
@@ -79,6 +81,7 @@ export default class App extends Component {
 						actions: this.actions
 					}}
 				>
+					<Read />
 				</AppContext.Provider>
 			</div>
 		);

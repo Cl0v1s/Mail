@@ -1,4 +1,4 @@
-const WebSocket = require('ws');
+// const WebSocket = require('ws');
 
 class Backend {
 	static INSTANCE = new Backend();
@@ -12,13 +12,13 @@ class Backend {
 	createSession = () => {
 		console.log('Creating session...');
 		const session  = {
-			socket: new WebSocket("ws://localhost:8081/echo"),
+			socket: new WebSocket("ws://192.168.1.38:8081/echo"),
 			callback: null,
 			ready: null,
 		};
 
-		session.socket.on('message', (evt) => {
-			const payload = JSON.parse(evt);
+		session.socket.onmessage = (evt) => {
+			const payload = JSON.parse(evt.data);
 			if(session.callback != null) {
 				session.callback(payload);
 				session.callback = null;
@@ -29,13 +29,13 @@ class Backend {
 					console.log('Removed session '+index);
 				}
 			}
-		});
+		};
 
 		session.ready = new Promise((resolve) => {
-			session.socket.on('open', (evt) => {
+			session.socket.onopen = (evt) => {
 				console.log('Socket ready');
 				resolve();
-			});
+			};
 		});
 		return session;
 	}
