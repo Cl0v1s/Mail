@@ -43,7 +43,9 @@ const test = (async () => {
 	response = await Backend.ask({
 		type: "removeAccount",
 		content: {
-			"name": "test@mail.com"
+			"account": {
+				"name": "test@mail.com"
+			}
 		}
 	});
 	assert(response.result);
@@ -53,13 +55,14 @@ const test = (async () => {
 		type: "listAccount",
 	});
 	assert(response.result.length == 1);
-	assert(response.result[0].name == process.env.ACCOUNT);
+	const toUse = response.result.find((account) => account.name == process.env.ACCOUNT)
+	assert(toUse);
 
 	// test useAccount
 	response = await Backend.ask({
 		type: "useAccount",
 		content: {
-			name: process.env.ACCOUNT,
+			account: toUse,
 		}
 	});
 	assert(response.result);

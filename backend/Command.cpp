@@ -110,7 +110,7 @@ std::string Command::useAccount(AccountManager &manager, nlohmann::json &raw)
 {
     json &payload = raw["content"];
     json data;
-    data["result"] = manager.useAccount(payload["name"]);
+    data["result"] = manager.useAccount(payload["account"]["name"]);
     return this->generateResult("useAccount", data);
 }
 
@@ -118,7 +118,7 @@ std::string Command::removeAccount(AccountManager &manager, nlohmann::json &raw)
 {
     json &payload = raw["content"];
     json data;
-    data["result"] = manager.removeAccount(payload["name"]);
+    data["result"] = manager.removeAccount(payload["account"]["name"]);
     return this->generateResult("removeAccount", data);
 }
 

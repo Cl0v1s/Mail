@@ -25,11 +25,9 @@ const test = (async (folders) => {
 		}
 	});
 	assert(response.result.length > 0);
-	console.log(response.result[0]);
 	response = await Backend.ask({
 		type: "getMail",
 		content: {
-			"folder": INBOX,
 			"mail": response.result[0]
 		}
 	});
@@ -53,7 +51,6 @@ const test = (async (folders) => {
 	});
 
 	const copiedTarget = response.result.find((mail) => mail.headers.Subject === target.headers.Subject && mail.headers.Date === target.headers.Date)
-	console.log(copiedTarget);
 	response = await Backend.ask({
 		type: "removeMail",
 		content: {
