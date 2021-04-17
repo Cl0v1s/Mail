@@ -28,7 +28,11 @@ export const MailHeader = PropTypes.shape({
 });
 
 export const MailBody = PropTypes.shape({
-
+    headers: PropTypes.shape({
+        "Content-Type": ContentType.isRequired,
+    }),
+    parts: PropTypes.array,
+    content: PropTypes.any,
 });
 
 

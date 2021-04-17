@@ -28,7 +28,7 @@ export default class App extends Component {
 		console.log(this.state.folders);
 		if(this.state.folders.length <= 0) return;
 		await this.actions.Mail.list(this.state.folders[0]);
-		console.log(this.state.mails);
+		await this.actions.Mail.get(this.state.mails[0]);
 	}
 
 	actions = ({

@@ -13,9 +13,13 @@ export default class Mail extends React.Component {
         focus: false,
     }
 
+    onClick = () => {
+        this.props.onClick(this.props.mail);
+    }
+
     render() {
         return (
-            <div className={`component-mail cursor-pointer border border-gray-50 ${this.props.focus ? 'bg-gray-200' : ''}`}>
+            <div className={`component-mail cursor-pointer border border-gray-50 ${this.props.focus ? 'bg-gray-200' : ''}`} onClick={this.onClick}>
                 <div className="text-lg font-bold">
                     { this.props.mail.headers.From[0].name ||  this.props.mail.headers.From[0].address }
                 </div>

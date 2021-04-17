@@ -5,6 +5,7 @@ import withAppContext from './model/withAppContext.jsx';
 
 import FolderList from './Folders/FolderList.jsx';
 import MailList from './Mails/MailList.jsx';
+import MailReader from './Mails/MailReader.jsx';
 
 class Read extends React.Component {
     static propTypes = {
@@ -18,6 +19,7 @@ class Read extends React.Component {
         this.state = {
             folderIndex: 0,
             mailIndex: 0,
+            mailToRead: this.props.store.mails[0],
         }
     }
 
@@ -29,11 +31,20 @@ class Read extends React.Component {
         })
     }
 
+    onMailClick = async (mail) => {
+        await this.props.actions.Mail.get(mail);
+        const index = this.props.store.mails.findIndex((m) => m.id === mail.id && m.folder === mail.folder);
+        this.setState({
+            mailToRead: this.props.store.mails[index],
+            mailIndex: index,
+        })
+    }
+
     render() {
         return (
             <div className="component-read">
                 <div className="flex">
-                    <div className="flex-auto">
+                    <div className="">
                         <FolderList
                             onFolderClick={this.onFolderClick}
                             focusIndex={this.state.folderIndex}
@@ -44,7 +55,17 @@ class Read extends React.Component {
                         <MailList
                             focusIndex={this.state.mailIndex}
                             mails={this.props.store.mails}
+                            onMailClick={this.onMailClick}
                         />
+                    </div>
+                    <div className="flex-1">
+                        {
+                            this.state.mailToRead
+                            && <MailReader
+                                mail={this.state.mailToRead}
+                            />
+                        }
+
                     </div>
                 </div>
             </div>

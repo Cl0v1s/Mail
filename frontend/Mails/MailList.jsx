@@ -8,13 +8,14 @@ export default class MailList extends React.Component {
     static propTypes = {
         mails: PropTypes.arrayOf(MailType).isRequired,
         focusIndex: PropTypes.number.isRequired,
+        onMailClick: PropTypes.func.isRequired,
     }
 
     render() {
         return (
             <div className="component-mail-list">
                 {
-                    this.props.mails.map((mail, index) => <Mail key={index} mail={mail} focus={this.props.focusIndex === index} />)
+                    this.props.mails.map((mail, index) => <Mail key={index} mail={mail} onClick={this.props.onMailClick} focus={this.props.focusIndex === index} />)
                 }
             </div>
         )
