@@ -14,11 +14,11 @@ const Account = {
                 return response.result;
         },
 
-        use: async (name) => {
+        use: async (account) => {
                 const response = await Backend.ask({
                         type: "useAccount",
                         content: {
-                                name,
+                                account,
                         }
                 });
                 return response.result;
@@ -31,11 +31,11 @@ const Account = {
                 return response.result;
         },
 
-        remove: async (name) => {
+        remove: async (account) => {
                 const response = await Backend.ask({
                         type: "removeAccount",
                         content: {
-                                name,
+                                account,
                         }
                 });
                 return response.result;     
