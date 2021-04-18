@@ -10,33 +10,78 @@ export default class MailReader extends React.Component {
         mail: MailType.isRequired,
     }
 
+    static b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
+      
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+          const slice = byteCharacters.slice(offset, offset + sliceSize);
+      
+          const byteNumbers = new Array(slice.length);
+          for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+          }
+      
+          const byteArray = new Uint8Array(byteNumbers);
+          byteArrays.push(byteArray);
+        }
+      
+        const blob = new Blob(byteArrays, {type: contentType});
+        return blob;
+    }
+
     constructor(props) {
         super(props);
 
-        const a = this.retrieveAttachments(this.props.mail.body);
-        console.log(a);
         this.state = {
-            attachments: a,
+            attachments: this.initAttachments(),
         }
     }
 
+    componentWillUnmount() {
+        this.freeAttachments(this.state.attachments);
+    }
+
     componentDidUpdate(prevProps, prevState) {
-        if(prevProps.mail === this.props.mail) return;
-        
-        const a = this.retrieveAttachments(this.props.mail.body);
-        console.log(a);
-        this.setState({
-            attachments: a,
-        });
+        if(prevProps.mail !== this.props.mail) {
+            this.freeAttachments(this.state.attachments);
+            this.setState({
+                attachments: this.initAttachments(),
+            })
+        }
+    }
+
+    initAttachments = () => {
+        const aats = this.retrieveAttachments(this.props.mail.body)
+            .filter((a) => a != null)
+            .map((a) => {
+                const blob = MailReader.b64toBlob(a.content, "application/octet-stream");
+                const match = a.headers["Content-Disposition"].match(/filename=("|')?([^"']*)("|')?/);
+                const name = (
+                    match
+                    ? match[2]
+                    : "attachment"
+                ).replace('.pgp', '');
+                return {
+                    filename: name,
+                    url: URL.createObjectURL(blob),
+                }
+            });
+        console.log(aats);
+        return aats;
+    }
+
+    freeAttachments = (attachments) => {
+        attachments.forEach((a) => URL.revokeObjectURL(a.url));
     }
 
     retrieveAttachments = (part) => {
         if (part.parts) {
-            return part.parts.map((p) => this.retrieveAttachments(p)).flat().filter((a) => a != null);
-        } else {
-            const filter = Object.keys(MailPart.MANAGED_TYPES).find((t) => part.headers["Content-Type"].type.startsWith(t));
-            if(!filter) return part;
+            return part.parts.map((p) => this.retrieveAttachments(p)).flat();
         }
+        const filter = Object.keys(MailPart.MANAGED_TYPES).find((t) => part.headers["Content-Type"].type.startsWith(t));
+        if(!filter) return [part];
+        return [];
     }
 
 
@@ -63,6 +108,16 @@ export default class MailReader extends React.Component {
                 </div>
                 <div>
                         <MailPart mailBody={this.props.mail.body} />
+                </div>
+                <div>
+                        {
+                            this.state.attachments.map((at, index) => <a key={index} download={at.filename} href={at.url}>
+                                    {
+                                        at.filename
+                                    }
+                                </a>
+                            )
+                        }
                 </div>
                 
             </div>

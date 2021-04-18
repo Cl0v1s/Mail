@@ -55,20 +55,26 @@ Pour proposer une base de fonctionnalités acceptable, le backend doit proposer 
 **Sur les mails**
 
 * Envoyer un mail
+* Récupérer la liste des mails d'un dossier
 * Consulter/déchiffrer un mail
-* Modifier les attributs d'un mail (lu/non lu etc...)
+* Copier un mail
 * Supprimer un mail
 
 **Sur les dossiers**
 
 * Créer un dossier
-* Récupérer les dossiers d'un compte
-* Récupérer le contenu d'un dossier (lister tous les mails/chercher des mails)
-* Ajouter/supprimer un mail
+* Lister les dossiers
 * Supprimer un dossier 
 
 **Sur les comptes**
 
 * Initialiser un compte 
+* Utiliser un compte
 * Lister tous les dossiers
 * Supprimer le compte 
+
+## TODO
+
+* Maquetter l'application
+* Partager le compte couramment utilisé entre plusieurs sessions websocket
+* Empêcher le crash du backend sur un caractère non-reconnu en UTF-8

@@ -32,7 +32,9 @@ class Read extends React.Component {
     }
 
     onMailClick = async (mail) => {
-        await this.props.actions.Mail.get(mail);
+        if(!mail.body) {
+            await this.props.actions.Mail.get(mail);
+        }
         const index = this.props.store.mails.findIndex((m) => m.id === mail.id && m.folder === mail.folder);
         this.setState({
             mailToRead: this.props.store.mails[index],
