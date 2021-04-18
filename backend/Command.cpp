@@ -130,13 +130,13 @@ std::string Command::createFolder(AccountManager &manager, nlohmann::json &raw)
     json &payload = raw["content"];
     Folder folder(payload["folder"]["name"], 0, 0);
     json data;
-    data["result"] = manager._mailer.createFolder(folder);
+    data["result"] = manager.getMailer()->createFolder(folder);
     return this->generateResult("createFolder", data);
 }
 
 std::string Command::listFolder(AccountManager &manager, nlohmann::json &payload)
 {
-    std::vector<Folder> folders = manager._mailer.getFolders();
+    std::vector<Folder> folders = manager.getMailer()->getFolders();
     std::vector<json> res;
     for (int i = 0; i < folders.size(); i += 1)
     {
@@ -152,7 +152,7 @@ std::string Command::removeFolder(AccountManager &manager, nlohmann::json &raw)
     json &payload = raw["content"];
     Folder folder(payload["folder"]["name"], 0, 0);
     json data;
-    data["result"] = manager._mailer.removeFolder(folder);
+    data["result"] = manager.getMailer()->removeFolder(folder);
     return this->generateResult("removeFolder", data);
 }
 
@@ -181,10 +181,10 @@ std::string Command::listMails(AccountManager &manager, nlohmann::json &raw)
             searchString = payload["filter"]["value"];
     }
 
-    std::vector<nlohmann::json> mails = manager._mailer.searchMails(operation, searchString, folder);
+    std::vector<nlohmann::json> mails = manager.getMailer()->searchMails(operation, searchString, folder);
     for (size_t i = 0; i < mails.size(); i += 1)
     {
-        json headers = manager._mailer.parseHeaders(mails[i]["headers"]);
+        json headers = manager.getMailer()->parseHeaders(mails[i]["headers"]);
         Mail mail(mails[i]["id"], headers, folder.getName());
         res.push_back(mail.toJSON());
     }
@@ -201,8 +201,8 @@ std::string Command::getMail(AccountManager &manager, nlohmann::json &raw)
     nlohmann::json headers;
     headers["Content-Type"] = payload["mail"]["headers"]["Content-Type"];
 
-    std::string raw_body = manager._mailer.getBody(mail);
-    nlohmann::json parsed_body = manager._mailer.parseBody(raw_body, headers);
+    std::string raw_body = manager.getMailer()->getBody(mail);
+    nlohmann::json parsed_body = manager.getMailer()->parseBody(raw_body, headers);
 
     mail.setBody(parsed_body);
 
@@ -217,7 +217,7 @@ std::string Command::copyMail(AccountManager &manager, nlohmann::json &raw)
     Folder to(payload["to"]["name"], payload["to"]["length"], 0);
     Mail mail(payload["mail"]["id"], payload["mail"]["headers"], payload["mail"]["folder"]);
     json data;
-    data["result"] = manager._mailer.copyMail(mail, to);
+    data["result"] = manager.getMailer()->copyMail(mail, to);
     return this->generateResult("copyMail", data);
 }
 
@@ -226,7 +226,7 @@ std::string Command::removeMail(AccountManager &manager, nlohmann::json &raw)
     json &payload = raw["content"];
     Mail mail(payload["mail"]["id"], payload["mail"]["headers"], payload["mail"]["folder"]);
     json data;
-    data["result"] = manager._mailer.removeMail(mail);
+    data["result"] = manager.getMailer()->removeMail(mail);
     return this->generateResult("removeMail", data);
 }
 
