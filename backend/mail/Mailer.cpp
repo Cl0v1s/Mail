@@ -28,7 +28,7 @@ Mailer::~Mailer()
 void Mailer::convert(std::string charset, std::vector<uint8_t> &raw)
 {
 	// std::cout << "Converting from " << charset << " to UTF-8" << std::endl;
-	iconvpp::converter conv("UTF-8", charset);
+	iconvpp::converter conv("UTF-8//IGNORE", charset);
 	std::string input(raw.begin(), raw.end());
 	std::string output;
 	conv.convert(input, output);
