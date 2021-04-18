@@ -9,8 +9,11 @@
 #include <boost/regex.hpp>
 #include <boost/algorithm/string/regex.hpp>
 #include <boost/algorithm/string/join.hpp>
+
+#include "lib/iconv.hpp"
 #include "lib/SMTPClient.h"
 #include "lib/IMAPClient.h"
+
 #include "./../utils/cpp-base64/base64.h"
 #include "./../utils/QuotedPrintable/QuotedPrintable.hpp"
 
@@ -29,7 +32,7 @@ class Mailer {
 
 		void init(std::string smtpAddress, std::string imapAddress, std::string username, std::string password);
 
-		void convert(std::vector<uint8_t>& ascii);
+		void convert(std::string charset, std::vector<uint8_t>& input);
 		std::string decode(std::string encoded);
 		std::vector<uint8_t> decrypt(std::string encrypted);
 

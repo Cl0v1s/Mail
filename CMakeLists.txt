@@ -46,6 +46,8 @@ include_directories(/usr/local/include)
 link_directories(/usr/local/lib)
 find_package(PkgConfig REQUIRED)
 
+find_package(Iconv REQUIRED)
+message("Iconv found: ${Iconv_FOUND}")
 
 find_package(Boost REQUIRED regex)
 message("Boost found: ${Boost_FOUND}")
@@ -80,6 +82,7 @@ message("Botan2 Found: TRUE")
 add_app("${SOURCES}")
 # bug in cmake which cause to use apple version of open ssl instead of detected one
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${Iconv_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} "${OpenSSL_LIBRARIES}")
 target_link_libraries(${PROJECT_NAME} "${nlohmann_json_LIBRARIES}")
 target_link_libraries(${PROJECT_NAME} "${CURL_LIBRARIES}")

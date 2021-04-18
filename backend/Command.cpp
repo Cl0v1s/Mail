@@ -202,12 +202,14 @@ std::string Command::getMail(AccountManager &manager, nlohmann::json &raw)
     headers["Content-Type"] = payload["mail"]["headers"]["Content-Type"];
 
     std::string raw_body = manager.getMailer()->getBody(mail);
+    
     nlohmann::json parsed_body = manager.getMailer()->parseBody(raw_body, headers);
 
     mail.setBody(parsed_body);
 
     json data;
     data["result"] = mail.toJSON();
+
     return this->generateResult("getMail", data);
 }
 

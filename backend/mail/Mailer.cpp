@@ -25,25 +25,14 @@ Mailer::~Mailer()
 	this->_imapClient.CleanupSession();
 }
 
-void Mailer::convert(std::vector<uint8_t> &ascii)
+void Mailer::convert(std::string charset, std::vector<uint8_t> &raw)
 {
-	std::vector<uint8_t> converted;
-
-	for (int i = 0; i < ascii.size(); i += 1)
-	{
-		uint8_t c = ascii[i];
-		if (c < 128)
-		{
-			converted.push_back(c);
-		}
-		else
-		{
-			converted.push_back((c >> 6) | 0xC0);
-			converted.push_back((c & 0x3F) | 0x80);
-		}
-	}
-
-	ascii = converted;
+	// std::cout << "Converting from " << charset << " to UTF-8" << std::endl;
+	iconvpp::converter conv("UTF-8", charset);
+	std::string input(raw.begin(), raw.end());
+	std::string output;
+	conv.convert(input, output);
+	raw = std::vector<uint8_t>(output.begin(), output.end());
 }
 
 std::string Mailer::decode(std::string _encoded)
@@ -145,7 +134,7 @@ json Mailer::parseContentType(std::string raw)
 	json result;
 
 	std::smatch m;
-	std::regex e = std::regex("([^;]+)(?:; ?boundary=\"?([^\"]+)\"?)?(?:; ?charset=\"?([^\"]+)\"?)?"); // * LIST (\HasChildren) "." INBOX
+	std::regex e = std::regex("([^;]+)(?:; ?boundary=\"?([^\"]+)\"?)?(?:; ?charset=\"?([^\";]+)\"?)?"); // * LIST (\HasChildren) "." INBOX
 	if (std::regex_search(raw, m, e))
 	{
 		result["raw"] = m[0];
@@ -220,11 +209,7 @@ json Mailer::parseBody(std::string body, json headers)
 	if (isThereBoundary == false)
 	{
 		std::vector<uint8_t> content = this->decrypt(body);
-		// convert from ascii to utf-8
-		if (headers["Content-Type"]["charset"] == "ascii" || headers["Content-Type"]["charset"] == "us-ascii")
-		{
-			this->convert(content);
-		}
+
 		// convert non-text to base64
 		if (headers["Content-Type"]["type"].get<std::string>().rfind("text", 0) != 0)
 		{
@@ -233,6 +218,11 @@ json Mailer::parseBody(std::string body, json headers)
 		}
 		else
 		{
+			// convert from not-utf-8 to utf-8
+			if (headers["Content-Type"]["charset"] != "")
+			{
+				this->convert(headers["Content-Type"]["charset"], content);
+			}
 			bodypart["content"] = std::string(content.begin(), content.end());
 		}
 	}
