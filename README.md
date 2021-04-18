@@ -76,5 +76,3 @@ Pour proposer une base de fonctionnalités acceptable, le backend doit proposer 
 ## TODO
 
 * Maquetter l'application
-* Partager le compte couramment utilisé entre plusieurs sessions websocket
-* Empêcher le crash du backend sur un caractère non-reconnu en UTF-8
