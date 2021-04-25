@@ -19,9 +19,9 @@
 
 .component-checkbox.checked::before {
     content: '✓';
-    font-size: 1rem;
+    font-size: 0.8rem;
     display: inline-block;
-    margin-top: calc((var(--size) / 2) - (1rem / 2));
+    margin-top: calc((var(--size) / 2) - (0.8rem / 2));
 }
 
 .component-checkbox input {

@@ -26,25 +26,25 @@ export class Button extends React.Component {
 };
 
 export const ButtonPrimary = (props) => <Button
-    className="component-button--primary"
+    className={ "component-button--primary " + props.className }
     onClick={props.onClick}>
     {props.children}
 </Button>;
 
 export const ButtonSecondary = (props) => <Button
-    className="component-button--secondary"
+    className={ "component-button--secondary " + props.className }
     onClick={props.onClick}>
     {props.children}
 </Button>;
 
 export const ButtonPrimaryOutline = (props) => <Button
-    className="component-button--primary component-button--outline"
+    className={ "component-button--primary component-button--outline " + props.className  }
     onClick={props.onClick}>
     {props.children}
 </Button>;
 
 export const ButtonSecondaryOutline = (props) => <Button
-    className="component-button--secondary component-button--outline"
+    className={ "component-button--secondary component-button--outline " + props.className }
     onClick={props.onClick}>
     {props.children}
 </Button>;
