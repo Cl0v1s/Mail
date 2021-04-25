@@ -5,6 +5,7 @@ import './theme.css';
 import { Button, ButtonPrimary, ButtonSecondary, ButtonPrimaryOutline, ButtonSecondaryOutline } from './common/Button/Button.jsx';
 import { Checkbox } from './common/Checkbox/Checkbox.jsx';
 import { Input } from './common/Input/Input.jsx';
+import { Select } from './common/Select/Select.jsx';
 
 export default class App extends Component {
 	constructor(props) {
@@ -31,6 +32,12 @@ export default class App extends Component {
 					<Input onChange={this.onClick} />
 					<Input state={Input.STATES.DISABLED} className="m-1" onChange={this.onClick} />
 					<Input placeholder="Bonjour" onChange={this.onClick} />
+				</div>
+				<div>
+					<Select
+						value='2'
+						options={[{label: 'test', value: '1'}, {label: 'test1', value: '2'}]}
+					/>
 				</div>
 			</div>
 		);

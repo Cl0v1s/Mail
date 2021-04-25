@@ -18,10 +18,20 @@
     --size-xl: 3rem;
 
     --radius: 4px;
+
+    --input-height: 40px;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 html {
     font-size: 16px;
+}
+
+body {
+    background-color: var(--color-dark);
 }
 
 /**
@@ -78,6 +88,3 @@ html {
     padding: var(--size-xl);
 }
 
-body {
-    background-color: var(--color-dark);
-}
