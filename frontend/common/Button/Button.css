@@ -1,0 +1,42 @@
+.component-button {
+    --color: var(--color-color-0);
+    --background: transparent;
+    --border: transparent;
+    --color-outline: var(--color-color-0);
+    --shadow: transparent;
+
+    color: var(--color);
+    border: 1px solid var(--border);
+    background-color: var(--background);
+    border-radius: var(--radius);
+    box-shadow: 2px 2px 0px 0px var(--shadow);
+
+    cursor: pointer;
+}
+
+.component-button:hover {
+    transform: translateX(2px) translateY(2px);
+    box-shadow: none;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.component-button.component-button--primary {
+    --color: var(--color-dark);
+    --background: var(--color-primary);
+    --color-outline: var(--color-primary) !important;
+    --shadow: var(--color-color-100);
+
+}
+
+.component-button.component-button--secondary {
+    --color: var(--color-dark);
+    --background: var(--color-secondary);
+    --color-outline: var(--color-secondary) !important;
+    --shadow: #664300;
+}
+
+.component-button.component-button--outline {
+    color: var(--color-outline);
+    border-color: var(--color-outline);
+    background: transparent;
+}

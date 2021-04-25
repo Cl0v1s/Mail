@@ -1,0 +1,76 @@
+:root {
+    --color-dark: #171633;
+    --color-grey: #AEA8D3;
+    --color-primary: #FF1D62;
+    --color-secondary: #F2E235;
+    --color-color-0: #FFFFFF;
+    --color-color-100: #012957;
+
+
+    --size-none: 0;
+    --size-xs: 0.25rem;
+    --size-s: 0.5rem;
+    --size-m: 1rem;
+    --size-l: 1.5rem;
+    --size-xl: 3rem;
+
+    --radius: 4px;
+}
+
+/**
+    Margins
+**/
+.m-0 {
+    margin: var(--size-none);
+}
+
+.m-1 {
+    margin: var(--size-xs);
+}
+
+.m-2 {
+    margin: var(--size-s);
+}
+
+.m-3 {
+    margin: var(--size-m);
+}
+
+.m-4 {
+    margin: var(--size-l);
+}
+
+.m-5 {
+    margin: var(--size-xl);
+}
+
+/**
+    paddings
+**/
+.p-0 {
+    padding: var(--size-none);
+}
+
+.p-1 {
+    padding: var(--size-xs);
+}
+
+.p-2 {
+    padding: var(--size-s);
+}
+
+.p-3 {
+    padding: var(--size-p);
+}
+
+.p-4 {
+    padding: var(--size-l);
+}
+
+.p-5 {
+    padding: var(--size-xl);
+}
+
+body {
+    background-color: var(--color-dark);
+}

@@ -5,6 +5,9 @@ build:
 build-front:
 	cd frontend && npx webpack
 
+watch-front:
+	cd frontend && npx webpack --watch
+
 build-back: 
 	mkdir -p build
 	rm -rf build/MyApp.app
