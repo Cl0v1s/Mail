@@ -5,11 +5,12 @@
     --color-outline: var(--color-color-0);
     --shadow: transparent;
 
+    font-size: 1rem;
     color: var(--color);
     border: 1px solid var(--border);
     background-color: var(--background);
     border-radius: var(--radius);
-    box-shadow: 2px 2px 0px 0px var(--shadow);
+    box-shadow: 2px 2px 0px 2px var(--shadow);
 
     cursor: pointer;
 }

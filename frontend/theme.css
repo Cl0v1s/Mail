@@ -1,4 +1,6 @@
 :root {
+    font-size: 16px;
+
     --color-dark: #171633;
     --color-grey: #AEA8D3;
     --color-primary: #FF1D62;
@@ -15,6 +17,10 @@
     --size-xl: 3rem;
 
     --radius: 4px;
+}
+
+html {
+    font-size: 16px;
 }
 
 /**
