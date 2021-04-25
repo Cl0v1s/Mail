@@ -17,6 +17,8 @@
 }
 
 
-.component-input.disabled {
+.component-input.disabled,
+.component-input[disabled]
+{
     --background: var(--color-grey-100);
 }

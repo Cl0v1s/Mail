@@ -29,7 +29,7 @@ export default class App extends Component {
 				</div>
 				<div>
 					<Input onChange={this.onClick} />
-					<Input className={Input.STATES.DISABLED + ' m-1'} onChange={this.onClick} />
+					<Input state={Input.STATES.DISABLED} className="m-1" onChange={this.onClick} />
 					<Input placeholder="Bonjour" onChange={this.onClick} />
 				</div>
 			</div>

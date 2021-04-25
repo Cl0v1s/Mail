@@ -5,19 +5,14 @@ import './Button.css';
 
 export class Button extends React.Component {
     static propTypes = {
-        className: PropTypes.string,
         onClick: PropTypes.func.isRequired
     };
-
-    static defaultProps = {
-        className: '',
-    }
 
     render() {
         return (
             <button
+                { ...this.props }
                 className={"component-button p-2 " + this.props.className}
-                onClick={this.props.onClick}
             >
                 { this.props.children}
             </button>
