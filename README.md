@@ -11,6 +11,15 @@ Ce projet s'articule donc autour de deux ensembles:
 * Le backend, en C++ réalise les opérations effectives (chiffrement/dechiffrement, récupérations des données depuis le serveur de mail)
 * Le frontend en HTML/CSS/JS (React) rendu à l'aide d'ultralight (pour contourner la consommation excessive d'Electron)
 
+## Principes d'interface
+
+* Navigation par la barre de recherche
+Constitue un espace central, idéalement devrait tout pouvoir contrôler par cet artefact
+* Tout est une action, tout est annulable (CTRL+Z)
+Chaque interaction avec l'interface est un event. Chaque event est stocké, et lié à une annulation possible à partir des paramètres de cet event.
+* Visualisation des mails par graphe
+Un graphe rassemble, dans plusieurs boîtes (une boite par interlocuteur) des sous-graphes representant des conversations (1 sujet donné). Les conversations peuvent être affichées parallélèment en fonction de leur datation. 
+
 ## Le modèle de données
 La communication entre le frontend et le backend ainsi que le traitement des données se construit autour des ensembles suivants: 
 
@@ -75,4 +84,4 @@ Pour proposer une base de fonctionnalités acceptable, le backend doit proposer 
 
 ## TODO
 
-* Maquetter l'application
+* Maquetter l'application (https://www.figma.com/file/YByxqEIz1KAav9XdtKTb17/Mail.?node-id=0%3A1)
