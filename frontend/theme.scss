@@ -1,8 +1,41 @@
 @mixin declare-color($color, $value) {
-    --#{ $color }-100: #{adjust-color($value, $lightness: 20)};
+    --#{ $color }-100: #{adjust-color($value, $lightness: 20%)};
     --#{ $color }-50: #{$value};
     --#{ $color }: var(--#{ $color }-50);
-    --#{ $color }-0: #{adjust-color($value, $lightness: -20)};
+    --#{ $color }-0: #{adjust-color($value, $lightness: -20%)};
+}
+
+@mixin declare-xy($property, $step, $value) {
+    .#{ str-slice($property, 0, 1) }-#{$step}  {
+        #{$property}: var(#{$value});
+    }
+
+    .#{ str-slice($property, 0, 1) }x-#{$step}  {
+        #{$property}-left: var(#{$value});
+        #{$property}-right: var(#{$value});
+    }
+
+
+    .#{ str-slice($property, 0, 1) }y-#{$step}  {
+        #{$property}-top: var(#{$value});
+        #{$property}-bottom: var(#{$value});
+    }
+
+    .#{ str-slice($property, 0, 1) }l-#{$step}  {
+        #{$property}-left: var(#{$value});
+    }
+
+    .#{ str-slice($property, 0, 1) }r-#{$step}  {
+        #{$property}-right: var(#{$value});
+    }
+
+    .#{ str-slice($property, 0, 1) }t-#{$step}  {
+        #{$property}-top: var(#{$value});
+    }
+
+    .#{ str-slice($property, 0, 1) }b-#{$step}  {
+        #{$property}-bottom: var(#{$value});
+    }
 }
 
 
@@ -44,54 +77,19 @@ body {
 /**
     Margins
 **/
-.m-0 {
-    margin: var(--size-none);
-}
-
-.m-1 {
-    margin: var(--size-xs);
-}
-
-.m-2 {
-    margin: var(--size-s);
-}
-
-.m-3 {
-    margin: var(--size-m);
-}
-
-.m-4 {
-    margin: var(--size-l);
-}
-
-.m-5 {
-    margin: var(--size-xl);
-}
+@include declare-xy(margin, 0, --size-none);
+@include declare-xy(margin, 1, --size-xs);
+@include declare-xy(margin, 2, --size-s);
+@include declare-xy(margin, 3, --size-m);
+@include declare-xy(margin, 4, --size-l);
+@include declare-xy(margin, 5, --size-xl);
 
 /**
     paddings
 **/
-.p-0 {
-    padding: var(--size-none);
-}
-
-.p-1 {
-    padding: var(--size-xs);
-}
-
-.p-2 {
-    padding: var(--size-s);
-}
-
-.p-3 {
-    padding: var(--size-p);
-}
-
-.p-4 {
-    padding: var(--size-l);
-}
-
-.p-5 {
-    padding: var(--size-xl);
-}
-
+@include declare-xy(padding, 0, --size-none);
+@include declare-xy(padding, 1, --size-xs);
+@include declare-xy(padding, 2, --size-s);
+@include declare-xy(padding, 3, --size-m);
+@include declare-xy(padding, 4, --size-l);
+@include declare-xy(padding, 5, --size-xl);

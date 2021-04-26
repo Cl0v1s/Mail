@@ -37,6 +37,7 @@ export default class App extends Component {
 					<Select
 						value='2'
 						options={[{label: 'test', value: '1'}, {label: 'test1', value: '2'}]}
+						onChange={(val) => console.log(val)}
 					/>
 				</div>
 			</div>
