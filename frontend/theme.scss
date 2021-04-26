@@ -1,14 +1,21 @@
+@mixin declare-color($color, $value) {
+    --#{ $color }-0: #{adjust-color($value, $lightness: 20)};
+    --#{ $color }-50: #{$value};
+    --#{ $color }: var(--#{ $color }-50);
+    --#{ $color }-100: #{adjust-color($value, $lightness: -20)};
+}
+
+
 :root {
     font-size: 16px;
 
-    --color-dark: #171633;
-    --color-grey: #AEA8D3;
-    --color-grey-100: #5F5C70;
-    --color-primary: #FF1D62;
-    --color-secondary: #F2E235;
     --color-color-0: #FFFFFF;
     --color-color-100: #012957;
 
+    @include declare-color(color-primary, #FF1D62);
+    @include declare-color(color-secondary, #F2E235);
+    @include declare-color(color-grey, #AEA8D3);
+    @include declare-color(color-dark, #171633);
 
     --size-none: 0;
     --size-xs: 0.25rem;

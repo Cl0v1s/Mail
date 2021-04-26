@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import './theme.css';
+import './theme.scss';
 
 import { Button, ButtonPrimary, ButtonSecondary, ButtonPrimaryOutline, ButtonSecondaryOutline } from './common/Button/Button.jsx';
 import { Checkbox } from './common/Checkbox/Checkbox.jsx';

@@ -23,8 +23,8 @@
 
 .component-button.component-button--primary {
     --color: var(--color-dark);
-    --background: var(--color-primary);
-    --color-outline: var(--color-primary) !important;
+    --background: var(--color-primary-50);
+    --color-outline: var(--color-primary-50) !important;
     --shadow: var(--color-color-100);
 
 }
