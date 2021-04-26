@@ -1,8 +1,8 @@
 @mixin declare-color($color, $value) {
-    --#{ $color }-0: #{adjust-color($value, $lightness: 20)};
+    --#{ $color }-100: #{adjust-color($value, $lightness: 20)};
     --#{ $color }-50: #{$value};
     --#{ $color }: var(--#{ $color }-50);
-    --#{ $color }-100: #{adjust-color($value, $lightness: -20)};
+    --#{ $color }-0: #{adjust-color($value, $lightness: -20)};
 }
 
 

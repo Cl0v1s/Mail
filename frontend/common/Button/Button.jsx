@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './Button.css';
+import './Button.scss';
 
 export class Button extends React.Component {
     static propTypes = {
