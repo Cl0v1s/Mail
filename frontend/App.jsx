@@ -6,6 +6,7 @@ import { Button, ButtonPrimary, ButtonSecondary, ButtonPrimaryOutline, ButtonSec
 import { Checkbox } from './common/Checkbox/Checkbox.jsx';
 import { Input } from './common/Input/Input.jsx';
 import { Select } from './common/Select/Select.jsx';
+import { MailEntry } from './mail/MailEntry/MailEntry.jsx';
 
 export default class App extends Component {
 	constructor(props) {
@@ -49,6 +50,22 @@ export default class App extends Component {
 							onChange={(val) => console.log(val)}
 						/>
 					</div>
+				</div>
+				<div>
+					<MailEntry
+						mail={{
+							id: "1",
+							headers: {
+								Date: '12-08-1996',
+								Subject: 'Présentation',
+								From: {
+									name: 'Mogomogane',
+									address: 'mogomoganedu47@hotmail.fr'
+								},
+							}
+						}}
+						onClick={this.onClick}
+					/>
 				</div>
 			</div>
 		);

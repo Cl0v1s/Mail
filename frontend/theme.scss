@@ -38,9 +38,11 @@
     }
 }
 
+$font-size: 16;
 
 :root {
-    font-size: 16px;
+    font-size: #{$font-size}px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
     --color-color-0: #FFFFFF;
     --color-color-100: #012957;
@@ -67,11 +69,35 @@
 }
 
 html {
-    font-size: 16px;
+    font-size: #{$font-size}px;
 }
 
 body {
     background-color: var(--color-dark);
+}
+
+/** 
+    font-size 
+**/
+
+.font-size-xs {
+    font-size: (10 / $font-size) * 1rem;
+}
+
+.font-size-s {
+    font-size: (14 / $font-size) * 1rem;
+}
+
+.font-size-m {
+    font-size: 1rem;
+}
+
+.font-size-l {
+    font-size: (18 / $font-size) * 1rem;
+}
+
+.font-size-xl {
+    font-size: (22 / $font-size) * 1rem;
 }
 
 /**
@@ -93,3 +119,35 @@ body {
 @include declare-xy(padding, 3, --size-m);
 @include declare-xy(padding, 4, --size-l);
 @include declare-xy(padding, 5, --size-xl);
+
+/**
+    Flexbox 
+**/
+.d-flex {
+    display: flex;
+};
+
+.col {
+    flex: 1 0 0%;
+}
+
+.col-auto {
+    flex: 0 0 auto;
+    width: auto;
+}
+
+.align-items-start {
+    align-items: flex-start;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.align-items-end {
+    align-items: flex-end;
+}
+
+.justify-content-center {
+    justify-content: center;
+}
