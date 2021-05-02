@@ -3,12 +3,24 @@
     --color: var(--color-dark);
     --shadow: var(--color-grey-0);
 
+    &.disabled {
+        --background: var(--color-grey-0);
+        --shadow: rgba(white, 0.9);
+        cursor: initial;
+    }
+
+    &.open {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
     background: var(--background);
     color: var(--color);
     box-shadow: 4px 4px 0px 0px var(--shadow);
     border-radius: var(--radius);
     cursor: pointer;
     font-size: 1rem;
+    position: relative;
 
     .value {
         display: flex;
@@ -20,6 +32,17 @@
     }
 
     .options {
+        position: absolute;
+        top: 100%;
+        width: 100%;
+        height: auto;
+        z-index: 1;
+
+        background: var(--background);
+        box-shadow: 4px 4px 0px 0px var(--shadow);
+        border-bottom-left-radius: var(--radius);
+        border-bottom-right-radius: var(--radius);
+
         option {
             &:hover {
                 background-color: var(--color-grey-0);

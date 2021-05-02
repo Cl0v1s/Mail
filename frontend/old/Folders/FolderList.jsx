@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Folder as FolderType } from './../model/types';
+import { Folder as FolderType } from '../../model/types';
 import Folder from './Folder.jsx';
 
 export default class FolderList extends React.Component {

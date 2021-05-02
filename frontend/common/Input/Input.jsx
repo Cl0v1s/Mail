@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './Input.css';
+import './Input.scss';
 
 export class Input extends React.Component {
     static STATES = {

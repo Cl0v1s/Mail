@@ -12,11 +12,13 @@ export class Select extends React.Component {
         value: PropTypes.string,
         name: PropTypes.string,
         onChange: PropTypes.func.isRequired,
+        disabled: PropTypes.bool,
     }
 
     static defaultProps = {
         name: '',
         value: '',
+        disabled: false,
     }
 
     constructor(props) {
@@ -67,16 +69,16 @@ export class Select extends React.Component {
     }
 
     renderOption(option, index, onClick = null) {
-        return <option key={index} onClick={onClick ? () => onClick(option) : null } className="p-1" value={option.value}>{option.label}</option>;
+        return <option key={index} onClick={(onClick && this.props.disabled )? () => onClick(option) : null } className="p-1" value={option.value}>{option.label}</option>;
     }
 
     render() {
         return (
             <div
-                className={`component-select ${this.props.className}`}
+                className={`component-select ${this.props.className} ${this.props.disabled ? 'disabled' : ''} ${this.state.open ? 'open' : ''} `}
                 name={this.props.name}
             >
-                <div className="value py-1 px-2" onClick={this.state.open == false ? this.onOpen : null}>
+                <div className="value py-1 px-2" onClick={(this.state.open == false && !this.props.disabled) ? this.onOpen : null}>
                     <div>
                         { this.props.value ? this.renderOption(this.props.options.find((opt) => opt.value === this.props.value)) : this.renderOption(this.props.options[0], 'default') }
                     </div>

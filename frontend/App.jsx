@@ -34,11 +34,21 @@ export default class App extends Component {
 					<Input placeholder="Bonjour" onChange={this.onClick} />
 				</div>
 				<div>
-					<Select
-						value='2'
-						options={[{label: 'test', value: '1'}, {label: 'test1', value: '2'}]}
-						onChange={(val) => console.log(val)}
-					/>
+					<div className="m-2">
+						<Select
+							value='2'
+							options={[{label: 'test', value: '1'}, {label: 'test1', value: '2'}]}
+							onChange={(val) => console.log(val)}
+						/>
+					</div>
+					<div className="m-2">
+						<Select
+							disabled
+							value='2'
+							options={[{label: 'test', value: '1'}, {label: 'test1', value: '2'}]}
+							onChange={(val) => console.log(val)}
+						/>
+					</div>
 				</div>
 			</div>
 		);
