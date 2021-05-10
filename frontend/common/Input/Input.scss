@@ -7,13 +7,18 @@
         --background: var(--color-grey-0);
     }
 
+    transition: box-shadow 0.15s ease;
     background-color: var(--background);
     box-shadow: 4px 4px 0px 0px var(--shadow) inset;
-    border: none;
+    border: 1px solid var(--shadow);
     border-radius: var(--radius);
     outline: none;
     padding: var(--size-s);
     color: var(--color-dark);
+
+    &:focus {
+        border-color: var(--color-primary);
+    }
 
     &::placeholder {
         color: var(--color-dark);

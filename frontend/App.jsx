@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import './theme.scss';
+import './style/theme.scss';
 
-import { Button, ButtonPrimary, ButtonSecondary, ButtonPrimaryOutline, ButtonSecondaryOutline } from './common/Button/Button.jsx';
+import { Button, ButtonOutline } from './common/Button/Button.jsx';
 import { Checkbox } from './common/Checkbox/Checkbox.jsx';
 import { Input } from './common/Input/Input.jsx';
 import { Select } from './common/Select/Select.jsx';
@@ -19,11 +19,17 @@ export default class App extends Component {
 		return (
 			<div className="component-app">
 				<div>
-					<ButtonPrimary className="m-1" onClick={this.onClick}>Je suis un bouton</ButtonPrimary>
-					<ButtonSecondary className="m-1" onClick={this.onClick}>Je suis un bouton</ButtonSecondary>
-					<ButtonPrimaryOutline className="m-1" onClick={this.onClick}>Je suis un bouton</ButtonPrimaryOutline>
-					<ButtonSecondaryOutline className="m-1" onClick={this.onClick}>Je suis un bouton</ButtonSecondaryOutline>
-					<Button className="m-1" onClick={this.onClick}>Je suis un bouton</Button>
+					<Button className="m-1 bg-color-primary text-color-0" onClick={this.onClick}>Je suis un bouton</Button>
+					<Button className="m-1 bg-color-secondary text-color-0" onClick={this.onClick}>Je suis un bouton</Button>
+					<Button className="m-1 bg-color-alert-50 text-color-0" onClick={this.onClick}>Je suis un bouton</Button>
+					<Button className="m-1 bg-color-alert-75 text-color-100" onClick={this.onClick}>Je suis un bouton</Button>
+					<Button className="m-1 bg-color-alert-100 text-color-100" onClick={this.onClick}>Je suis un bouton</Button>
+
+					<ButtonOutline className="m-1 text-color-primary" onClick={this.onClick}>Je suis un bouton</ButtonOutline>
+					<ButtonOutline className="m-1 text-color-secondary" onClick={this.onClick}>Je suis un bouton</ButtonOutline>
+					<ButtonOutline className="m-1 text-color-alert-50" onClick={this.onClick}>Je suis un bouton</ButtonOutline>
+					<ButtonOutline className="m-1 text-color-alert-75" onClick={this.onClick}>Je suis un bouton</ButtonOutline>
+					<ButtonOutline className="m-1 text-color-alert-100" onClick={this.onClick}>Je suis un bouton</ButtonOutline>
 				</div>
 				<div>
 					<Checkbox className="m-1" onChange={this.onClick} />

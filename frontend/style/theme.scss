@@ -1,0 +1,91 @@
+@use './mixins.scss' as *;
+@use './variables.scss';
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: var(--font-size);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--color-grey);
+}
+
+/** 
+    font-size 
+**/
+
+.font-size-xs {
+    font-size: (10 / variables.$font-size) * 1rem;
+}
+
+.font-size-s {
+    font-size: (14 / variables.$font-size) * 1rem;
+}
+
+.font-size-m {
+    font-size: 1rem;
+}
+
+.font-size-l {
+    font-size: (18 / variables.$font-size) * 1rem;
+}
+
+.font-size-xl {
+    font-size: (22 / variables.$font-size) * 1rem;
+}
+
+/**
+    Margins
+**/
+@include declare-xy(margin, 0, --size-none);
+@include declare-xy(margin, 1, --size-xs);
+@include declare-xy(margin, 2, --size-s);
+@include declare-xy(margin, 3, --size-m);
+@include declare-xy(margin, 4, --size-l);
+@include declare-xy(margin, 5, --size-xl);
+
+/**
+    paddings
+**/
+@include declare-xy(padding, 0, --size-none);
+@include declare-xy(padding, 1, --size-xs);
+@include declare-xy(padding, 2, --size-s);
+@include declare-xy(padding, 3, --size-m);
+@include declare-xy(padding, 4, --size-l);
+@include declare-xy(padding, 5, --size-xl);
+
+/**
+    Flexbox 
+**/
+.d-flex {
+    display: flex;
+};
+
+.col {
+    flex: 1 0 0%;
+}
+
+.col-auto {
+    flex: 0 0 auto;
+    width: auto;
+}
+
+.align-items-start {
+    align-items: flex-start;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.align-items-end {
+    align-items: flex-end;
+}
+
+.justify-content-center {
+    justify-content: center;
+}

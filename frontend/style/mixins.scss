@@ -1,0 +1,49 @@
+@mixin declare-color($color, $value) {
+    --#{ $color }-100: #{adjust-color($value, $lightness: 20%)};
+    --#{ $color }-50: #{$value};
+    --#{ $color }: var(--#{ $color }-50);
+    --#{ $color }-0: #{adjust-color($value, $lightness: -20%)};
+
+    .bg-#{$color} {
+        --bg-color: var(--#{ $color });
+        background-color: var(--#{ $color }) !important;
+    }
+
+    .text-#{$color} {
+        --color: var(--#{ $color });
+        color: var(--#{ $color }) !important;
+    }
+}
+
+@mixin declare-xy($property, $step, $value) {
+    .#{ str-slice($property, 0, 1) }-#{$step}  {
+        #{$property}: var(#{$value});
+    }
+
+    .#{ str-slice($property, 0, 1) }x-#{$step}  {
+        #{$property}-left: var(#{$value});
+        #{$property}-right: var(#{$value});
+    }
+
+
+    .#{ str-slice($property, 0, 1) }y-#{$step}  {
+        #{$property}-top: var(#{$value});
+        #{$property}-bottom: var(#{$value});
+    }
+
+    .#{ str-slice($property, 0, 1) }l-#{$step}  {
+        #{$property}-left: var(#{$value});
+    }
+
+    .#{ str-slice($property, 0, 1) }r-#{$step}  {
+        #{$property}-right: var(#{$value});
+    }
+
+    .#{ str-slice($property, 0, 1) }t-#{$step}  {
+        #{$property}-top: var(#{$value});
+    }
+
+    .#{ str-slice($property, 0, 1) }b-#{$step}  {
+        #{$property}-bottom: var(#{$value});
+    }
+}
