@@ -2,11 +2,76 @@ import React, { Component } from 'react';
 
 import './style/theme.scss';
 
+/*
 import { Button, ButtonOutline } from './common/Button/Button.jsx';
 import { Checkbox } from './common/Checkbox/Checkbox.jsx';
 import { Input } from './common/Input/Input.jsx';
 import { Select } from './common/Select/Select.jsx';
 import { MailEntry } from './mail/MailEntry/MailEntry.jsx';
+*/
+
+import ZI from './ZI/ZI.jsx';
+
+const tara = {
+	name: 'Tara Doggo',
+	address: 'tara@doggo.com'
+};
+
+const dog = {
+	name: 'Dog Doggo',
+	address: 'dog@doggo.com'
+};
+
+const clovis = {
+	name: 'Clovis Doggo',
+	address: 'clovis@doggo.com'
+};
+
+const mails = [
+	{
+		headers: {
+			Date: '12/06/2021 22:00',
+			Subject: 'Hello world',
+			From: [tara],
+			To: [clovis]
+		},
+	}, {
+		headers: {
+			Date: '12/06/2021 22:30',
+			Subject: 'Re: Hello world',
+			From: [clovis],
+			To: [tara]
+		},
+	}, {
+		headers: {
+			Date: '12/06/2021 23:00',
+			Subject: 'Fwd: Re: Re: Hello world',
+			From: [tara],
+			To: [clovis, dog]
+		},
+	}, {
+		headers: {
+			Date: '12/06/2021 23:30',
+			Subject: 'Re: Fwd: Re: Re: Hello world',
+			From: [dog],
+			To: [clovis, tara]
+		},
+	}, {
+		headers: {
+			Date: '12/06/2021 21:30',
+			Subject: 'Test',
+			From: [clovis],
+			To: [tara]
+		},
+	}, {
+		headers: {
+			Date: '12/06/2021 22:30',
+			Subject: 'Re: Test',
+			From: [tara],
+			To: [clovis]
+		},
+	}
+]
 
 export default class App extends Component {
 	constructor(props) {
@@ -15,6 +80,12 @@ export default class App extends Component {
 
 	onClick = () => console.log('onClick');
 
+
+	render() {
+		return <ZI address={tara} mails={mails} />
+	}
+
+	/*
 	render() {
 		return (
 			<div className="component-app">
@@ -76,5 +147,6 @@ export default class App extends Component {
 			</div>
 		);
 	}
+	*/
 
 };
