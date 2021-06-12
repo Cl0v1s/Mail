@@ -73,6 +73,13 @@ Pour proposer une base de fonctionnalités acceptable, le backend doit proposer 
 * Lister tous les dossiers
 * Supprimer le compte 
 
-## TODO
+## Concernant la ZI
 
-* Maquetter l'application
+La ZI s'active pour une correspondance donnée. 
+Une correspondance est un ensemble de conversations, ayant comme point commun de concerner au moins deux personnes identiques (parmi les destinataires ou l'expéditeur). 
+
+Une conversation est une succession de messages, ayant pour caractéristique commune de se concentrer autour d'un sujet similaire: 
+
+* NOM_SUJET -> S
+* RE: S -> D
+* FWD: S | D
