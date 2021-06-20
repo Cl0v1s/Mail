@@ -15,9 +15,9 @@ export default class Mail extends React.Component {
             <div 
                 className={`
                     component-zi-mail
-                    bg-${this.props.color}-light
+                    bg-${this.props.color}
                     border
-                    border-${this.props.color}
+                    border-grey-light
                     rounded
                     p-2
                     mb-2

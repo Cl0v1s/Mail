@@ -31,6 +31,7 @@ export default class ZI extends React.Component {
     componentDidMount() {
         this.orderMailsUI();
         this.orderConversationsUI();
+        this.scrollToBottom();
     }
 
     componentDidUpdate(oldProps, oldState) {
@@ -39,6 +40,13 @@ export default class ZI extends React.Component {
                 conversations: this.sortConversations(mails),
             }, this.orderMailsUI);
         }
+    }
+
+    scrollToBottom = () => {
+        window.scroll({
+            top: document.body.scrollHeight,
+            behavior: 'smooth',
+        })
     }
 
     sortConversations = (mails) => {
@@ -73,25 +81,20 @@ export default class ZI extends React.Component {
 
     orderMailsUI = () => {
         this.state.conversations.forEach((conversation) => {
-            console.log('CONV -- ')
-            console.log(conversation);
             for(let i = 1; i < conversation.length; i += 1) {
                 const currentMailUI = document.querySelector(`.component-zi-mail[data-index="${conversation[i].index}"]`);
-                console.log(currentMailUI);
                 let top = 0;
                 for(let u = conversation[i - 1].index + 1; u < conversation[i].index; u += 1) {
                     const mailUI = document.querySelector(`.component-zi-mail[data-index="${u}"]`);
                     console.log(mailUI);
                     top += mailUI.clientHeight;
                 }
-                console.log(top);
                 currentMailUI.style.marginTop = `${top}px`;
             }
         })
     }
 
     orderConversationsUI = () => {
-        console.log('ORDER -- ')
         for(let i = 0; i < this.state.conversations.length; i += 1) {
             const currentFirstMail = this.state.conversations[i][0];
             const currentConversationUI = this.node.current.querySelector(`.component-zi-conversation[data-index="${i}"]`);            
@@ -102,17 +105,17 @@ export default class ZI extends React.Component {
             const previousFirstMailUI = this.node.current.querySelector(`.component-zi-mail[data-index="${currentFirstMail.index - 1}"]`);
             if(!previousFirstMailUI) continue;
             const b = previousFirstMailUI.getBoundingClientRect().y;
-            currentConversationUI.style.marginTop = `${b}px`;
+            currentConversationUI.style.marginTop = `${b - c}px`;
         }
     }
 
     render() {
         return (
             <div className="component-zi" ref={this.node}>
-                <div className="address">
-                    { this.props.address.name || this.props.address.address } &lt;{this.props.mails.length}&gt;
+                <div className="address bg-grey-light p-2 text-grey-dark">
+                    { this.props.address.name || this.props.address.address } &lt;{this.props.mails.length} mails in {this.state.conversations.length} conversations&gt;
                 </div>
-                    <div className="row no-gutters flex-nowrap">
+                <div className="row no-gutters mt-3 flex-nowrap">
                     { 
                         this.state.conversations.map((conv, index) => <div key={index} className="col px-3">
                             <Conversation index={index} color={ZI.ColorList[index % ZI.ColorList.length]} subject={conv[0].headers.Subject} mails={conv} />
