@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import './style/theme.scss';
+import './App.scss';
 
 /*
 import { Button, ButtonOutline } from './common/Button/Button.jsx';
@@ -67,6 +67,41 @@ const mails = [
 		headers: {
 			Date: '12/06/2021 22:30',
 			Subject: 'Re: Test',
+			From: [tara],
+			To: [clovis]
+		},
+	}, {
+		headers: {
+			Date: '12/06/2021 23:35',
+			Subject: 'Prout',
+			From: [clovis],
+			To: [tara]
+		},
+	}, {
+		headers: {
+			Date: '12/06/2021 23:50',
+			Subject: 'Re: Prout',
+			From: [tara],
+			To: [clovis]
+		},
+	}, {
+		headers: {
+			Date: '12/06/2021 23:35',
+			Subject: 'Bonjour',
+			From: [clovis],
+			To: [tara]
+		},
+	}, {
+		headers: {
+			Date: '12/06/2021 23:50',
+			Subject: 'Re: Bonjour',
+			From: [tara],
+			To: [clovis]
+		},
+	}, {
+		headers: {
+			Date: '12/06/2021 23:50',
+			Subject: 'Encore une conv',
 			From: [tara],
 			To: [clovis]
 		},

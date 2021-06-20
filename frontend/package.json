@@ -12,6 +12,7 @@
     "@fortawesome/fontawesome-free": "^5.15.1",
     "babel-polyfill": "^6.26.0",
     "blueimp-md5": "^2.18.0",
+    "moment": "^2.29.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
