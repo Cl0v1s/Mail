@@ -1,28 +1,2 @@
 .component-mail-entry {
-    --background: var(--color-grey);
-    --shadow: var(--color-grey-0);
-    --text: var(--color-dark);
-
-    color: var(--text);
-    background-color: var(--background);
-    border-radius: var(--radius);
-    cursor: pointer;
-    box-shadow: 4px 4px 0px 0px var(--shadow);
-    border: 1px solid var(--shadow);
-
-
-    .picture {
-        background-color: var(--text);
-        color: var(--color-primary);
-        border-radius: var(--radius);
-        height: 100%;
-    }
-
-    .subject {
-        font-weight: bold;
-    }
-
-    .date {
-        color: var(--color-grey-0);
-    }
 }
