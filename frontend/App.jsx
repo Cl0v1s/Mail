@@ -1,23 +1,55 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { Provider, useDispatch } from 'react-redux';
+import store from './model/store';
+import { use } from './actions/Account';
+import { list } from './actions/Folder';
+import List from './views/List.jsx';
 
-import AppContext from './model/context';
 import './App.scss';
 
-import Mails from './views/Mails';
+import env from './env';
 
-export default class App extends Component {
-	constructor(props) {
-		super(props);
-	}
+window.process = {
+    env,
+}
 
-	onClick = () => console.log('onClick');
-
-
-	render() {
-		return (
-			<AppContext.Provider>
-				<Mails />
-			</AppContext.Provider>
-		);
-	}
+// Réalisé une fois au lancement de l'application
+const account = {
+    "name": process.env.ACCOUNT,
+        "key": process.env.RSA,
+        "imap": {
+            "host": process.env.SERVER,
+            "username": process.env.ACCOUNT,
+            "password": process.env.PASSWORD,
+        },
+        "smtp": {
+            "host": process.env.SERVER,
+            "username": process.env.ACCOUNT,
+            "password": process.env.PASSWORD,
+        },
 };
+
+
+export default class App extends React.Component {
+
+    static async fetchInitialData(dispatch, getState) {
+        // initialisation du compte
+        dispatch(use(account));
+    
+        // récupération des dossiers
+        dispatch(list());
+    }
+
+
+    constructor(props) {
+        super(props);
+
+        store.dispatch(App.fetchInitialData);
+    }
+
+    render() {
+        return <Provider store={store}>
+            <List />
+        </Provider>
+    }
+}

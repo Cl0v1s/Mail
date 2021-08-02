@@ -4,3 +4,4 @@ config.env
 accounts.json
 assets/bundle.js
 frontend/model/config.json
+env.js
