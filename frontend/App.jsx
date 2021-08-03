@@ -34,7 +34,7 @@ export default class App extends React.Component {
 
     static async fetchInitialData(dispatch, getState) {
         // initialisation du compte
-        dispatch(use(account));
+        await dispatch(use(account));
     
         // récupération des dossiers
         dispatch(list());

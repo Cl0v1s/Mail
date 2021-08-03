@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Folder } from './../model/actions';
 
+const name = 'Folder';
+
 const list =  () => {
     return async (dispatch) => {
         const folders = await Folder.list();
@@ -9,13 +11,16 @@ const list =  () => {
 };
 
 export const FolderSlice = createSlice({
-    name: 'Folder',
-    initialState: {
+    name,
+    initialState: window.localStorage.getItem(name)
+    ? JSON.parse(window.localStorage.getItem(name))
+    : {
         list: []
     },
     reducers: {
         listed: (state, actions) => {
             state.list = actions.payload;
+            window.localStorage.setItem(name, JSON.stringify(state));
         }
     } 
 });

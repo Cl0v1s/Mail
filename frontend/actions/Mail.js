@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Mail } from './../model/actions';
 
+const name = 'Mail';
+
 const list = (folder, filters = null) =>  async (dispatch, getState) => {
     const mails = await Mail.list(folder, filters);
     dispatch(MailSlice.actions.listed({
@@ -10,13 +12,16 @@ const list = (folder, filters = null) =>  async (dispatch, getState) => {
 };
 
 export const MailSlice = createSlice({
-    name: 'Mail',
-    initialState: {
-        list: {}
+    name,
+    initialState: window.localStorage.getItem(name)
+    ? JSON.parse(window.localStorage.getItem(name))
+    : {
+        list: []
     },
     reducers: {
         listed: (state, actions) => {
             state.list = actions.payload;
+            window.localStorage.setItem(name, JSON.stringify(state));
         }
     } 
 });

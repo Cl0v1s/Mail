@@ -42,12 +42,12 @@ static bool example_pass_provider(
 {
 	if (!strcmp(pgp_context, "decrypt (symmetric)"))
 	{
-		strncpy(buf, getenv("PASSWORD"), buf_len);
+		strncpy(buf, getenv("RSA_PASSWORD"), buf_len);
 		return true;
 	}
 	if (!strcmp(pgp_context, "decrypt"))
 	{
-		strncpy(buf, getenv("PASSWORD"), buf_len);
+		strncpy(buf, getenv("RSA_PASSWORD"), buf_len);
 		return true;
 	}
 
