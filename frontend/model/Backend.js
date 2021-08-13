@@ -12,7 +12,7 @@ class Backend {
 	createSession = () => {
 		console.log('Creating session...');
 		const session  = {
-			socket: new WebSocket("ws://192.168.1.38:8081/echo"),
+			socket: new WebSocket("ws://192.168.1.36:8081/echo"),
 			callback: null,
 			ready: null,
 		};

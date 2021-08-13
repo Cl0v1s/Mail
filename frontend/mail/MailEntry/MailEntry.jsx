@@ -19,11 +19,10 @@ export default class MailEntry extends React.Component {
     }
 
     render() {
-        console.log(this.props.mail.headers.From[0]);
         const sender = this.props.mail.headers.From[0].name || this.props.mail.headers.From[0].address;
         const picture = `http://${this.props.mail.headers.From[0].address?.split('@')[1]}/favicon.ico`;
         return (
-            <div className="component-mail-entry rounded m-2 bg-white row no-gutters" onClick={this.props.onClick}>
+            <div className="component-mail-entry rounded m-3 dp dp-light bg-white row no-gutters" onClick={() => this.props.onClick(this.props.mail)}>
                 {
                     <div className="col-auto d-flex align-self-stretch justify-content-center picture bg-brand-secondary rounded-left">
                         <div className="align-self-center ">
@@ -48,8 +47,10 @@ export default class MailEntry extends React.Component {
                         </div>
                     </div>
                     <div className="row no-gutters align-items-end">
-                        <div className="col subject font-weight-bold">
-                            { this.props.mail.headers.Subject }
+                        <div className="col subject ">
+                            <div className="font-weight-bold mr-2">
+                                { this.props.mail.headers.Subject }
+                            </div>
                         </div>
                         <div className="col-auto date">
                             { new Date(this.props.mail.headers.Date).toLocaleDateString() } { new Date(this.props.mail.headers.Date).toLocaleTimeString() }
