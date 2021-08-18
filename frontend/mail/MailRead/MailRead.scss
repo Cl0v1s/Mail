@@ -1,0 +1,9 @@
+.component-mail-read {
+    .alternative {
+        opacity: 75%;
+
+        &:hover {
+            opacity: 100%;
+        }
+    }
+}

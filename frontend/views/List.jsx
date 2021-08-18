@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { list, get, getted } from './../actions/Mail';
 
 import Mail from './../mail/MailEntry/MailEntry.jsx';
+import MailRead from './../mail/MailRead/MailRead.jsx';
 
 const Folders = ({folders, onClick}) => <div>
     {
@@ -20,36 +21,6 @@ const Mails = ({mails, onClick}) => <div>
     }
 </div>
 
-const MailContent = ({content, plain = false}) => {
-    if(plain) return <pre className="p-3">{ content }</pre>;
-    return <iframe sandbox srcDoc={content} />;
-}
-
-const MailPart = ({part}) => {
-    console.debug('Opening mail part');
-    console.debug(part);
-
-    const readable = ["text/html", "text/plain"];
-    const plain = ["text/plain"];
-
-    const content = readable.indexOf(part.headers["Content-Type"].type) !== -1
-        ? part.content
-        : null;
-
-    if(content) return <MailContent content={content} plain={plain.indexOf(part.headers["Content-Type"].type) !== -1} />
-    else if(part.parts) return part.parts.map((p) => <MailPart part={p} />)
-
-    console.error('Unsupported MIME type from part');
-    console.error(part);
-
-    return null;
-}
-
-const MailRead = ({mail}) => {
-    return <div className="component-mail-read">
-        <MailPart part={mail.body} />
-    </div>
-}
 
 const List = () => {
     const dispatch = useDispatch();
