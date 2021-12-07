@@ -43,7 +43,7 @@ module.exports = {
 			},
 			{
 				test: /\.s?css$/,
-				use: ["style-loader", "css-loader", "sass-loader"]
+				use: ["style-loader", "css-loader?url=false", "sass-loader"]
 			},
 			{
 				test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,

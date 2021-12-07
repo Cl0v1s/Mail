@@ -12,6 +12,7 @@
     "@fortawesome/fontawesome-free": "^5.15.1",
     "@reduxjs/toolkit": "^1.6.1",
     "@synapse-medicine/boto": "file:../../material/packages/boto",
+    "@synapse-medicine/core": "file:../../material/packages/core",
     "babel-polyfill": "^6.26.0",
     "blueimp-md5": "^2.18.0",
     "moment": "^2.29.1",
@@ -19,6 +20,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.4",
+    "react-router-dom": "^6.0.2",
     "tailwindcss": "^2.0.2"
   },
   "devDependencies": {

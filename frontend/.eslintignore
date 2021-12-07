@@ -1,0 +1,22 @@
+*.css
+*.html
+*.json
+*.md
+*.scss
+*.svg
+*.yml
+.vscode/
+coverage/
+linter-audit/
+node_modules/
+# on ignore le code de DS car deprecated
+packages/design-system/
+packages/*/content/
+packages/*/dist/
+packages/*/images/
+packages/*/js/bundles
+packages/*/node_modules/
+packages/*/res/
+packages/*/template/
+styleguide/
+utils/

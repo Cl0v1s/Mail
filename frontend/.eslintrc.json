@@ -1,0 +1,74 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest": true
+  },
+  "extends": [
+    "airbnb",
+    "plugin:react/recommended"
+  ],
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "react-hooks",
+    "@babel"
+  ],
+  "settings": {
+    "react": {
+      "version": "17.0.2"
+    }
+  },
+  "rules": {
+    "max-len": [1, {
+      /* max length of lines in chars: 125, ERR */
+      "code": 125,
+      /* tabs length in spaces: 2, ERR */
+      "tabWidth": 2,
+      /* ingore urls in counting */
+      "ignoreUrls": true,
+        /* ingore comments in counting */
+      "ignoreComments": true
+    }],
+    /* requires singlequotes, ERR */
+    "quotes":[2, "single", {
+      /* allows single & double quotes when some need to be escaped: TRUE */
+      "avoidEscape": true,
+      /* allows backticks: TRUE, ERR */
+      "allowTemplateLiterals": true
+      }],
+    /* requires linebreaks in curly braces: when the JSX takes up more than one line, WARN */
+    "react/jsx-curly-newline": [1, {
+      "multiline": "consistent",
+      "singleline": "forbid"
+    }],
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    /* Forbid the import of external modules that are not declared in the dependancies: OFF */
+    "import/no-extraneous-dependencies": 0,
+    /* disallow the use of certain file extensions: OFF */
+    "import/extensions": 0,
+    /* disallow unresolved import: OFF */
+    "import/no-unresolved": 0,
+    /* enforces a consistent indentation style: 2 spaces, ERR */
+    "indent":[2, 2],
+    /* disallow dangling underscores: OFF */
+    "no-underscore-dangle": 0,
+    /* disallow unnecessary return await in async functions: OFF */
+    "no-return-await": 0,
+    /* enforce that class methods utilize 'this': WARN */
+    "class-methods-use-this": 1,
+    /* enforces consistent line endings: OFF */
+    "linebreak-style": 0,
+    /* checks rules of Hooks */
+    "react-hooks/rules-of-hooks": "error",
+    /* checks effect dependencies */
+    "react-hooks/exhaustive-deps": "warn"
+  }
+}
