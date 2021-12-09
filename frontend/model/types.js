@@ -1,5 +1,10 @@
 import PropTypes from 'prop-types';
 
+export const MAIL_ATTRIBUTES = {
+  "SEEN": "\\Seen",
+  "ANSWERED": "\\ANSWERED",
+};
+
 export const Folder = PropTypes.shape({
     name: PropTypes.string.isRequired,
     length: PropTypes.number.isRequired,
@@ -39,12 +44,13 @@ export const MailBody = PropTypes.shape({
 export const Mail = PropTypes.shape({
     id: PropTypes.string.isRequired,
     folder: PropTypes.string.isRequired,
-    attributes: PropTypes.object,
+    attributes: PropTypes.array,
     body: MailBody,
     headers: MailHeader.isRequired,
 });
 
 export const Conversation = PropTypes.shape({
-  peoples: PropTypes.arrayOf(Address).isRequired,
+  id: PropTypes.string.isRequired,
+  people: PropTypes.arrayOf(Address).isRequired,
   mails: PropTypes.arrayOf(Mail).isRequired,
 })
