@@ -43,3 +43,8 @@ export const Mail = PropTypes.shape({
     body: MailBody,
     headers: MailHeader.isRequired,
 });
+
+export const Conversation = PropTypes.shape({
+  peoples: PropTypes.arrayOf(Address).isRequired,
+  mails: PropTypes.arrayOf(Mail).isRequired,
+})

@@ -160,24 +160,25 @@ json Mailer::parseHeaders(std::string _raw)
 
 	while(c_line != NULL) {
 		std::string line = std::string(c_line);
+    c_line = std::strtok(NULL, "\r\n");
 		int sep = line.find(":");
-		std::string field = line.substr(0, sep);
-		std::string value = line.substr(sep + 2); // +2 because ": "
-		c_line = std::strtok(NULL, "\r\n");
-		// MANDATORY FIELDS
-		if(field == "From"
-			|| field == "To"
-			|| field == "Cc") {
-			mail[field] = this->parseAddressList(value);
-		} else if(field == "Subject") {
-			mail[field] = this->decode(value);
-		} else if(field == "Content-Type") {
-			mail[field] = this->parseContentType(value);
-		} else { // OTHER FIELDS
-			mail[field] = value;
-		}
+    if(sep != -1) {
+      std::string field = line.substr(0, sep);
+      std::string value = line.substr(sep + 2); // +2 because ": "
+      // MANDATORY FIELDS
+      if(field == "From"
+        || field == "To"
+        || field == "Cc") {
+        mail[field] = this->parseAddressList(value);
+      } else if(field == "Subject") {
+        mail[field] = this->decode(value);
+      } else if(field == "Content-Type") {
+        mail[field] = this->parseContentType(value);
+      } else { // OTHER FIELDS
+        mail[field] = value;
+      }
+    }
 	}
-
 	return mail;
 }
 
@@ -312,6 +313,8 @@ std::vector<nlohmann::json> Mailer::searchMails(std::string operation, std::stri
 	}
 
 	char *token = std::strtok(c_raw_ids, " ");
+  std::vector<std::string> parts;
+  boost::regex en("\r\n");
 	while (token != NULL)
 	{
 		std::string mail;

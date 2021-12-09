@@ -1,0 +1,14 @@
+.component-conversations {
+  .conversation {
+    .color {
+      width: 15px;
+      background-color: var(--brand-primary-light);
+    }
+
+    &.group {
+      .color {
+        background-color: var(--brand-tertiary-light);
+      }
+    }
+  }
+}

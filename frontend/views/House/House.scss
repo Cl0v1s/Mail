@@ -1,0 +1,12 @@
+.component-house {
+  height: 100vh;
+
+  .folder-entry {
+    border: 1px solid transparent;
+    &:hover {
+      background-color: var(--brand-primary-light) !important;
+      border: 1px solid var(--brand-primary);
+      text-decoration: none !important;
+    }
+  }
+}

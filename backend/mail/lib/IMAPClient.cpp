@@ -476,6 +476,8 @@ const bool CIMAPClient::PrePerform()
          /* This will retrieve message 'm_strMsgNumber' from the user's mailbox */
          if (m_pstrText != nullptr)
          {
+            curl_easy_setopt(m_pCurlSession, CURLOPT_HEADERFUNCTION, &CMailClient::WriteInStringCallback);
+            curl_easy_setopt(m_pCurlSession, CURLOPT_HEADERDATA, m_pstrText);
             curl_easy_setopt(m_pCurlSession, CURLOPT_WRITEFUNCTION, &CMailClient::WriteInStringCallback);
             curl_easy_setopt(m_pCurlSession, CURLOPT_WRITEDATA, m_pstrText);
          }

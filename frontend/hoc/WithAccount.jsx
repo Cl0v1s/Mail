@@ -14,9 +14,13 @@ const AccountContextProvider = ({ name, rsaKey, imap, smtp, children }) => {
   const [folders, setFolders] = React.useState(null);
 
   const retrieveAccount = async () => {
-    const a = await Account.init(name, rsaKey, imap, smtp);
+    await Account.init(name, rsaKey, imap, smtp);
     await Account.use({ name });
-    setAccount(a);
+    setAccount({
+      name,
+      imap,
+      smtp,
+    });
   }
 
   const retrieveFolders = async () => {

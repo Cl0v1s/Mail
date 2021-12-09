@@ -1,8 +1,9 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+import { HashRouter as Router } from 'react-router-dom';
 
-import { FolderContextProvider } from './hoc/WithFolder.jsx';
-import { AccountContextProvider, WithAccount } from './hoc/WithAccount.jsx';
+import { AccountContextProvider } from './hoc/WithAccount.jsx';
+
+import House from './views/House/House.jsx';
 
 import './App.scss';
 
@@ -28,26 +29,7 @@ const account = {
   },
 };
 
-const FolderRoute = ({ folders }) => {
-  const params = useParams();
-  return (
-    <FolderContextProvider folder={params.name ? folders.find((f) => f.name === params.name) : folders[0]}>
-      Test direct
-    </FolderContextProvider>
-  );
-}
 
-const _UI = ({ folders, actions }) => {
-  if (folders == null) return null;
-  return (
-    <Routes>
-      <Route exact path="folder/:name" element={<FolderRoute folders={folders} />} />
-      <Route exact path="folder" element={<FolderRoute folders={folders} />} />
-    </Routes>
-  );
-};
-
-const UI = WithAccount(_UI);
 
 const App = () => {
   return (
@@ -55,7 +37,7 @@ const App = () => {
       <AccountContextProvider
         {...account}
       >
-        <UI />
+        <House />
       </AccountContextProvider>
     </Router>
   )
