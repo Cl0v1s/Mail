@@ -15,6 +15,13 @@ Mail::Mail(std::string id, nlohmann::json headers, std::string folder) {
 	this->_folder = folder;
 }
 
+Mail::Mail(std::string id, nlohmann::json headers, std::string folder, nlohmann::json attributes) {
+	this->_id = id;
+	this->_headers = headers;
+	this->_folder = folder;
+  this->_attributes = attributes;
+}
+
 Mail::Mail(std::string id, nlohmann::json headers, std::string folder, nlohmann::json body, nlohmann::json attributes) {
 	this->_id = id;
 	this->_headers = headers;

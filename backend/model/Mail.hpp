@@ -9,6 +9,7 @@ class Mail {
 		Mail(std::string id);
 		Mail(std::string id, nlohmann::json headers);
 		Mail(std::string id, nlohmann::json headers, std::string folder);
+		Mail(std::string id, nlohmann::json headers, std::string folder, nlohmann::json attributes);
 		Mail(std::string id,nlohmann::json headers, std::string folder, nlohmann::json body, nlohmann::json attributes);
 		nlohmann::json toJSON();
 		std::string getId();

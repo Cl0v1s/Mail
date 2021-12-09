@@ -185,7 +185,7 @@ std::string Command::listMails(AccountManager &manager, nlohmann::json &raw)
     for (size_t i = 0; i < mails.size(); i += 1)
     {
         json headers = manager.getMailer()->parseHeaders(mails[i]["headers"]);
-        Mail mail(mails[i]["id"], headers, folder.getName());
+        Mail mail(mails[i]["id"], headers, folder.getName(), mails[i]["attributes"]);
         res.push_back(mail.toJSON());
     }
     data["result"] = res;

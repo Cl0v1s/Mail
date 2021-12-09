@@ -313,15 +313,22 @@ std::vector<nlohmann::json> Mailer::searchMails(std::string operation, std::stri
 	}
 
 	char *token = std::strtok(c_raw_ids, " ");
+  std::smatch m;
+  std::regex flags("\\* .+ FETCH \\(FLAGS \\((.*)\\)");
+  boost::regex split(" ");
   std::vector<std::string> parts;
-  boost::regex en("\r\n");
+  std::string attributes;
 	while (token != NULL)
 	{
 		std::string mail;
 		this->_imapClient.GetHeader(std::string(token), mail, folderName);
+	  std::regex_search(mail, m, flags);
+    attributes = m[1];
+		boost::algorithm::split_regex(parts, attributes, split);
 		nlohmann::json entry;
 		entry["id"] = token;
 		entry["headers"] = mail;
+    entry["attributes"] = parts;
 		results.push_back(entry);
 		token = std::strtok(NULL, " ");
 	}

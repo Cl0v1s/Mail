@@ -469,7 +469,9 @@ const bool CIMAPClient::PrePerform()
       case IMAP_RETR_HEADER:
          if (!m_strMsgNumber.empty()) {
             // MAILINDEX INSTEAD OF UID https://github.com/curl/curl/issues/4479
-            strRequestURL += m_strFolderName + ";MAILINDEX=" + m_strMsgNumber + "/;SECTION=HEADER";
+            strRequestURL += m_strFolderName;
+           curl_easy_setopt(m_pCurlSession, CURLOPT_CUSTOMREQUEST, ("FETCH " + m_strMsgNumber + " (FLAGS, BODY.PEEK[HEADER])").c_str());
+
          } else
             return false;
 
