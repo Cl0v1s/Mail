@@ -44,6 +44,18 @@ const FolderContextProvider = ({ folder, children }) => {
     setConversations(groupByConversations(mails));
   }
 
+  const retrieveMailsBody = async (mailsToRetrieve) => {
+    const results = await Promise.all(
+      mailsToRetrieve.map((m) => Mail.get(m))
+    )
+
+    setMails(mails.map((m) => {
+      const concerned = results.find((r) => m.id === r.id);
+      if (!concerned) return m;
+      return concerned;
+    }));
+  }
+
   React.useEffect(() => {
     retrieveMails();
   }, [folder.name, folder.length, folder.highestmodseq]);
@@ -53,7 +65,8 @@ const FolderContextProvider = ({ folder, children }) => {
     mails,
     conversations,
     actions: {
-
+      retrieveMails,
+      retrieveMailsBody,
     },
   }}>
     {children}

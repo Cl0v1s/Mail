@@ -1,0 +1,16 @@
+.component-mail-entry {
+  min-width: 300px;
+  min-height: 73px;
+
+  .picture {
+      $size: 50px;
+      width: $size;
+
+      img {
+          $size: 25px;
+
+          width: $size;
+          height: $size;
+      }
+  }
+}

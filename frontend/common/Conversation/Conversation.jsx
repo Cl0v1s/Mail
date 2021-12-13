@@ -2,17 +2,21 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import { WithFolder } from '../../hoc/WithFolder.jsx';
+import { ConversationContextProvider } from '../../hoc/WithConversation.jsx';
+
+import Threads from '../Threads/Threads.jsx';
 
 const Conversation = ({ conversations }) => {
+  if (!conversations) return null;
   const params = useParams();
 
   const conversation = conversations.find((co) => co.id === params.conversation);
 
-  console.log(conversation);
-
   return (
     <div className="component-conversation">
-
+      <ConversationContextProvider conversation={conversation}>
+        <Threads />
+      </ConversationContextProvider>
     </div>
   );
 }
