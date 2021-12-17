@@ -37,7 +37,7 @@ void Mailer::convert(std::string charset, std::vector<uint8_t> &raw)
 
 std::string Mailer::decode(std::string _encoded)
 {
-	std::function<std::string(std::string)> translate = [](std::string encoded) {
+	std::function<std::string(std::string)> translate = [this](std::string encoded) {
 		std::smatch m;
 		// =?<charset>?<encoding>?<encoded-text>?=
 		std::regex e = std::regex("\\?([^\\?]+)");
@@ -52,22 +52,28 @@ std::string Mailer::decode(std::string _encoded)
 		encoded = m.suffix().str();
 		if (std::regex_search(encoded, m, e) == false)
 			return encoded;
+
 		std::string content = m[1];
 		//std::cout << "result " << encoded << ":" << charset << ":" << encoding << ":" << content << std::endl;
 		if (encoding == "B" || encoding == "b")
 		{
-			return base64_decode(content);
+			content = base64_decode(content);
 		}
 		else if (encoding == "Q" || encoding == "q")
 		{
 			e = std::regex("_");
-			return std::regex_replace(QuotedPrintable::decode(content), e, " ");
+			content = std::regex_replace(QuotedPrintable::decode(content), e, " ");
 		}
 		else
 		{
 			//TODO: ERROR unknown encoding
+		  return encoded;
 		}
-		return encoded;
+
+    std::vector<uint8_t> to_convert(content.begin(), content.end());
+    this->convert(charset, to_convert);
+    content = std::string(to_convert.begin(), to_convert.end());
+    return content;
 	};
 
 	std::smatch match;
