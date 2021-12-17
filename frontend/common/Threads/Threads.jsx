@@ -4,50 +4,43 @@ import { v4 } from 'uuid';
 import { WithConversation } from '../../hoc/WithConversation.jsx';
 import MailEntry from '../MailEntry/MailEntry.jsx';
 
-
-const Thread = ({ thread }) => {
-
-  return (
-    <div className="component-thread p-3">
-      <div className='font-family-secondary mb-4'>
-        {thread.id}
-      </div>
-      {
-        thread.mails.map((m) => <div className="my-2">{m == null ? <div className='placeholder'></div> : <MailEntry mail={m} />} </div>)
-      }
-    </div>
-  )
-}
-
 const Threads = ({ threads }) => {
   if (threads == null) return null;
 
   const sortedMails = threads
-    .map((t) => t.mails.map((m) => ({ id: t.id, date: new Date(m.headers.Date), mail: m })))
+    .map((t, threadIndex) => t.mails.map((m) => ({ threadIndex, id: t.id, date: new Date(m.headers.Date), mail: m })))
     .flat()
     .sort((a, b) => a.date - b.date);
 
+  const lines = [];
+  do {
+    let line = new Array(threads.length).fill(null);
+    const current = sortedMails.shift();
+    // Mails (d'autres threads !!) à la même date
+    const similars = sortedMails.filter((s) => s.date.getTime() === current.date.getTime());
+    sortedMails.splice(0, similars.length);
 
-  let _threads = [];
+    line[current.threadIndex] = current;
+    similars.forEach((s) => line[s.threadIndex] = s);
 
-  threads.forEach((thread) => {
-    let mails = [];
-    thread.mails.forEach((mail, index) => {
-      console.log('----');
-      console.log(mail.id);
-      const toAdd = sortedMails.findIndex((m) => console.log(m.mail.id) || m.mail.id === mail.id);
-      mails = [...(new Array(Math.max(0, toAdd - 1))), mail];
-    });
-    _threads = [..._threads, {
-      id: thread.id,
-      mails,
-    }];
-  });
+    lines.push(line);
+  } while (sortedMails.length > 0);
 
   return (
-    <div className="component-threads d-flex justify-content-center p-3">
+    <div className="component-threads p-3">
+      <div className="subjects d-inline-flex align-items-end">
+        {
+          threads.map((t) => <div className="cell border-bottom mx-3 my-3 pb-3 font-family-secondary">{t.id}</div>)
+        }
+      </div>
       {
-        _threads.map((t) => <Thread key={v4()} thread={t} />)
+        lines.map((line) => (
+          <div className="d-inline-flex my-2">
+            {
+              line.map((m) => m == null ? <div className="cell mx-3 my-2"></div> : <div className="cell mx-3 my-2"><MailEntry mail={m.mail} /></div>)
+            }
+          </div>
+        ))
       }
     </div>
   );

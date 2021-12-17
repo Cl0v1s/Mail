@@ -1,7 +1,6 @@
 .component-threads {
-  .component-thread {
-    .placeholder {
-      height: 73px;
-    }
+  .cell {
+    min-width: 300px;
+    max-width: 300px;
   }
 }
