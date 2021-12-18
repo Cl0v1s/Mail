@@ -32,7 +32,7 @@ const MailAlternatives = ({ part }) => {
     setAlternative(evt.target.value);
   }
 
-  return <div>
+  return <div className="h-100 d-flex flex-column">
     <div className="alternative rounded border-bottom text-right p-2">
       <select className="form-control w-auto d-inline-block" onChange={onChange}>
         {
@@ -40,7 +40,9 @@ const MailAlternatives = ({ part }) => {
         }
       </select>
     </div>
-    <MailPart part={alternatives[alternative]} />
+    <div className="flex-grow-1">
+      <MailPart part={alternatives[alternative]} />
+    </div>
   </div>
 }
 

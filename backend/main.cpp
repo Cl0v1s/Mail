@@ -93,7 +93,7 @@ int main() {
 
   // MailApp app;
   // app.Run();
-  // cout << "GUI closed" << endl;
+  cout << "GUI closed" << endl;
 
   data_thread.join();
   cout << "Data thread close" << endl;

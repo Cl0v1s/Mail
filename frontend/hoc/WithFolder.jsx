@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { Mail } from './../model/actions';
 import { Folder } from './../model/types';
 
+let lastRequest = new Date();
+
 const groupByConversations = (mails) => {
   const conversationsAbstract = {};
 
@@ -26,7 +28,6 @@ const groupByConversations = (mails) => {
   return Object.values(conversationsAbstract).reverse();
 }
 
-
 const FolderContext = React.createContext({
   folder: null,
   mails: null,
@@ -39,7 +40,12 @@ const FolderContextProvider = ({ folder, children }) => {
   const [conversations, setConversations] = React.useState(null);
 
   const retrieveMails = async (filters = {}) => {
+    const time = new Date();
+    lastRequest = time;
     const mails = await Mail.list(folder, filters);
+    if (time < lastRequest) {
+      return;
+    }
     setMails(mails);
   }
 
@@ -51,7 +57,10 @@ const FolderContextProvider = ({ folder, children }) => {
     setMails(mails.map((m) => {
       const concerned = results.find((r) => m.id === r.id);
       if (!concerned) return m;
-      return concerned;
+      return {
+        ...m,
+        body: concerned.body,
+      };
     }));
   }
 
