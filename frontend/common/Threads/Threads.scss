@@ -1,6 +1,13 @@
 .component-threads {
+  .subjects {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
   .cell {
-    min-width: 300px;
-    max-width: 300px;
+    $size: 450px;
+    min-width: $size;
+    max-width: $size;
   }
 }

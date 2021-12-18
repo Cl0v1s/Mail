@@ -1,10 +1,11 @@
 import React from 'react';
 import { v4 } from 'uuid';
+import { Link } from 'react-router-dom';
 
 import { WithConversation } from '../../hoc/WithConversation.jsx';
 import MailEntry from '../MailEntry/MailEntry.jsx';
 
-const Threads = ({ threads }) => {
+const Threads = ({ threads, folder }) => {
   if (threads == null) return null;
 
   const sortedMails = threads
@@ -28,21 +29,30 @@ const Threads = ({ threads }) => {
 
   return (
     <div className="component-threads p-3">
-      <div className="subjects d-inline-flex align-items-end">
+      <div className="subjects bg-white d-flex align-items-end">
         {
           threads.map((t) => <div className="cell border-bottom mx-3 my-3 pb-3 font-family-secondary">{t.id}</div>)
         }
       </div>
       {
         lines.map((line) => (
-          <div className="d-inline-flex my-2">
+          <div className="d-flex my-2">
             {
-              line.map((m) => m == null ? <div className="cell mx-3 my-2"></div> : <div className="cell mx-3 my-2"><MailEntry mail={m.mail} /></div>)
+              line.map((m) => m == null ?
+                <div className="cell mx-3 my-2"></div>
+                : (
+                  <div className="cell mx-3 my-2">
+                    <Link to={`/folder/${folder.name}/mail/${m.mail.id}`}>
+                      <MailEntry mail={m.mail} />
+                    </Link>
+                  </div>
+                )
+              )
             }
           </div>
         ))
       }
-    </div>
+    </div >
   );
 }
 

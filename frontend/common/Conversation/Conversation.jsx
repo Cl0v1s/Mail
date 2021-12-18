@@ -6,7 +6,7 @@ import { ConversationContextProvider } from '../../hoc/WithConversation.jsx';
 
 import Threads from '../Threads/Threads.jsx';
 
-const Conversation = ({ conversations }) => {
+const Conversation = ({ conversations, folder }) => {
   if (!conversations) return null;
   const params = useParams();
 
@@ -15,7 +15,7 @@ const Conversation = ({ conversations }) => {
   return (
     <div className="component-conversation">
       <ConversationContextProvider conversation={conversation}>
-        <Threads />
+        <Threads folder={folder} />
       </ConversationContextProvider>
     </div>
   );

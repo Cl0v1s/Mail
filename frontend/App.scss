@@ -7,3 +7,9 @@
 * {
   box-sizing: border-box;
 }
+
+:root {
+  a, body a {
+    text-decoration: none;
+  }
+}

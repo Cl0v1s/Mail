@@ -3,11 +3,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Mail as MailType } from './../../model/types';
+import extractSummary from '../../helpers/extractSummary.js';
 
 export default class MailEntry extends React.Component {
   static propTypes = {
     mail: MailType.isRequired,
-    onClick: PropTypes.func.isRequired,
   }
 
   state = {
@@ -22,7 +22,7 @@ export default class MailEntry extends React.Component {
     const sender = this.props.mail.headers.From[0].name || this.props.mail.headers.From[0].address;
     const picture = `http://${this.props.mail.headers.From[0].address?.split('@')[1]}/favicon.ico`;
     return (
-      <div className="component-mail-entry rounded dp dp-light bg-white row no-gutters" onClick={() => this.props.onClick(this.props.mail)}>
+      <div className="component-mail-entry rounded dp dp-light bg-white row no-gutters">
         {
           <div className="col-auto d-flex align-self-stretch justify-content-center picture bg-brand-secondary rounded-left">
             <div className="align-self-center ">
@@ -48,7 +48,10 @@ export default class MailEntry extends React.Component {
           </div>
           <div className="subject ">
             <div className="font-weight-bold mr-2">
-              {this.props.mail.headers.Subject}
+              {
+                this.props.mail.body == null
+                  ? 'Chargement...' : (extractSummary(this.props.mail.body) || this.props.mail.headers.Subject)
+              }
             </div>
           </div>
           <div className="date text-right">

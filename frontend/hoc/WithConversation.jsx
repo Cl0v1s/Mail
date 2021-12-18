@@ -8,14 +8,17 @@ const groupByThreads = (mails) => {
   const threads = {};
 
   mails.forEach((mail) => {
-    if (threads[mail.headers.Subject] == null) threads[mail.headers.Subject] = {
-      id: mail.headers.Subject,
+    const subject = mail.headers.Subject.replace(/^Re:/, '').trim();
+    if (threads[subject] == null) threads[subject] = {
+      id: subject,
       mails: [],
+      firstMessageDate: new Date(mail.headers.Date),
     };
-    threads[mail.headers.Subject].mails.push(mail);
+    threads[subject].mails.push(mail);
   });
 
-  return Object.values(threads);
+  return Object.values(threads)
+    .sort((a, b) => a.firstMessageDate - b.firstMessageDate);
 };
 
 const ConversationContext = React.createContext({

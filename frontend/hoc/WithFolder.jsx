@@ -41,7 +41,6 @@ const FolderContextProvider = ({ folder, children }) => {
   const retrieveMails = async (filters = {}) => {
     const mails = await Mail.list(folder, filters);
     setMails(mails);
-    setConversations(groupByConversations(mails));
   }
 
   const retrieveMailsBody = async (mailsToRetrieve) => {
@@ -59,6 +58,11 @@ const FolderContextProvider = ({ folder, children }) => {
   React.useEffect(() => {
     retrieveMails();
   }, [folder.name, folder.length, folder.highestmodseq]);
+
+  React.useEffect(() => {
+    if (mails == null) return;
+    setConversations(groupByConversations(mails));
+  }, [mails])
 
   return <FolderContext.Provider value={{
     folder,

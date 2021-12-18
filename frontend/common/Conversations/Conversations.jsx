@@ -9,9 +9,9 @@ import { v4 } from 'uuid';
 
 const Conversation = WithAccount(({ folder, conversation, account }) => {
   const others = conversation.people.filter((p) => p.address !== account.name);
-  const isNew = conversation.mails.find((m) => m.attributes.indexOf(MAIL_ATTRIBUTES.SEEN) === -1) != null;
+  const isNew = conversation.mails.find((m) => m.attributes?.indexOf(MAIL_ATTRIBUTES.SEEN) === -1) != null;
   return (
-    <Link to={`/folder/${folder.name}/${conversation.id}`}>
+    <Link to={`/folder/${folder.name}/conversation/${conversation.id}`}>
       <div
         className={`conversation d-flex my-3 ${isNew ? 'new' : ''} ${others.length >= 2 ? 'group' : ''}`}
       >
