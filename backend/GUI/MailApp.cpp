@@ -6,6 +6,8 @@
 using namespace ultralight;
 
 MailApp::MailApp() {
+  Platform::instance().set_font_loader(&(this->_fontLoader));
+
   app_ = App::Create();
   window_ = Window::Create(app_->main_monitor(), WINDOW_WIDTH, WINDOW_HEIGHT,
     false, kWindowFlags_Titled | kWindowFlags_Resizable);

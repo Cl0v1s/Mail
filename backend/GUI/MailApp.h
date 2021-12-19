@@ -1,6 +1,9 @@
 #pragma once
 #include <AppCore/AppCore.h>
+#include <Ultralight/platform/Platform.h>
 #include <iostream>
+
+#include "Font/FontLoader.h"
 
 using namespace ultralight;
 
@@ -58,4 +61,6 @@ protected:
   RefPtr<App> app_;
   RefPtr<Window> window_;
   RefPtr<Overlay> overlay_;
+
+  MailFontLoader _fontLoader;
 };

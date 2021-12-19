@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 function createConfig() {
 	const config = {
@@ -32,6 +33,9 @@ module.exports = {
 		filename: "bundle.js"
 	},
 	mode: 'development',
+  plugins: [new MiniCssExtractPlugin({
+    filename: "bundle.css"
+  })],
 	module: {
 		rules: [
 			{
@@ -43,7 +47,7 @@ module.exports = {
 			},
 			{
 				test: /\.s?css$/,
-				use: ["style-loader", "css-loader?url=false", "sass-loader"]
+				use: [MiniCssExtractPlugin.loader, "css-loader?url=false", "sass-loader"]
 			},
 			{
 				test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,

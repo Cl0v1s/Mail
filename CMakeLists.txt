@@ -24,6 +24,9 @@ set(SOURCES
             "backend/PGP/PGP.hpp"
             "backend/PGP/PGP.cpp"
 
+            "backend/GUI/Font/FontLoader.h"
+            "backend/GUI/Font/FontLoader.cpp"
+
             "backend/GUI/MailApp.h"
             "backend/GUI/MailApp.cpp"
 

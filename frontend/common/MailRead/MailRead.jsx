@@ -6,19 +6,8 @@ import { WithFolder } from '../../hoc/WithFolder.jsx';
 
 const MailContent = ({ content, plain = false }) => {
   const root = React.createRef();
-  /*
-  TODO: gérer la navigation
-  React.useEffect(() => {
-      root.current.contentWindow.onload = function(evt) {
-          Array.from(evt.target.querySelectorAll('a')).forEach((a) => {
-              console.log(a);
-              a.target = "_blank";
-          });
-      };
-  }, []);
-  */
   if (plain) return <pre className="p-3 m-0 w-100 h-100">{content}</pre>;
-  return <iframe ref={root} className="w-100 h-100 border-0" sandbox="allow-same-origin" srcDoc={content} />;
+  return <iframe ref={root} className="w-100 h-100 border-0" sandbox="allow-same-origin allow-popups" srcDoc={content} />;
 }
 
 const MailAlternatives = ({ part }) => {

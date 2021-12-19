@@ -1,4 +1,4 @@
-@import './node_modules/@synapse-medicine/boto/dist/scss/goodmed.scss';
+@use './node_modules/@synapse-medicine/boto/dist/scss/goodmed.scss' as *;
 @import './node_modules/@synapse-medicine/core/dist/scss/main.scss';
 
 @import './views/views';
