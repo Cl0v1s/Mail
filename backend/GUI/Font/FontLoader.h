@@ -10,8 +10,17 @@
 #include <AppCore/AppCore.h>
 #include <Ultralight/platform/FontLoader.h>
 #include <Ultralight/platform/Platform.h>
+#include <boost/algorithm/string.hpp>
 
 using namespace ultralight;
+
+struct FontFace {
+  int weight_lower;
+  int weight_upper;
+  std::string name;
+  bool italic;
+  // buffer
+};
 
 class MailFontLoader : public FontLoader {
   private:
