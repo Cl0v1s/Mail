@@ -105,7 +105,7 @@ RefPtr<FontFile> MailFontLoader::Load(const String16& family, int weight, bool i
   std::vector<FontFace>::iterator it = this->_fonts.begin();
   String8 _family = String(family.data(), family.size()).utf8();
   do {
-    if(strcmp((*it).name.c_str(), _family.data()) && ((weight >= (*it).weight_lower && weight <= (*it).weight_upper) || (*it).weight_lower == 0 && (*it).weight_upper == 0)) {
+    if(strcmp((*it).name.c_str(), _family.data()) == 0 && ((weight >= (*it).weight_lower && weight <= (*it).weight_upper) || (*it).weight_lower == 0 && (*it).weight_upper == 0)) {
       font = it.base();
     }
     it++;
