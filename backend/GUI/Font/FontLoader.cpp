@@ -55,7 +55,9 @@ void MailFontLoader::parseFontFace(std::string declaration) {
       curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
       res = curl_easy_perform(curl);
       curl_easy_cleanup(curl);
-      font.buffer = Buffer::Create(readBuffer.c_str(), readBuffer.length());
+      font.buffer = FontFile::Create(
+        Buffer::Create(readBuffer.c_str(), readBuffer.length())
+      );
     }
   } else {
     //TODO: error
@@ -110,9 +112,7 @@ RefPtr<FontFile> MailFontLoader::Load(const String16& family, int weight, bool i
   } while(it != this->_fonts.end() && font == 0);
 
   if(font != 0) {
-    // Attention ici
-    Ref<Buffer> r(*(font->buffer.get()));
-    return FontFile::Create(r);
+    return font->buffer;
   }
   
 

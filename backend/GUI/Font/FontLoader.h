@@ -21,7 +21,7 @@ struct FontFace {
   int weight_upper;
   std::string name;
   bool italic;
-  RefPtr<Buffer> buffer;
+  RefPtr<FontFile> buffer;
 };
 
 class MailFontLoader : public FontLoader {
