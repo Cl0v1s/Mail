@@ -1,5 +1,11 @@
 #include "FontLoader.h"
 
+static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
+{
+    ((std::string*)userp)->append((char*)contents, size * nmemb);
+    return size * nmemb;
+}
+
 MailFontLoader::MailFontLoader() {
   this->_platformFontLoader = GetPlatformFontLoader();
 
@@ -18,6 +24,11 @@ MailFontLoader::MailFontLoader() {
 }
 
 void MailFontLoader::parseFontFace(std::string declaration) {
+  CURL *curl;
+  CURLcode res;
+  std::string readBuffer;
+  curl = curl_easy_init();
+
   struct FontFace font;
 
   std::regex family("font-family.*: \"([^\"]+)\";");
@@ -38,7 +49,14 @@ void MailFontLoader::parseFontFace(std::string declaration) {
   }
   // gestion de url
   if(std::regex_search(declaration, match, url)) {
-    std::cout << match[1] << std::endl;
+    if(curl) {
+      curl_easy_setopt(curl, CURLOPT_URL, match[1].str().c_str());
+      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+      curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+      res = curl_easy_perform(curl);
+      curl_easy_cleanup(curl);
+      font.buffer = Buffer::Create(readBuffer.c_str(), readBuffer.length());
+    }
   } else {
     //TODO: error
     std::cout << "Unable to find fontface url in openType" << std::endl;
@@ -68,7 +86,8 @@ void MailFontLoader::parseFontFace(std::string declaration) {
     font.weight_upper = 0;
   }
 
-  // std::cout << font.name << ": " << font.weight_lower << "/" << font.weight_upper << std::endl;
+  std::cout << "Loaded "<< font.name << ": " << font.weight_lower << "/" << font.weight_upper << std::endl;
+  this->_fonts.push_back(font);
 }
 
 String16 MailFontLoader::fallback_font() const {
@@ -80,6 +99,21 @@ String16 MailFontLoader::fallback_font_for_characters(const String16& characters
 }
 
 RefPtr<FontFile> MailFontLoader::Load(const String16& family, int weight, bool italic) {
+  FontFace* font = 0;
+  std::vector<FontFace>::iterator it = this->_fonts.begin();
+  String8 _family = String(family.data(), family.size()).utf8();
+  do {
+    if(strcmp((*it).name.c_str(), _family.data()) && ((weight >= (*it).weight_lower && weight <= (*it).weight_upper) || (*it).weight_lower == 0 && (*it).weight_upper == 0)) {
+      font = it.base();
+    }
+    it++;
+  } while(it != this->_fonts.end() && font == 0);
+
+  if(font != 0) {
+    // Attention ici
+    Ref<Buffer> r(*(font->buffer.get()));
+    return FontFile::Create(r);
+  }
   
 
   return this->_platformFontLoader->Load(family, weight, italic);

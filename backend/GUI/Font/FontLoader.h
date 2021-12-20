@@ -6,10 +6,12 @@
 #include <fstream>
 #include <sstream>
 #include <regex>
+#include <curl/curl.h>
 #include <vector>
 #include <AppCore/AppCore.h>
 #include <Ultralight/platform/FontLoader.h>
 #include <Ultralight/platform/Platform.h>
+#include <Ultralight/Buffer.h>
 #include <boost/algorithm/string.hpp>
 
 using namespace ultralight;
@@ -19,12 +21,12 @@ struct FontFace {
   int weight_upper;
   std::string name;
   bool italic;
-  // buffer
+  RefPtr<Buffer> buffer;
 };
 
 class MailFontLoader : public FontLoader {
   private:
-    std::vector< RefPtr<FontFile> > _fonts;
+    std::vector<FontFace> _fonts;
     FontLoader* _platformFontLoader;
 
     void parseFontFace(std::string match);
