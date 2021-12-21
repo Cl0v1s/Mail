@@ -24,8 +24,12 @@ const groupByConversations = (mails) => {
     conversationsAbstract[signature].mails.push(mail);
   });
 
-  // mails (and so conversation) are already sorted from older to newer. Let's reverse that.
-  return Object.values(conversationsAbstract).reverse();
+  return Object.values(conversationsAbstract).sort((a, b) => {
+    const dateA = new Date(a.mails[a.mails.length - 1].headers.Date);
+    const dateB = new Date(b.mails[b.mails.length - 1].headers.Date);
+
+    return dateB - dateA;
+  })
 }
 
 const FolderContext = React.createContext({

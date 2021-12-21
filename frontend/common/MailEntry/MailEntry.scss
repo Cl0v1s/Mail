@@ -3,6 +3,10 @@
   min-height: 73px;
   cursor: pointer;
 
+  .subject {
+    word-break: break-all;
+  }
+
   .picture {
       $size: 50px;
       width: $size;

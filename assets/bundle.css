@@ -25091,6 +25091,10 @@ body {
   cursor: pointer;
 }
 
+.component-mail-entry .subject {
+  word-break: break-all;
+}
+
 .component-mail-entry .picture {
   width: 50px;
 }

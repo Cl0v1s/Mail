@@ -46,7 +46,7 @@ export default class MailEntry extends React.Component {
               #{this.props.mail.id}
             </div>
           </div>
-          <div className="subject ">
+          <div className="subject mt-1">
             <div className="font-weight-bold mr-2">
               {
                 this.props.mail.body == null
