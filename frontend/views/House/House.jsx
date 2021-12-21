@@ -35,6 +35,7 @@ const FolderEntry = ({ folder }) => {
 
 const House = ({ folders, actions }) => {
   if (folders == null) return null;
+
   return (
     <div className="component-house d-flex">
       <div className="h-100 flex-shrink-0">

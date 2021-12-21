@@ -1,9 +1,12 @@
 #include "MailApp.h"
 
-#define WINDOW_WIDTH  600
-#define WINDOW_HEIGHT 400
+#define WINDOW_WIDTH  800
+#define WINDOW_HEIGHT 600
 
 using namespace ultralight;
+
+
+
 
 MailApp::MailApp() {
   Platform::instance().set_font_loader(&(this->_fontLoader));
@@ -69,11 +72,28 @@ void MailApp::OnDOMReady(ultralight::View* caller,
                        uint64_t frame_id,
                        bool is_main_frame,
                        const String& url) {
-  ///
-  /// This is called when a frame's DOM has finished loading on the page.
-  ///
-  /// This is the best time to setup any JavaScript bindings.
-  ///
+  Ref<JSContext> context = caller->LockJSContext();
+  SetJSContext(context.get());
+  JSObject global = JSGlobalObject();
+  global["open"] = BindJSCallbackWithRetval(&MailApp::OpenInBrowser);
+}
+
+JSValue MailApp::OpenInBrowser(const JSObject& thisObject, const JSArgs& args) {
+  // ouvrir navigateur du système
+  if(args.size() >= 1) {
+    std::string url = std::string(String(args[0].ToString()).utf8().data());
+    #ifdef _WIN32
+      system(std::string("start " + url).c_str());
+    #endif
+    #ifdef __APPLE__
+      system(std::string("open " + url).c_str());
+    #endif
+    #ifdef __linux__
+      system(std::string("xdg-open " + url).c_str());
+    #endif
+
+  }
+  return JSValueMakeNull(thisObject.context());
 }
 
 void MailApp::OnUpdate() {

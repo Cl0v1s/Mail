@@ -1,7 +1,9 @@
 #pragma once
 #include <AppCore/AppCore.h>
+#include <AppCore/JSHelpers.h>
 #include <Ultralight/platform/Platform.h>
 #include <iostream>
+#include <functional>
 
 #include "Font/FontLoader.h"
 
@@ -18,7 +20,6 @@ public:
 
   // Start the run loop.
   virtual void Run();
-
 
   // This is called continuously from the app's main loop.
   virtual void OnUpdate() override;
@@ -55,8 +56,9 @@ public:
                                 uint32_t line_number,
                                 uint32_t column_number,
                                 const String& source_id) override;
-
-
+                          
+  JSValue OpenInBrowser(const JSObject& thisObject, const JSArgs& args);
+  
 protected:
   RefPtr<App> app_;
   RefPtr<Window> window_;

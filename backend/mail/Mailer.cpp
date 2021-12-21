@@ -216,12 +216,12 @@ json Mailer::parseBody(std::string body, json headers)
 	if (isThereBoundary == false)
 	{
 		std::vector<uint8_t> content = this->decrypt(body);
+    std::string contentFixed;
 
 		// convert non-text to base64
 		if (headers["Content-Type"]["type"].get<std::string>().rfind("text", 0) != 0)
 		{
-			std::string data = base64_encode(content.data(), content.size());
-			bodypart["content"] = data;
+			contentFixed = base64_encode(content.data(), content.size());
 		}
 		else
 		{
@@ -230,8 +230,10 @@ json Mailer::parseBody(std::string body, json headers)
 			{
 				this->convert(headers["Content-Type"]["charset"], content);
 			}
-			bodypart["content"] = std::string(content.begin(), content.end());
+			contentFixed = std::string(content.begin(), content.end());
 		}
+
+    bodypart["content"] = contentFixed;
 	}
 	else
 	{

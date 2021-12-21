@@ -7,7 +7,18 @@ import { WithFolder } from '../../hoc/WithFolder.jsx';
 const MailContent = ({ content, plain = false }) => {
   const root = React.createRef();
   if (plain) return <pre className="p-3 m-0 w-100 h-100">{content}</pre>;
-  return <iframe ref={root} className="w-100 h-100 border-0" sandbox="allow-same-origin allow-popups" srcDoc={content} />;
+
+  const onClickIframe = (e) => {
+    if (e.target.nodeName !== 'A' || e.target.target !== '_blank') return;
+    e.preventDefault();
+    window.open(e.target.href, '_blank');
+  }
+
+  const onLoadIframe = (e) => {
+    e.target.contentDocument.addEventListener("click", onClickIframe);
+  };
+
+  return <iframe ref={root} onLoad={onLoadIframe} className="w-100 h-100 border-0" sandbox="allow-same-origin allow-popups allow-scripts" srcDoc={content} />;
 }
 
 const MailAlternatives = ({ part }) => {
