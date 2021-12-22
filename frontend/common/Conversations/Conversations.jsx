@@ -14,10 +14,10 @@ const Conversation = WithAccount(({ folder, conversation, account }) => {
   return (
     <Link to={`/folder/${folder.name}/conversation/${conversation.id}`}>
       <div
-        className={`conversation d-flex my-3 ${news.length > 0 ? 'new' : ''} ${others.length >= 2 ? 'group' : ''}`}
+        className={`conversation rounded dp dp-light d-flex my-3 ${news.length > 0 ? 'new' : ''} ${others.length >= 2 ? 'group' : ''}`}
       >
         <div className="color rounded-left"></div>
-        <div className="content p-2 w-100 border-top border-bottom border-right rounded">
+        <div className="content p-2 w-100">
           <div className="font-weight-bold font-family-secondary">
             {others.map((o) => o.name || o.address).join(', ')}
           </div>
@@ -25,7 +25,7 @@ const Conversation = WithAccount(({ folder, conversation, account }) => {
             {conversation.mails.length} mail(s)
             {
               news.length > 0 && <span>
-                dont <span className="font-weight-bold">{news.length} non-lu(s)</span>
+                &nbsp;dont <span className="font-weight-bold">{news.length} non-lu(s)</span>
               </span>
             }
           </div>

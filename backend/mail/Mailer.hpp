@@ -9,6 +9,7 @@
 #include <boost/regex.hpp>
 #include <boost/algorithm/string/regex.hpp>
 #include <boost/algorithm/string/join.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "lib/iconv.hpp"
 #include "lib/SMTPClient.h"

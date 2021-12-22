@@ -13,9 +13,7 @@ const Conversation = ({ conversations, folder }) => {
   if (!conversations) return null;
   const params = useParams();
 
-  const conversation = React.useMemo(() => {
-    return conversations.find((co) => co.id === params.conversation);
-  }, [params.conversation]);
+  const conversation = conversations.find((co) => co.id === params.conversation);
 
   const preferences = React.useMemo(() => {
     let preferences = Storage.preferences.conversations
@@ -26,7 +24,7 @@ const Conversation = ({ conversations, folder }) => {
       Storage.update();
     }
     return preferences;
-  }, [params.conversation]);
+  }, [conversation.id]);
 
   const [mode, setMode] = React.useState(preferences.mode);
 

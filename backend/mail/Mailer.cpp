@@ -37,39 +37,15 @@ void Mailer::convert(std::string charset, std::vector<uint8_t> &raw)
 
 std::string Mailer::decode(std::string _encoded)
 {
-	std::function<std::string(std::string)> translate = [this](std::string encoded) {
-		std::smatch m;
-		// =?<charset>?<encoding>?<encoded-text>?=
-		std::regex e = std::regex("\\?([^\\?]+)");
-		// std::cout << "Enc " << encoded << std::endl;
-		if (std::regex_search(encoded, m, e) == false)
-			return encoded;
-		std::string charset = m[1];
-		encoded = m.suffix().str();
-		if (std::regex_search(encoded, m, e) == false)
-			return encoded;
-		std::string encoding = m[1];
-		encoded = m.suffix().str();
-		if (std::regex_search(encoded, m, e) == false)
-			return encoded;
-
-		std::string content = m[1];
-		//std::cout << "result " << encoded << ":" << charset << ":" << encoding << ":" << content << std::endl;
-		if (encoding == "B" || encoding == "b")
+	std::function<std::string(std::string, std::string, std::string)> translate = [this](std::string charset, std::string encoding, std::string content) {
+    if (encoding == "B" || encoding == "b")
 		{
 			content = base64_decode(content);
 		}
 		else if (encoding == "Q" || encoding == "q")
 		{
-			e = std::regex("_");
-			content = std::regex_replace(QuotedPrintable::decode(content), e, " ");
+			content = std::regex_replace(QuotedPrintable::decode(content), std::regex("_"), " ");
 		}
-		else
-		{
-			//TODO: ERROR unknown encoding
-		  return encoded;
-		}
-
     std::vector<uint8_t> to_convert(content.begin(), content.end());
     this->convert(charset, to_convert);
     content = std::string(to_convert.begin(), to_convert.end());
@@ -77,10 +53,10 @@ std::string Mailer::decode(std::string _encoded)
 	};
 
 	std::smatch match;
-	std::regex to_translate = std::regex("=\\?.+\\?=");
-	while (std::regex_search(_encoded, match, to_translate))
+	std::regex re = std::regex("=\\?([^?]+)\\?(.)\\?([^?]+)\\?=");
+	while (std::regex_search(_encoded, match, re))
 	{
-		std::string translated = translate(match[0]);
+		std::string translated = translate(match[1], match[2], match[3]);
 		size_t index = _encoded.find(match[0]);
 		_encoded.replace(index, match[0].length(), translated);
 	}
@@ -111,25 +87,40 @@ std::vector<json> Mailer::parseAddressList(std::string list)
 {
 	std::vector<json> results;
 	std::smatch m;
-	std::regex e = std::regex("(?:\"?([^\"\r\n<]*)\"? )?<?([^>\r\n]+)>?,?");
+	std::regex e = std::regex("(?:([^<]+)?<([^>]+)>)|(?:([^()]+)(?:\\((.+)\\))?)");
 	while (std::regex_search(list, m, e))
 	{
+    std::string name;
+    std::string address;
+
+    if(m[1].length() > 0) {
+      // RFC 3.4.1, addr-spec
+      name = this->decode(m[1]);
+    } else if(m[4].length() > 0) {
+      // RFC 3.4, legacy comment
+      name = this->decode(m[4]);
+    }
+
+    if(m[2].length() > 0) {
+      address = m[2];
+    } else if(m[3].length() > 0) {
+      address = m[3];
+    }
+
+
+    boost::trim(name);
+    boost::trim(address);
+
 		json mailbox;
-		if (m.size() == 3)
-		{ // "name" <addr>
-			mailbox["name"] = this->decode(m[1]);
-			mailbox["address"] = m[2];
-		}
-		else if (m.size() == 2)
-		{ // <addr>
-			mailbox["address"] = m[1];
-		}
+    mailbox["name"] = name;
+    mailbox["address"] = address;
+
 		results.push_back(mailbox);
 		list = m.suffix().str();
 	}
 	if (results.size() == 0)
 	{
-		// std::cout << "/!\\ Unable to parse " << list << std::endl;
+		std::cout << "/!\\ Unable to parse " << list << std::endl;
 		// TODO: error unable to parse
 	}
 	return results;
@@ -217,7 +208,6 @@ json Mailer::parseBody(std::string body, json headers)
 	{
 		std::vector<uint8_t> content = this->decrypt(body);
     std::string contentFixed;
-
 		// convert non-text to base64
 		if (headers["Content-Type"]["type"].get<std::string>().rfind("text", 0) != 0)
 		{
@@ -232,7 +222,6 @@ json Mailer::parseBody(std::string body, json headers)
 			}
 			contentFixed = std::string(content.begin(), content.end());
 		}
-
     bodypart["content"] = contentFixed;
 	}
 	else

@@ -1,5 +1,4 @@
-#ifndef MAILAPP_FONTLOADER
-#define MAILAPP_FONTLOADER
+#pragma once
 
 #include <string>
 #include <iostream>
@@ -40,5 +39,3 @@ class MailFontLoader : public FontLoader {
 
     RefPtr<FontFile> Load(const String16& family, int weight, bool italic);
 };
-
-#endif
