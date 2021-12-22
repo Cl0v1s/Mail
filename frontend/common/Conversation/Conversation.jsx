@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 
 import { WithFolder } from '../../hoc/WithFolder.jsx';
 import { ConversationContextProvider } from '../../hoc/WithConversation.jsx';
+import Storage from './../../model/Storage';
 
 import Threads from '../Threads/Threads.jsx';
 import MailList from '../MailList/MailList.jsx';
@@ -12,12 +13,28 @@ const Conversation = ({ conversations, folder }) => {
   if (!conversations) return null;
   const params = useParams();
 
-  const [mode, setMode] = React.useState(Conversation.MODES.THREADS);
+  const conversation = React.useMemo(() => {
+    return conversations.find((co) => co.id === params.conversation);
+  }, [params.conversation]);
 
-  const conversation = conversations.find((co) => co.id === params.conversation);
+  const preferences = React.useMemo(() => {
+    let preferences = Storage.preferences.conversations
+      .find((c) => c.id == conversation.id);
+    if (preferences == null) {
+      preferences = { id: conversation.id, mode: Conversation.MODES.THREADS };
+      Storage.preferences.conversations.push(preferences)
+      Storage.update();
+    }
+    return preferences;
+  }, [params.conversation]);
+
+  const [mode, setMode] = React.useState(preferences.mode);
 
   const onChangeMode = (evt) => {
-    setMode(evt.target.options[evt.target.selectedIndex].value);
+    const value = evt.target.options[evt.target.selectedIndex].value;
+    setMode(value);
+    preferences.mode = value;
+    Storage.update();
   };
 
   return (

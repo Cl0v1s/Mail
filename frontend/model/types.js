@@ -54,3 +54,12 @@ export const Conversation = PropTypes.shape({
   people: PropTypes.arrayOf(Address).isRequired,
   mails: PropTypes.arrayOf(Mail).isRequired,
 })
+
+export const Storage = PropTypes.shape({
+  preferences: PropTypes.shape({
+    conversations: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string,
+      mode: PropTypes.string,
+    }))
+  }),
+});

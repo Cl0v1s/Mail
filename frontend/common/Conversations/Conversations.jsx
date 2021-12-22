@@ -22,7 +22,12 @@ const Conversation = WithAccount(({ folder, conversation, account }) => {
             {others.map((o) => o.name || o.address).join(', ')}
           </div>
           <div className="text-grey-75">
-            {conversation.mails.length} mail(s) dont {news.length} non-lu(s)
+            {conversation.mails.length} mail(s)
+            {
+              news.length > 0 && <span>
+                dont <span className="font-weight-bold">{news.length} non-lu(s)</span>
+              </span>
+            }
           </div>
           <div className="text-right text-grey-50">
             {date.toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' })}
