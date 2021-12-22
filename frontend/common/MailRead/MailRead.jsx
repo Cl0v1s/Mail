@@ -33,7 +33,7 @@ const MailAlternatives = ({ part }) => {
   }
 
   return <div className="h-100 d-flex flex-column">
-    <div className="alternative rounded border-bottom text-right p-2">
+    <div className="alternative border-bottom text-right p-2">
       <select className="form-control w-auto d-inline-block" onChange={onChange}>
         {
           contentTypes.map((ct) => <option key={ct} value={ct} selected={alternative === ct}>{ct}</option>)

@@ -9,12 +9,12 @@ import { v4 } from 'uuid';
 
 const Conversation = WithAccount(({ folder, conversation, account }) => {
   const others = conversation.people.filter((p) => p.address !== account.name);
-  const isNew = conversation.mails.find((m) => m.attributes?.indexOf(MAIL_ATTRIBUTES.SEEN) === -1) != null;
+  const news = conversation.mails.filter((m) => m.attributes?.indexOf(MAIL_ATTRIBUTES.SEEN) === -1);
   const date = new Date(conversation.mails[conversation.mails.length - 1].headers.Date);
   return (
     <Link to={`/folder/${folder.name}/conversation/${conversation.id}`}>
       <div
-        className={`conversation d-flex my-3 ${isNew ? 'new' : ''} ${others.length >= 2 ? 'group' : ''}`}
+        className={`conversation d-flex my-3 ${news.length > 0 ? 'new' : ''} ${others.length >= 2 ? 'group' : ''}`}
       >
         <div className="color rounded-left"></div>
         <div className="content p-2 w-100 border-top border-bottom border-right rounded">
@@ -22,10 +22,12 @@ const Conversation = WithAccount(({ folder, conversation, account }) => {
             {others.map((o) => o.name || o.address).join(', ')}
           </div>
           <div className="text-grey-75">
-            {conversation.mails.length} mail(s)
+            {conversation.mails.length} mail(s) dont {news.length} non-lu(s)
           </div>
           <div className="text-right text-grey-50">
-            {date.toLocaleDateString({ year: 'numeric', month: '2-digit', date: '2-digit' })}
+            {date.toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' })}
+            &nbsp;
+            {date.toLocaleTimeString(undefined, { hour: 'numeric', minute: 'numeric' })}
           </div>
         </div>
       </div>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { v4 } from 'uuid';
 import { Link } from 'react-router-dom';
 
 import { WithConversation } from '../../hoc/WithConversation.jsx';

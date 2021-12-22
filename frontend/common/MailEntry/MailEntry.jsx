@@ -8,6 +8,11 @@ import extractSummary from '../../helpers/extractSummary.js';
 export default class MailEntry extends React.Component {
   static propTypes = {
     mail: MailType.isRequired,
+    showSubject: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    showSubject: false,
   }
 
   state = {
@@ -49,8 +54,12 @@ export default class MailEntry extends React.Component {
           <div className="subject mt-1">
             <div className="font-weight-bold mr-2">
               {
-                this.props.mail.body == null
-                  ? 'Chargement...' : (extractSummary(this.props.mail.body) || this.props.mail.headers.Subject)
+                this.props.showSubject === false ? (
+                  this.props.mail.body == null
+                    ? 'Chargement...' : (extractSummary(this.props.mail.body) || this.props.mail.headers.Subject)
+                ) : (
+                  this.props.mail.headers.Subject
+                )
               }
             </div>
           </div>
