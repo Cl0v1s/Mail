@@ -36,7 +36,7 @@ const Conversation = ({ conversations, folder }) => {
   };
 
   return (
-    <div className="component-conversation">
+    <div className="component-conversation h-100 d-flex flex-column">
       <div className="p-2 bg-white border-bottom text-right">
         <select className="form-control w-auto d-inline-block" onChange={onChangeMode}>
           {

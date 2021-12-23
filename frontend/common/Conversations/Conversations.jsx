@@ -21,7 +21,7 @@ const Conversation = WithAccount(({ folder, conversation, account }) => {
           <div className="font-weight-bold font-family-secondary">
             {others.map((o) => o.name || o.address).join(', ')}
           </div>
-          <div className="text-grey-75">
+          <div className="text-grey-75 mt-1">
             {conversation.mails.length} mail(s)
             {
               news.length > 0 && <span>

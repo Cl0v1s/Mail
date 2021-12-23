@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 
 import { WithFolder } from '../../hoc/WithFolder.jsx';
 
-const MailContent = ({ content, plain = false }) => {
+const MailText = ({ content, plain = false }) => {
   const root = React.createRef();
   if (plain) return <pre className="p-3 m-0 w-100 h-100">{content}</pre>;
 
@@ -13,15 +13,13 @@ const MailContent = ({ content, plain = false }) => {
     e.preventDefault();
     window.open(e.target.href, '_blank');
   }
-
   const onLoadIframe = (e) => {
     e.target.contentDocument.addEventListener("click", onClickIframe);
   };
-
   return <iframe ref={root} onLoad={onLoadIframe} className="w-100 h-100 border-0" sandbox="allow-same-origin allow-popups allow-scripts" srcDoc={content} />;
 }
 
-const MailAlternatives = ({ part }) => {
+const MailMultipartAlternatives = ({ part }) => {
   const contentTypes = part.parts.map((p) => p.headers["Content-Type"].type);
   const [alternative, setAlternative] = React.useState(contentTypes.indexOf('text/html') !== -1 ? 'text/html' : contentTypes[0]);
 
@@ -46,10 +44,11 @@ const MailAlternatives = ({ part }) => {
   </div>
 }
 
-const MailPart = ({ part }) => {
-  console.debug('Opening mail part');
-  console.debug(part);
+const MailMultipartSigned = ({ part }) => {
+  return atob(part.content);
+}
 
+const MailPart = ({ part }) => {
   const readable = ["text/html", "text/plain"];
   const plain = ["text/plain"];
 
@@ -57,24 +56,23 @@ const MailPart = ({ part }) => {
     ? part.content
     : null;
 
-  let result = null;
-
   // Si on a du contenu textuel
-  if (content) return <MailContent content={content} plain={plain.indexOf(part.headers["Content-Type"].type) !== -1} />
-  else if (part.parts) {
+  if (content) return <MailText content={content} plain={plain.indexOf(part.headers["Content-Type"].type) !== -1} />
+  else if (part.headers["Content-Type"].type === "multipart/signed") {
+    return <MailMultipartSigned part={part} />
+  } else if (part.parts) {
     if (part.headers["Content-Type"].type === "multipart/alternative") {
       // Si on a des alternatives
-      return <MailAlternatives part={part} />
+      return <MailMultipartAlternatives part={part} />
     } else {
       // Sinon on affiches les parties les unes sous les autres
       return part.parts.map((p) => <MailPart part={p} />)
     }
   }
 
-  if (result) return <section>{result}</section>;
 
   console.error('Unsupported MIME type from part');
-  console.error(part);
+  console.error(JSON.stringify(part));
 
   return null;
 }

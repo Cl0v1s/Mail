@@ -27,7 +27,7 @@ const Threads = ({ threads, folder }) => {
   } while (sortedMails.length > 0);
 
   return (
-    <div className="component-threads p-3">
+    <div className="component-threads w-100 overflow-auto flex-grow-1 p-3">
       <div className="subjects bg-white d-flex align-items-end">
         {
           threads.map((t) => <div className="cell border-bottom mx-3 my-3 pb-3 font-family-secondary">{t.id}</div>)
