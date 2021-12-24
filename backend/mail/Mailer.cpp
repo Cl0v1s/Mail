@@ -126,19 +126,30 @@ std::vector<json> Mailer::parseAddressList(std::string list)
 	return results;
 }
 
+
 json Mailer::parseContentType(std::string raw)
 {
 	json result;
+  result["raw"] = raw;
 
+  std::string key;
+  std::string value;
 	std::smatch m;
-	std::regex e = std::regex("([^;]+)(?:; ?boundary=\"?([^\"]+)\"?)?(?:; ?charset=\"?([^\";]+)\"?)?"); // * LIST (\HasChildren) "." INBOX
-	if (std::regex_search(raw, m, e))
-	{
-		result["raw"] = m[0];
-		result["type"] = m[1];
-		result["boundary"] = m[2];
-		result["charset"] = m[3];
-	}
+	std::regex e = std::regex("([^=;]+)(?:=\"?'?([^\"';]+)\"?'?)?");
+  while(std::regex_search(raw, m, e)) {
+    if(m[2].length() == 0) {
+      value = m[1];
+      boost::trim(value);
+		  result["type"] = value;
+    } else {
+      key = m[1];
+      value = m[2];
+      boost::trim(key);
+      boost::trim(value);
+      result[key] = value;
+    }
+    raw = m.suffix().str();
+  }
 
 	return result;
 }
@@ -203,8 +214,7 @@ json Mailer::parseBody(std::string body, json headers)
 	json bodypart;
 	bodypart["headers"] = headers;
 
-	bool isThereBoundary = std::string(headers["Content-Type"]["boundary"]).length() > 0;
-	if (isThereBoundary == false)
+	if (headers["Content-Type"].contains("boundary") == false)
 	{
 		std::vector<uint8_t> content = this->decrypt(body);
     std::string contentFixed;
@@ -216,7 +226,7 @@ json Mailer::parseBody(std::string body, json headers)
 		else
 		{
 			// convert from not-utf-8 to utf-8
-			if (headers["Content-Type"]["charset"] != "")
+			if (headers["Content-Type"].contains("charset"))
 			{
 				this->convert(headers["Content-Type"]["charset"], content);
 			}

@@ -25122,3 +25122,22 @@ body {
 :root a, :root body a {
   text-decoration: none;
 }
+
+@font-face {
+  font-family: "Inter";
+  src: url("https://static.test.c-napps.com/boto/fonts/Inter-Regular.otf");
+  font-weight: 300 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://static.test.c-napps.com/boto/fonts/Inter-Bold.otf");
+  font-weight: 600 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://static.test.c-napps.com/boto/fonts/Inter-Medium.otf");
+  font-weight: 500;
+  font-display: swap;
+}
