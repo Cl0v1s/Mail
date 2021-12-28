@@ -8,7 +8,9 @@ import { v4 } from 'uuid';
 
 
 const Conversation = WithAccount(({ folder, conversation, account }) => {
-  const others = conversation.people.filter((p) => p.address !== account.name);
+  let others = conversation.people.filter((p) => p.address !== account.name);
+  // case where the sender is the only receiver
+  if (others.length <= 0) others = [conversation.people[0]];
   const news = conversation.mails.filter((m) => m.attributes?.indexOf(MAIL_ATTRIBUTES.SEEN) === -1);
   const date = new Date(conversation.mails[conversation.mails.length - 1].headers.Date);
   return (
