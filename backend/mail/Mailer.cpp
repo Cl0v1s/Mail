@@ -218,17 +218,35 @@ json Mailer::parseBody(std::string body, json headers)
 	{
 		std::vector<uint8_t> content = this->decrypt(body);
     std::string contentFixed;
-		// convert non-text to base64
-		if (headers["Content-Type"]["type"].get<std::string>().rfind("text", 0) != 0)
+    bool isBase64Encoded = false;
+    if(headers["Content-Transfer-Encoding"] == "base64") isBase64Encoded = true;
+		// convert non-text to base64 (if not already converted)
+		if (headers["Content-Type"]["type"].get<std::string>().rfind("text", 0) != 0 && isBase64Encoded == false)
 		{
 			contentFixed = base64_encode(content.data(), content.size());
+      headers["Content-Transfer-Encoding"] = "base64";
 		}
 		else
 		{
+      // decode from b64
+      if(isBase64Encoded) {
+        // Remove eventual line-breaks from encoded string
+        std::string toDecode = std::regex_replace(
+          std::string(content.begin(), content.end()),
+          std::regex("\n|\r"),
+          ""
+        );
+        // since line-break = true doesnt seem to work as intended
+        std::string decoded = base64_decode(toDecode, true);
+        // remove content-transfer-encoding since content isnt encoded anymore
+        headers.erase(headers.find("Content-Transfer-Encoding"));
+        content = std::vector<uint8_t>(decoded.begin(), decoded.end());
+      }
 			// convert from not-utf-8 to utf-8
 			if (headers["Content-Type"].contains("charset"))
 			{
 				this->convert(headers["Content-Type"]["charset"], content);
+        headers["Content-Type"]["charset"] = "UTF-8";
 			}
 			contentFixed = std::string(content.begin(), content.end());
 		}

@@ -79,19 +79,74 @@ void MailApp::OnDOMReady(ultralight::View* caller,
 }
 
 JSValue MailApp::OpenInBrowser(const JSObject& thisObject, const JSArgs& args) {
-  // ouvrir navigateur du système
-  if(args.size() >= 1) {
+
+  if(args.size() >= 3) {
+    std::smatch match;
     std::string url = std::string(String(args[0].ToString()).utf8().data());
+    std::string download = std::string(String(args[2].ToString()).utf8().data());
+    // checking validity of file name
+    if(std::regex_match(download, std::regex("^[a-zA-Z0-9](?:[a-zA-Z0-9 ._-]*[a-zA-Z0-9])?\\.[a-zA-Z0-9_-]+$")) == false) {
+      std::cout << "Error: invalid file name" << std::endl;
+      //TODO: Error
+      return JSValueMakeNull(thisObject.context());
+    }
+    std::string sep = "/";
+    std::string path = "HOME";
     #ifdef _WIN32
-      system(std::string("start " + url).c_str());
+      path = "UserProfile";
+      sep = "\\";
+    #endif
+    path = std::string(getenv(path.c_str())) + sep + download;
+
+    // check if file exists, if yes append -bis to existing file name
+    std::ifstream ifile;
+    ifile.open(path);
+    while(ifile) {
+      ifile.close();
+      std::regex_search(path, match, std::regex("(.+)\\.(.+)$"));
+      path = match[1].str() + "-bis." + match[2].str();
+      ifile.open(path);
+    }
+
+    std::string data;
+    // data is base 64 encoded
+    if(std::regex_search(url, match, std::regex("^[^;]+;base64,(.+)$"))) {
+      data = base64_decode(match[1].str());
+    } else if(std::regex_search(url, match, std::regex("^[^;]+;(.+)$"))) {
+      data = match[1];
+    } else {
+      std::cout << "Error: invalid url data format" << std::endl;
+      //TODO: Error
+      return JSValueMakeNull(thisObject.context());
+    }
+
+    std::ofstream output(path);
+    output << data;
+    output.close();
+  } else if(args.size() >= 1) {
+  // ouvrir navigateur du système
+    std::string url = std::string(String(args[0].ToString()).utf8().data());
+    std::string cmd;
+    #ifdef _WIN32
+      cmd = "start";
     #endif
     #ifdef __APPLE__
-      system(std::string("open " + url).c_str());
+      cmd = "open";
     #endif
     #ifdef __linux__
-      system(std::string("xdg-open " + url).c_str());
+      cmd = "xdg-open";
     #endif
-
+    int pid = fork();
+    if( pid < 0 ) { 
+        return JSValueMakeNull(thisObject.context());
+    }   
+    if( pid == 0 ) { 
+        freopen( "/dev/null", "r", stdin );
+        freopen( "/dev/null", "w", stdout );
+        freopen( "/dev/null", "w", stderr );
+        execlp( cmd.c_str(), cmd.c_str(), url.c_str(), (char *)0 );
+        return JSValueMakeNull(thisObject.context());
+    }
   }
   return JSValueMakeNull(thisObject.context());
 }

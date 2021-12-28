@@ -5,6 +5,7 @@
 #include <iostream>
 #include <functional>
 
+#include "./../utils/cpp-base64/base64.h"
 #include "Font/FontLoader.h"
 
 using namespace ultralight;

@@ -1,20 +1,24 @@
 
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { v4 } from 'uuid';
 
 import { WithFolder } from '../../hoc/WithFolder.jsx';
+import openLink from '../../helpers/openLink.js';
 
-const MailText = ({ content, plain = false }) => {
+const READABLE = ["text/html", "text/plain"];
+const PLAIN = ["text/plain"];
+
+// Content-Transfer-Encoding
+const MailText = ({ part }) => {
+  const plain = PLAIN.indexOf(part.headers["Content-Type"].type) !== -1;
+  const content = part.content;
+
   const root = React.createRef();
   if (plain) return <pre className="p-3 m-0 w-100 h-100">{content}</pre>;
 
-  const onClickIframe = (e) => {
-    if (e.target.nodeName !== 'A' || e.target.target !== '_blank') return;
-    e.preventDefault();
-    window.open(e.target.href, '_blank');
-  }
   const onLoadIframe = (e) => {
-    e.target.contentDocument.addEventListener("click", onClickIframe);
+    e.target.contentDocument.addEventListener("click", openLink);
   };
   return <iframe ref={root} onLoad={onLoadIframe} className="w-100 h-100 border-0" sandbox="allow-same-origin allow-popups allow-scripts" srcDoc={content} />;
 }
@@ -30,7 +34,7 @@ const MailMultipartAlternatives = ({ part }) => {
     setAlternative(evt.target.value);
   }
 
-  return <div className="h-100 d-flex flex-column">
+  return <>
     <div className="alternative border-bottom text-right p-2">
       <select className="form-control w-auto d-inline-block" onChange={onChange}>
         {
@@ -41,23 +45,28 @@ const MailMultipartAlternatives = ({ part }) => {
     <div className="flex-grow-1">
       <MailPart part={alternatives[alternative]} />
     </div>
-  </div>
+  </>
 }
 
 const MailMultipartSigned = ({ part }) => {
-  return atob(part.content);
+  const signatureIndex = part.parts.findIndex((p) => p.headers["Content-Type"].type === "application/pgp-signature");
+  const signature = part.parts[signatureIndex];
+  console.log(signature);
+  return <>
+    {part.parts.map((p, index) => index != signatureIndex ? <MailPart key={v4()} part={p} /> : null)}
+    <div className='border-top p-2 bg-white'>
+      Cet e-mail a été signé avec <a onClick={openLink} target="_blank" href={`data:${signature.headers["Content-Type"]["type"]};base64,${signature.content}`} download={signature.headers["Content-Type"]["name"]}>une signature éléctronique</a>
+    </div>
+  </>
 }
 
 const MailPart = ({ part }) => {
-  const readable = ["text/html", "text/plain"];
-  const plain = ["text/plain"];
-
-  const content = readable.indexOf(part.headers["Content-Type"].type) !== -1
+  const content = READABLE.indexOf(part.headers["Content-Type"].type) !== -1
     ? part.content
     : null;
 
   // Si on a du contenu textuel
-  if (content) return <MailText content={content} plain={plain.indexOf(part.headers["Content-Type"].type) !== -1} />
+  if (content) return <MailText part={part} />
   else if (part.headers["Content-Type"].type === "multipart/signed") {
     return <MailMultipartSigned part={part} />
   } else if (part.parts) {
@@ -66,7 +75,7 @@ const MailPart = ({ part }) => {
       return <MailMultipartAlternatives part={part} />
     } else {
       // Sinon on affiches les parties les unes sous les autres
-      return part.parts.map((p) => <MailPart part={p} />)
+      return part.parts.map((p) => <MailPart key={v4()} part={p} />)
     }
   }
 
@@ -86,7 +95,7 @@ const MailRead = ({ mails, actions }) => {
     actions.retrieveMailsBody([mail]);
   }
 
-  return <div className="component-mail-read w-100 h-100 border-0">
+  return <div className="component-mail-read w-100 h-100 border-0 d-flex flex-column">
     {
       mail.body == null ? 'Chargement...' : <MailPart part={mail.body} />
     }
