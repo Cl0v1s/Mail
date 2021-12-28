@@ -85,7 +85,6 @@ std::vector<uint8_t> Mailer::decrypt(std::string encrypted)
 
 std::vector<json> Mailer::parseAddressList(std::string list)
 {
-  std::cout << list << std::endl;
 	std::vector<json> results;
 	std::smatch m;
 	std::regex e = std::regex("(?:([^<,]+)?<([^>, ]+)>)|(?:([^(),]+)(?:\\((.+)\\))?)");
@@ -178,7 +177,6 @@ json Mailer::parseHeaders(std::string _raw)
       if(field == "From"
         || field == "To"
         || field == "Cc") {
-        std::cout << field <<std::endl;
         mail[field] = this->parseAddressList(value);
       } else if(field == "Subject") {
         mail[field] = this->decode(value);
