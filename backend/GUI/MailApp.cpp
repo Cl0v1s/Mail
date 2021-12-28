@@ -76,14 +76,43 @@ void MailApp::OnDOMReady(ultralight::View* caller,
   SetJSContext(context.get());
   JSObject global = JSGlobalObject();
   global["open"] = BindJSCallbackWithRetval(&MailApp::OpenInBrowser);
+  global["download"] = BindJSCallbackWithRetval(&MailApp::Download);
 }
 
 JSValue MailApp::OpenInBrowser(const JSObject& thisObject, const JSArgs& args) {
+  if(args.size() >= 1) {
+  // ouvrir navigateur du système
+    std::string url = std::string(String(args[0].ToString()).utf8().data());
+    std::string cmd;
+    #ifdef _WIN32
+      cmd = "start";
+    #endif
+    #ifdef __APPLE__
+      cmd = "open";
+    #endif
+    #ifdef __linux__
+      cmd = "xdg-open";
+    #endif
+    int pid = fork();
+    if( pid < 0 ) { 
+        return JSValueMakeNull(thisObject.context());
+    }   
+    if( pid == 0 ) { 
+        freopen( "/dev/null", "r", stdin );
+        freopen( "/dev/null", "w", stdout );
+        freopen( "/dev/null", "w", stderr );
+        execlp( cmd.c_str(), cmd.c_str(), url.c_str(), (char *)0 );
+        return JSValueMakeNull(thisObject.context());
+    }
+  }
+  return JSValueMakeNull(thisObject.context());
+}
 
-  if(args.size() >= 3) {
+JSValue MailApp::Download(const JSObject& thisObject, const JSArgs& args) {
+  if(args.size() >= 2) {
     std::smatch match;
     std::string url = std::string(String(args[0].ToString()).utf8().data());
-    std::string download = std::string(String(args[2].ToString()).utf8().data());
+    std::string download = std::string(String(args[1].ToString()).utf8().data());
     // checking validity of file name
     if(std::regex_match(download, std::regex("^[a-zA-Z0-9](?:[a-zA-Z0-9 ._-]*[a-zA-Z0-9])?\\.[a-zA-Z0-9_-]+$")) == false) {
       std::cout << "Error: invalid file name" << std::endl;
@@ -123,30 +152,6 @@ JSValue MailApp::OpenInBrowser(const JSObject& thisObject, const JSArgs& args) {
     std::ofstream output(path);
     output << data;
     output.close();
-  } else if(args.size() >= 1) {
-  // ouvrir navigateur du système
-    std::string url = std::string(String(args[0].ToString()).utf8().data());
-    std::string cmd;
-    #ifdef _WIN32
-      cmd = "start";
-    #endif
-    #ifdef __APPLE__
-      cmd = "open";
-    #endif
-    #ifdef __linux__
-      cmd = "xdg-open";
-    #endif
-    int pid = fork();
-    if( pid < 0 ) { 
-        return JSValueMakeNull(thisObject.context());
-    }   
-    if( pid == 0 ) { 
-        freopen( "/dev/null", "r", stdin );
-        freopen( "/dev/null", "w", stdout );
-        freopen( "/dev/null", "w", stderr );
-        execlp( cmd.c_str(), cmd.c_str(), url.c_str(), (char *)0 );
-        return JSValueMakeNull(thisObject.context());
-    }
   }
   return JSValueMakeNull(thisObject.context());
 }

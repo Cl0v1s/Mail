@@ -60,6 +60,8 @@ public:
                           
   JSValue OpenInBrowser(const JSObject& thisObject, const JSArgs& args);
   
+  JSValue Download(const JSObject& thisObject, const JSArgs& args);
+  
 protected:
   RefPtr<App> app_;
   RefPtr<Window> window_;

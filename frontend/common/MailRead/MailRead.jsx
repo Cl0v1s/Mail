@@ -5,6 +5,7 @@ import { v4 } from 'uuid';
 
 import { WithFolder } from '../../hoc/WithFolder.jsx';
 import openLink from '../../helpers/openLink.js';
+import download from '../../helpers/download.js';
 
 const READABLE = ["text/html", "text/plain"];
 const PLAIN = ["text/plain"];
@@ -55,7 +56,7 @@ const MailMultipartSigned = ({ part }) => {
   return <>
     {part.parts.map((p, index) => index != signatureIndex ? <MailPart key={v4()} part={p} /> : null)}
     <div className='border-top p-2 bg-white'>
-      Cet e-mail a été signé avec <a onClick={openLink} target="_blank" href={`data:${signature.headers["Content-Type"]["type"]};base64,${signature.content}`} download={signature.headers["Content-Type"]["name"]}>une signature éléctronique</a>
+      Cet e-mail a été signé avec <a onClick={download} href={`data:${signature.headers["Content-Type"]["type"]};base64,${signature.content}`} download={signature.headers["Content-Type"]["name"]}>une signature éléctronique</a>
     </div>
   </>
 }
