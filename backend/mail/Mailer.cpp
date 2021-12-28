@@ -53,7 +53,7 @@ std::string Mailer::decode(std::string _encoded)
 	};
 
 	std::smatch match;
-	std::regex re = std::regex("=\\?([^?]+)\\?(.)\\?([^?]+)\\?=");
+	std::regex re = std::regex("=\\?([^?]+)\\?(.)\\?([^?]*)\\?=");
 	while (std::regex_search(_encoded, match, re))
 	{
 		std::string translated = translate(match[1], match[2], match[3]);
@@ -85,9 +85,10 @@ std::vector<uint8_t> Mailer::decrypt(std::string encrypted)
 
 std::vector<json> Mailer::parseAddressList(std::string list)
 {
+  std::cout << list << std::endl;
 	std::vector<json> results;
 	std::smatch m;
-	std::regex e = std::regex("(?:([^<]+)?<([^>]+)>)|(?:([^()]+)(?:\\((.+)\\))?)");
+	std::regex e = std::regex("(?:([^<,]+)?<([^>, ]+)>)|(?:([^(),]+)(?:\\((.+)\\))?)");
 	while (std::regex_search(list, m, e))
 	{
     std::string name;
@@ -177,6 +178,7 @@ json Mailer::parseHeaders(std::string _raw)
       if(field == "From"
         || field == "To"
         || field == "Cc") {
+        std::cout << field <<std::endl;
         mail[field] = this->parseAddressList(value);
       } else if(field == "Subject") {
         mail[field] = this->decode(value);
