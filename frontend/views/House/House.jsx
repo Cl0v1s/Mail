@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route, useParams, Link, useLocation, Outlet } from 'react-router-dom';
+import { v4 } from 'uuid';
 
 import { FolderContextProvider, WithFolder } from '../../hoc/WithFolder.jsx';
 import { WithAccount } from '../../hoc/WithAccount.jsx';
@@ -21,7 +22,7 @@ const FolderEntry = ({ folder }) => {
   const location = useLocation();
   return (
     <Link to={`/folder/${folder.name}`}>
-      <div className={`folder-entry bg-white my-3 rounded-100 p-2 ${location.pathname === `/folder/${folder.name}` ? 'active' : ''}`} style={{ cursor: "pointer" }}>
+      <div tabIndex={0} className={`folder-entry bg-white my-3 p-2 ${location.pathname.indexOf(`/folder/${encodeURIComponent(folder.name)}`) !== -1 ? 'active' : ''}`} style={{ cursor: "pointer" }}>
         <div className="font-weight-bold font-family-secondary">
           {folder.name}
         </div>
@@ -41,7 +42,7 @@ const House = ({ folders, actions }) => {
       <div className="h-100 flex-shrink-0">
         <div className="folder-list h-100 p-3 border-right overflow-auto">
           {
-            folders.map((folder) => <FolderEntry folder={folder} />)
+            folders.map((folder) => <FolderEntry key={v4()} folder={folder} />)
           }
         </div>
       </div>

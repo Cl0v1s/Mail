@@ -7,9 +7,10 @@
     .folder-entry {
       border: 1px solid transparent;
       &:hover, &.active {
-        background-color: var(--brand-primary-light) !important;
-        border: 1px solid var(--brand-primary);
         text-decoration: none !important;
+        .font-family-secondary {
+          color: var(--brand-primary);
+        }
       }
     }
   }

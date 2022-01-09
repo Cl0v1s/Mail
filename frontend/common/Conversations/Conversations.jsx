@@ -16,6 +16,7 @@ const Conversation = WithAccount(({ folder, conversation, account }) => {
   return (
     <Link to={`/folder/${folder.name}/conversation/${conversation.id}`}>
       <div
+        tabIndex={0}
         className={`conversation rounded dp dp-light d-flex my-3 ${news.length > 0 ? 'new' : ''} ${others.length >= 2 ? 'group' : ''}`}
       >
         <div className="color rounded-left"></div>

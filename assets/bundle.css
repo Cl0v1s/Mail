@@ -20186,7 +20186,7 @@ a.text-grey-100:hover, a.text-grey-100:focus {
   color: #212529 !important;
 }
 
-.text-muted, .component-drugRowComposite .component-drugLabelElement .branded-drug, .component-drugRowComposite .component-drugLabelElement .pharmaceutical-ingredient {
+.text-muted, .component-drugRowComposite .component-drugLabelElement .pharmaceutical-ingredient {
   color: #6c757d !important;
 }
 
@@ -22197,7 +22197,7 @@ body {
   align-items: flex-end;
 }
 .component-bottomModal .component-bottomModal__content {
-  border-radius: 8px 8px 0 0;
+  border-radius: 16px 16px 0 0;
   background-color: white;
   width: 100vw !important;
   height: 25vh !important;
@@ -22213,11 +22213,10 @@ body {
   font-size: 0.8rem;
   z-index: 100;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  gap: 16px;
 }
 .component-bottomModal .component-bottomModal__content .action-buttons button {
-  width: 45%;
+  width: 100%;
   height: 100%;
 }
 
@@ -22463,6 +22462,7 @@ body {
   opacity: 0.9;
 }
 .component-drugRowComposite .component-drugLabelElement .branded-drug {
+  color: #2D81FF;
   font-size: 0.8rem;
 }
 .component-drugRowComposite .component-drugLabelElement .branded-drug > span > span {
@@ -22484,8 +22484,8 @@ body {
   -webkit-font-smoothing: auto;
 }
 .component-drugRowComposite .col-auto.text-right, .component-drugRowComposite .component-selector .text-right.option-col, .component-selector .component-drugRowComposite .text-right.option-col {
-  background-color: #767676;
-  color: #2D81FF;
+  background-color: #448EFF;
+  color: white;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
@@ -22496,7 +22496,7 @@ body {
   word-break: break-word;
   white-space: normal;
   cursor: pointer;
-  color: #2D81FF;
+  color: white;
 }
 .component-drugRowComposite .col-auto.text-right .menu-item .fa, .component-drugRowComposite .component-selector .text-right.option-col .menu-item .fa, .component-selector .component-drugRowComposite .text-right.option-col .menu-item .fa {
   display: inline-block;
@@ -22508,7 +22508,7 @@ body {
   /*--size: 17px !important;*/
 }
 .component-drugRowComposite .col-auto.text-right .menu-item.remove, .component-drugRowComposite .component-selector .text-right.option-col .menu-item.remove, .component-selector .component-drugRowComposite .text-right.option-col .menu-item.remove {
-  border-left: 1px solid #2D81FF;
+  border-left: 1px solid white;
 }
 .component-drugRowComposite .col-auto.text-right .fa, .component-drugRowComposite .component-selector .text-right.option-col .fa, .component-selector .component-drugRowComposite .text-right.option-col .fa {
   font-size: 20px;
@@ -22584,8 +22584,8 @@ body {
   position: fixed;
   bottom: 0;
   z-index: 4;
-  left: calc(50% - 17.5vw);
   width: 35vw;
+  left: calc(50% - 17.5vw);
 }
 .component-mount-point.new {
   animation-name: new;
@@ -22598,10 +22598,18 @@ body {
 }
 .component-mount-point .feedback {
   transition: transform 0.4s ease, opacity 0.2s ease;
+  width: 100%;
 }
 .component-mount-point .feedback.closing {
   transform: translateX(100%);
   opacity: 0;
+}
+@media screen and (max-width: 920px) {
+  .component-mount-point {
+    width: 320px;
+    max-width: 95%;
+    left: max(2.5vw, 50% - 160px);
+  }
 }
 
 .component-force-sticky .target {
@@ -22906,7 +22914,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 100;
+  z-index: 200;
   background-color: rgba(234, 242, 255, 0.8);
   transform: scaleX(1) scaleY(1);
   opacity: 1;
@@ -23463,6 +23471,10 @@ body {
   box-shadow: var(--dp-50);
 }
 
+.component-radioBoolElement .radioElement .point {
+  margin-right: 0.5rem !important;
+}
+
 .component-rcpCard .collapsed {
   text-decoration: underline !important;
 }
@@ -23623,7 +23635,7 @@ body {
 }
 .component-search .icn.icn-cross {
   right: 0;
-  top: calc(50% - 5px);
+  top: calc(50% - 10px);
   cursor: pointer;
 }
 
@@ -23785,6 +23797,9 @@ body {
   border-bottom-right-radius: var(--rounded-150) !important;
 }
 
+.component-switch-element.disabled {
+  opacity: 0.3;
+}
 .component-switch-element .slide-custom {
   cursor: pointer;
   padding: 0;
@@ -23813,23 +23828,10 @@ body {
   transition: all 0.2s ease;
 }
 .component-switch-element .slide-custom input[type=checkbox]:not(:checked) ~ .bg-ball {
-  background-color: #E5E5E5;
+  background-color: #E5E5E5 !important;
 }
 .component-switch-element .slide-custom input[type=checkbox]:checked ~ .bg-ball .ball {
   margin-left: calc(2 * 26px - 8px - 18px);
-}
-.component-switch-element .disabled span.text-muted, .component-switch-element .disabled .component-drugRowComposite .component-drugLabelElement span.branded-drug, .component-drugRowComposite .component-drugLabelElement .component-switch-element .disabled span.branded-drug, .component-switch-element .disabled .component-drugRowComposite .component-drugLabelElement span.pharmaceutical-ingredient, .component-drugRowComposite .component-drugLabelElement .component-switch-element .disabled span.pharmaceutical-ingredient,
-.component-switch-element .slide-custom.disabled + span.text-muted,
-.component-switch-element .component-drugRowComposite .component-drugLabelElement .slide-custom.disabled + span.branded-drug,
-.component-drugRowComposite .component-drugLabelElement .component-switch-element .slide-custom.disabled + span.branded-drug,
-.component-switch-element .component-drugRowComposite .component-drugLabelElement .slide-custom.disabled + span.pharmaceutical-ingredient,
-.component-drugRowComposite .component-drugLabelElement .component-switch-element .slide-custom.disabled + span.pharmaceutical-ingredient,
-.component-switch-element .slide-custom.btn--disabled + span.text-muted,
-.component-switch-element .component-drugRowComposite .component-drugLabelElement .slide-custom.btn--disabled + span.branded-drug,
-.component-drugRowComposite .component-drugLabelElement .component-switch-element .slide-custom.btn--disabled + span.branded-drug,
-.component-switch-element .component-drugRowComposite .component-drugLabelElement .slide-custom.btn--disabled + span.pharmaceutical-ingredient,
-.component-drugRowComposite .component-drugLabelElement .component-switch-element .slide-custom.btn--disabled + span.pharmaceutical-ingredient {
-  opacity: 0.3;
 }
 
 .component-TabElement .tab {
@@ -24276,6 +24278,11 @@ body {
   line-height: 1.2;
 }
 
+.component-animation {
+  width: 100%;
+  height: 100%;
+}
+
 .component-button {
   --font-family: var(--font-family-secondary);
   --font-size: var(--text-100);
@@ -24362,7 +24369,7 @@ body {
 .component-button.component-button-icon {
   --border-color: var(--grey-25);
   --background-color: var(--brand-primary);
-  --padding-x: var(--spacing-45);
+  --padding-x: var(--spacing-3);
   --padding-y: var(--spacing-3);
 }
 .component-button.component-button-icon.component-button-icon--secondary {
@@ -24729,17 +24736,24 @@ body {
 .component-input .placeholder {
   position: absolute;
   top: calc(50% - var(--placeholder-height) / 2);
-  left: var(--spacing-2);
   font-size: var(--text-75);
   display: inline-block;
   height: var(--placeholder-height);
   transition: transform 0.2s ease;
-  padding-left: var(--spacing-1);
-  padding-right: var(--spacing-1);
   background-color: var(--background-color);
 }
 .component-input .placeholder.elevated {
   transform: translateY(calc(var(--height) * -0.5));
+}
+.component-input .after-props {
+  position: absolute;
+  top: calc(50% - var(--placeholder-height) / 2);
+  right: var(--spacing-1);
+  display: inline-block;
+  height: var(--placeholder-height);
+  padding-left: var(--spacing-1);
+  padding-right: var(--spacing-1);
+  background-color: var(--background-color);
 }
 .component-input .error {
   display: block;
@@ -24798,13 +24812,12 @@ body {
 }
 
 .component-panel {
-  margin-left: var(--spacing-4);
-  margin-right: var(--spacing-4);
   border-top-left-radius: var(--rounded-100);
   border-top-right-radius: var(--rounded-100);
   background-color: var(--white);
-  position: relative;
+  position: absolute;
   top: var(--spacing-4);
+  height: calc(100vh - var(--spacing-4));
 }
 .component-panel .notch-wrapper {
   padding-top: var(--spacing-2);
@@ -24824,9 +24837,11 @@ body {
 }
 .component-panel.component-panel--reduce {
   top: 25vh;
+  height: 75vh;
 }
 .component-panel.component-panel--mini {
   top: 75vh;
+  height: 25vh;
 }
 
 .component-radio {
@@ -25050,9 +25065,11 @@ body {
 }
 
 .component-house .folder-list .folder-entry:hover, .component-house .folder-list .folder-entry.active {
-  background-color: var(--brand-primary-light) !important;
-  border: 1px solid var(--brand-primary);
   text-decoration: none !important;
+}
+
+.component-house .folder-list .folder-entry:hover .font-family-secondary, .component-house .folder-list .folder-entry.active .font-family-secondary {
+  color: var(--brand-primary);
 }
 
 .component-conversations .conversation {
